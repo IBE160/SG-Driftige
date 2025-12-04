@@ -1,0 +1,2 @@
+## Component Library / Design System
+**Design System Approach:** For the MVP, we will leverage an existing, well-established React component library (e.g., Material UI, Ant Design, or similar) to accelerate development and ensure a baseline level of quality and consistency. A custom design system will be considered post-MVP.
