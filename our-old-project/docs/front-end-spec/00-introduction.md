@@ -1,1 +1,0 @@
-# QuizZum UI/UX Specification
