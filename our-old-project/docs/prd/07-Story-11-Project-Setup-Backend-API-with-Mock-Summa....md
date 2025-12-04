@@ -1,0 +1,11 @@
+## Story 1.1 Project Setup & Backend API with Mock Summaries
+As a developer,
+I want to set up the basic project structure and a functional backend API,
+so that the frontend development can proceed with a stable API to consume.
+
+### Acceptance Criteria
+1.  The backend FastAPI application is running.
+2.  The `/api/summarize` endpoint is implemented and accessible.
+3.  The `/api/summarize` endpoint accepts a JSON payload with a `text` field (string).
+4.  The `/api/summarize` endpoint returns a JSON response containing mock `easy`, `medium`, and `hard` summaries after a simulated delay.
+5.  CORS headers are configured to allow requests from the frontend.

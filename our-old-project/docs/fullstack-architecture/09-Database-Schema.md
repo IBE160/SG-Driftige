@@ -1,0 +1,2 @@
+## Database Schema
+No database is required for the MVP as user accounts and persistent data storage are out of scope. For post-MVP phases, the PRD outlines the consideration of PostgreSQL for `users` and `summaries` tables.

@@ -1,0 +1,1 @@
+# QuizZum Fullstack Architecture Document

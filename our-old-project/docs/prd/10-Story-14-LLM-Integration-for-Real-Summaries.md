@@ -1,0 +1,11 @@
+## Story 1.4 LLM Integration for Real Summaries
+As a developer,
+I want to integrate a real LLM into the backend,
+so that the application can generate actual multi-level summaries.
+
+### Acceptance Criteria
+1.  The backend connects to a chosen LLM API (e.g., Google Gemini).
+2.  The backend constructs appropriate prompts for "Easy," "Medium," and "Hard" summaries.
+3.  The LLM generates summaries for all three levels based on the input text.
+4.  The `/api/summarize` endpoint returns the actual generated summaries.
+5.  Error handling for LLM API calls is implemented (e.g., handling API rate limits, connection errors).

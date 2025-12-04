@@ -1,0 +1,4 @@
+# QuizZum Product Requirements Document (PRD)
+
+**Note on Phased Development and Early Implementations:**
+This document outlines a phased approach to the QuizZum project, prioritizing the MVP (Epic 1) for initial delivery. While development strictly adheres to these phases, it's possible that the codebase may contain foundational elements or exploratory prototypes related to future epics (e.g., user accounts, quizzes, PDF upload) for technical investigation or groundwork. These early implementations are considered out of scope for the immediate MVP delivery and do not alter the defined MVP feature set or timeline.
