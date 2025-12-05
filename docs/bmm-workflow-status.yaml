@@ -1,0 +1,81 @@
+# Workflow Status Template
+
+# This tracks progress through BMM methodology Analysis, Planning, and Solutioning phases.
+# Implementation phase is tracked separately in sprint-status.yaml
+
+# STATUS DEFINITIONS:
+# ==================
+# Initial Status (before completion):
+#   - required: Must be completed to progress
+#   - optional: Can be completed but not required
+#   - recommended: Strongly suggested but not required
+#   - conditional: Required only if certain conditions met (e.g., if_has_ui)
+#
+# Completion Status:
+#   - {file-path}: File created/found (e.g., "docs/product-brief.md")
+#   - skipped: Optional/conditional workflow that was skipped
+
+generated: "2025-12-04"
+project: "QuizZum"
+project_type: "greenfield" # Using field_type as a reasonable default for project_type
+selected_track: "method"
+field_type: "greenfield"
+workflow_path: ".bmad/bmm/workflows/workflow-status/paths/method-greenfield.yaml"
+workflow_status:
+  - phase: 0
+    name: "Discovery (Optional)"
+    workflows:
+      - id: "brainstorm-project"
+        agent: "analyst"
+        command: "brainstorm-project"
+        status: "docs/brainstorming-session-results-2025-12-05.md"
+      - id: "product-brief"
+        agent: "analyst"
+        command: "product-brief"
+        status: "docs/product-brief-QuizZum-2025-12-05.md"
+  - phase: 1
+    name: "Planning"
+    workflows:
+      - id: "prd"
+        agent: "pm"
+        command: "prd"
+        status: "pending"
+      - id: "validate-prd"
+        agent: "pm"
+        command: "validate-prd"
+        status: "pending"
+      - id: "create-design"
+        agent: "ux-designer"
+        command: "create-design"
+        conditional: "if_has_ui"
+        status: "pending"
+  - phase: 2
+    name: "Solutioning"
+    workflows:
+      - id: "create-architecture"
+        agent: "architect"
+        command: "create-architecture"
+        status: "pending"
+      - id: "create-epics-and-stories"
+        agent: "pm"
+        command: "create-epics-and-stories"
+        status: "pending"
+      - id: "test-design"
+        agent: "tea"
+        command: "test-design"
+        status: "pending"
+      - id: "validate-architecture"
+        agent: "architect"
+        command: "validate-architecture"
+        status: "pending"
+      - id: "implementation-readiness"
+        agent: "architect"
+        command: "implementation-readiness"
+        status: "pending"
+  - phase: 3
+    name: "Implementation"
+    workflows:
+      - id: "sprint-planning"
+        agent: "sm"
+        command: "sprint-planning"
+        status: "pending"
