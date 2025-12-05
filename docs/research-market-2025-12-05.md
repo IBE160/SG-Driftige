@@ -1,7 +1,7 @@
 # Market Research Report: AI-Powered Multi-level Summary Tool
 
 **Date:** 2025-12-05
-**Prepared by:** BIP
+**Prepared by:** Eline&Sindre
 **Research Depth:** {{research_depth}}
 
 ---

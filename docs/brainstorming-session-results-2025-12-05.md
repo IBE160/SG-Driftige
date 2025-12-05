@@ -2,7 +2,7 @@
 
 **Session Date:** 2025-12-05
 **Facilitator:** Analyst Mary
-**Participant:** BIP
+**Participant:** Eline&Sindre
 
 ## Session Start
 
@@ -37,7 +37,7 @@
 *   **User Input:** To log in, follow user progress in their learning, difficulty level, worldwide adoption and publishing.
 *   **Summary:** With unlimited resources, the tool would offer highly personalized learning experiences, including comprehensive user management (login, progress tracking), adaptive difficulty levels, and a platform for broad reach and engagement (worldwide adoption, publishing features).
 
-**Prompt 2: What if the opposite were true? (Extreme constraints - e.g., open-source models only, offline on basic device) How would vision for adapting difficulty levels change, or what innovative solutions would emerge?**
+**Prompt 2: What if the opposite were true? (Extreme constraints - e.g., open-source models only, offline on basic device) How would vision for adapting difficulty levels change, or what innovative solutions would emerge under such limitations?**
 *   **User Input:** Should be possible, it just needs code to have both input of notes to make summaries, and the ability to upload pdf to the solution. Should also be possible to create quizzes and follow-up quizzes. May be more difficult to add the login functionality, at least with single-sign on solutions etc.
 *   **Summary:** Even under extreme constraints, core functionalities like multi-level summaries and quizzes are deemed possible, though implementation details would differ. Login functionality, especially with SSO, is identified as a significant challenge under such limitations.
 
