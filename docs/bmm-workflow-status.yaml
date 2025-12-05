@@ -39,7 +39,7 @@ workflow_status:
       - id: "prd"
         agent: "pm"
         command: "prd"
-        status: "pending"
+        status: "docs/prd-QuizZum-2025-12-05.md"
       - id: "validate-prd"
         agent: "pm"
         command: "validate-prd"
