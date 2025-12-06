@@ -59,7 +59,7 @@ workflow_status:
       - id: "create-epics-and-stories"
         agent: "pm"
         command: "create-epics-and-stories"
-        status: "pending"
+        status: "docs/epics-QuizZum-2025-12-05.md"
       - id: "test-design"
         agent: "tea"
         command: "test-design"
