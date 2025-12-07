@@ -2,14 +2,6 @@
 
 **Author:** Eline&Sindre
 **Date:** 2025-12-05
-# QuizZum - Epic Breakdown
-
-**Author:** Eline&Sindre
-**Date:** 2025-12-05
-# QuizZum - Epic Breakdown
-
-**Author:** Eline&Sindre
-**Date:** 2025-12-05
 **Project Level:** 1 (Greenfield)
 **Target Scale:** Small to Medium (Personal/Hobby Project)
 
@@ -107,87 +99,132 @@ This document provides the complete epic and story breakdown for QuizZum, decomp
 ## Epic 1: Foundation & Core Content Input
 *   **Goal**: Establish the basic application infrastructure and allow users to provide content for processing.
 
-### Story 1.1: Project Setup & Initial Web App Structure
+### Story 1.1: (MVP) Project Setup & Initial Web App Structure
 *   **User Story**: As a developer, I want to set up the project repository and initial web application structure, so that I can begin implementing core features.
 *   **Acceptance Criteria**:
-    *   Given a new project, when I initialize the project, then a git repository is created and configured.
-    *   Given a new project, when I set up the basic web application, then a Single Page Application (SPA) structure is in place (e.g., using React or a similar framework).
-    *   Given the initial setup, when I run the application, then a basic empty web page is displayed in the browser.
+    1.  Given a new project, when I initialize the project, then a git repository is created and configured.
+    2.  Given a new project, when I set up the basic web application, then a Single Page Application (SPA) structure is in place (e.g., using React or a similar framework).
+    3.  Given the initial setup, when I run the application, then a basic empty web page is displayed in the browser.
 *   **Prerequisites**: None
 *   **Technical Notes**: This story covers repository creation, initial frontend (SPA) scaffolding, and basic server setup for hosting the frontend.
 
-### Story 1.2: Text Input Interface
+### Story 1.2: (MVP) Text Input Interface
 *   **User Story**: As a user, I want to paste or type my notes into a dedicated text area, so that I can easily provide content for summarization.
 *   **Acceptance Criteria**:
-    *   Given the application is loaded, when I navigate to the input screen, then a prominent and usable text area is displayed.
-    *   Given the text area is displayed, when I type or paste text into it, then the text is visible and editable.
-    *   Given text is entered, when I click "Generate", then the text content is prepared for processing.
+    1.  Given the application is loaded, when I navigate to the input screen, then a prominent and usable text area is displayed.
+    2.  Given the text area is displayed, when I type or paste text into it, then the text is visible and editable.
+    3.  Given text is entered, when I click "Generate", then the text content is prepared for processing.
 *   **Covers FRs**: FR1, FR21 (partially - contributes to simple UI)
 *   **Prerequisites**: Story 1.1
 *   **Technical Notes**: Implement a `<textarea>` HTML element, with basic styling and JavaScript handling.
 
-### Story 1.3: PDF Upload Interface
+### Story 1.3: (MVP) PDF Upload Interface
 *   **User Story**: As a user, I want to upload a PDF file containing my notes, so that I can provide content for summarization without manual copying.
 *   **Acceptance Criteria**:
-    *   Given the application is loaded, when I navigate to the input screen, then a clearly labeled "Upload PDF" button or drag-and-drop zone is visible.
-    *   Given the upload component is visible, when I select a PDF file, then the file name is displayed.
-    *   Given a PDF file is uploaded, when I click "Generate", then the PDF content is prepared for processing.
+    1.  Given the application is loaded, when I navigate to the input screen, then a clearly labeled "Upload PDF" button or drag-and-drop zone is visible.
+    2.  Given the upload component is visible, when I select a PDF file, then the file name is displayed.
+    3.  Given a PDF file is uploaded, when I click "Generate", then the PDF content is prepared for processing.
 *   **Covers FRs**: FR2, FR21 (partially - contributes to simple UI)
 *   **Prerequisites**: Story 1.1
 *   **Technical Notes**: Implement `<input type="file">` with JavaScript for handling file selection. Backend integration for receiving the file.
 
-### Story 1.4: Core Backend Setup for Content Reception
+### Story 1.4: (MVP) Core Backend Setup for Content Reception
 *   **User Story**: As a developer, I want a functional backend endpoint to receive text and PDF inputs, so that the frontend can send user content for processing.
 *   **Acceptance Criteria**:
-    *   Given the backend server is running, when a `POST` request with text content is sent to `/api/upload_text`, then the backend successfully receives and acknowledges the text.
-    *   Given the backend server is running, when a `POST` request with a PDF file is sent to `/api/upload_pdf`, then the backend successfully receives and stores the PDF file (e.g., temporarily).
-    *   Given the backend is set up, when the frontend sends content, then appropriate HTTP responses (e.g., 200 OK) are returned.
+    1.  Given the backend server is running, when a `POST` request with text content is sent to `/api/upload_text`, then the backend successfully receives and acknowledges the text.
+    2.  Given the backend server is running, when a `POST` request with a PDF file is sent to `/api/upload_pdf`, then the backend successfully receives and stores the PDF file (e.g., temporarily).
+    3.  Given the backend is set up, when the frontend sends content, then appropriate HTTP responses (e.g., 200 OK) are returned.
+    4.  (NFR3) The backend endpoints incorporate general security best practices (e.g., input sanitization).
+    5.  (NFR4) The backend architecture is designed with future scalability in mind.
 *   **Covers FRs**: FR1, FR2
 *   **Prerequisites**: Story 1.1 (backend part)
 *   **Technical Notes**: Implement FastAPI endpoints (`/api/upload_text`, `/api/upload_pdf`) for text and PDF reception.
 
-### Story 1.5: Basic Browser Compatibility & Responsiveness
+### Story 1.5: (MVP) Basic Browser Compatibility & Responsiveness
 *   **User Story**: As a user, I want to access QuizZum from common web browsers and devices, so that I can use the tool without compatibility issues.
 *   **Acceptance Criteria**:
-    *   Given QuizZum is accessed via the latest stable versions of Chrome, Edge, Firefox, Brave, and Opera on desktop, when I interact with the application, then all UI elements function as expected.
-    *   Given QuizZum is accessed on a mobile device, when I interact with the application, then the UI layout adjusts appropriately and remains usable.
+    1.  Given QuizZum is accessed via the latest stable versions of Chrome, Edge, Firefox, Brave, and Opera on desktop, when I interact with the application, then all UI elements function as expected.
+    2.  Given QuizZum is accessed on a mobile device, when I interact with the application, then the UI layout adjusts appropriately and remains usable.
 *   **Covers FRs**: FR19, FR20
 *   **Prerequisites**: Story 1.1, Story 1.2, Story 1.3
 *   **Technical Notes**: Implement responsive CSS. Test across specified browsers.
 
 ---
 
-<!-- Repeat for each epic (N = 1, 2, 3...) -->
+## Epic 2: Multi-level Summarization
+*   **Goal**: Enable users to generate and consume multi-level summaries of their content.
 
-## Epic {{N}}: {{epic_title_N}}
+### Story 2.1: (MVP) Summarization Backend Logic
+*   **User Story**: As a developer, I want to create a backend service that accepts content and generates summaries at different difficulty levels, so that the core summarization feature is functional.
+*   **Acceptance Criteria**:
+    1.  Given the backend receives content and a difficulty level ('easy', 'medium', 'hard'), when I call the summarization service, then it returns a summary corresponding to that difficulty.
+    2.  (NFR2) Given the LLM API call fails, when I call the service, then a proper error is returned and the system handles it gracefully.
+    3.  (NFR6) The service seamlessly integrates with the chosen LLM provider.
+*   **Covers FRs**: FR3, FR4, FR5
+*   **Prerequisites**: Story 1.4
 
-{{epic_goal_N}}
+### Story 2.2: (MVP) Summarization UI
+*   **User Story**: As a user, I want to see the generated summary displayed clearly, so that I can read and understand it.
+*   **Acceptance Criteria**:
+    1.  Given a summary is generated, when it is returned to the frontend, then the summary text is displayed in a designated output area.
+    2.  (NFR1) While the summary is being generated, a progress indicator (e.g., a spinner) is displayed to the user.
+    3.  Given the summary is displayed, when the content is long, then a scrollbar is available.
+*   **Covers FRs**: FR8, FR21
+*   **Prerequisites**: Story 2.1
 
-<!-- Repeat for each story (M = 1, 2, 3...) within epic N -->
+### Story 2.3: (MVP) Difficulty Selection UI
+*   **User Story**: As a user, I want to select the desired summary difficulty before generation, so that I can control the level of detail.
+*   **Acceptance Criteria**:
+    1.  Given the input screen, when I am about to generate a summary, then I can select 'easy', 'medium', or 'hard' difficulty.
+    2.  Given a difficulty is selected, when I click "Generate", then the selected difficulty is sent to the backend.
+*   **Covers FRs**: FR6
+*   **Prerequisites**: Story 1.2, Story 1.3
 
-### Story {{N}}.{{M}}: {{story_title_N_M}}
-
-As a {{user_type}},
-I want {{capability}},
-So that {{value_benefit}}.
-
-**Acceptance Criteria:**
-
-**Given** {{precondition}}
-**When** {{action}}
-**Then** {{expected_outcome}}
-
-**And** {{additional_criteria}}
-
-**Prerequisites:** {{dependencies_on_previous_stories}}
-
-**Technical Notes:** {{implementation_guidance}}
-
-<!-- End story repeat -->
+### Story 2.4: (MVP) Seamless Difficulty Switching
+*   **User Story**: As a user, after a summary is generated, I want to switch between difficulty levels without re-uploading the content, so that I can easily compare the summaries.
+*   **Acceptance Criteria**:
+    1.  Given a summary is displayed, when I select a different difficulty level, then a new summary for that level is generated and displayed without leaving the page.
+*   **Covers FRs**: FR7
+*   **Prerequisites**: Story 2.2, Story 2.3
 
 ---
 
-<!-- End epic repeat -->
+## Epic 3: Adaptive Quizzing
+*   **Goal**: Allow users to test their understanding and reinforce learning through adaptive quizzes.
+
+### Story 3.1: (MVP) Quiz Generation Backend
+*   **User Story**: As a developer, I want to create a backend service that generates a quiz based on the original content, so that users can test their knowledge.
+*   **Acceptance Criteria**:
+    1.  Given content is available on the backend, when the quiz generation service is called, then a set of questions and answers is returned in a structured format (e.g., JSON).
+    2.  Given a difficulty level is provided, when the service is called, then the quiz questions match the requested difficulty.
+    3.  (NFR2) Given the LLM API call fails, when I call the service, then a proper error is returned and the system handles it gracefully.
+    4.  (NFR6) The service seamlessly integrates with the chosen LLM provider.
+*   **Covers FRs**: FR9, FR10, FR11, FR12
+*   **Prerequisites**: Story 1.4
+
+### Story 3.2: (MVP) Quiz Taking UI
+*   **User Story**: As a user, I want to see and answer quiz questions, so that I can test my understanding.
+*   **Acceptance Criteria**:
+    1.  Given a quiz is generated, when it is displayed, then questions are shown one at a time.
+    2.  Given a question is shown, when I select an answer, then my choice is recorded.
+*   **Covers FRs**: FR13, FR22
+*   **Prerequisites**: Story 3.1
+
+### Story 3.3: (MVP) Quiz Assessment and Feedback
+*   **User Story**: As a user, I want to get immediate feedback on my answers and see a final score, so that I know how I performed.
+*   **Acceptance Criteria**:
+    1.  Given I answer a question, when I submit my answer, then I am immediately shown if it was correct or incorrect.
+    2.  Given I complete the quiz, when it is over, then a summary score (e.g., "You got 8/10 correct") is displayed.
+*   **Covers FRs**: FR14, FR15, FR16
+*   **Prerequisites**: Story 3.2
+
+### Story 3.4: (MVP) Adaptive Follow-up Quiz
+*   **User Story**: As a user, after a quiz, I want to take a follow-up quiz on the questions I got wrong, so that I can reinforce my weak spots.
+*   **Acceptance Criteria**:
+    1.  Given I have completed a quiz with incorrect answers, when the score is displayed, then an option to "Practice weak spots" is available.
+    2.  Given I choose to practice weak spots, when the new quiz starts, then it contains questions related to the topics I answered incorrectly.
+*   **Covers FRs**: FR17
+*   **Prerequisites**: Story 3.3
 
 ---
 

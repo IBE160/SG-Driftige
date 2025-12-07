@@ -69,6 +69,22 @@ This project is classified as a **Web Application** (web_app) due to its web-fir
 
 ---
 
+## Epics Summary
+
+**Epic 1: Foundation & Core Content Input**
+*   **Goal**: Establish the basic application infrastructure and allow users to provide content for processing.
+*   **Covers FRs**: FR-001, FR-002, FR-018, FR-019, FR-020
+
+**Epic 2: Multi-level Summarization**
+*   **Goal**: Enable users to generate and consume multi-level summaries of their content.
+*   **Covers FRs**: FR-003, FR-004, FR-005, FR-006, FR-007, FR-008, FR-021
+
+**Epic 3: Adaptive Quizzing**
+*   **Goal**: Allow users to test their understanding and reinforce learning through adaptive quizzes.
+*   **Covers FRs**: FR-009, FR-010, FR-011, FR-012, FR-013, FR-014, FR-015, FR-016, FR-017, FR-022
+
+---
+
 ## Innovation & Novel Patterns
 
 *   **Radical Simplicity & Intuition**: Minimizing "noise" and complex choices for a frictionless user experience.
@@ -107,34 +123,43 @@ For a hobby project, the primary validation will be through personal use and ite
 ## Functional Requirements
 
 **Content Input & Management:**
-*   FR1: Users can input text notes into the application.
-*   FR2: Users can upload PDF documents containing notes.
+*   FR-001: (MVP) Users can input text notes into the application.
+*   FR-002: (MVP) Users can upload PDF documents containing notes.
 
 **Summarization & Content Presentation:**
-*   FR3: The system can generate "easy" level summaries from provided content.
-*   FR4: The system can generate "medium" level summaries from provided content.
-*   FR5: The system can generate "hard" level summaries from provided content.
-*   FR6: Users can select the desired difficulty level for summaries.
-*   FR7: Users can switch between different difficulty levels of generated summaries seamlessly.
-*   FR8: Content (summaries) is structured for maximum readability (bullet points, headings, sections).
+*   FR-003: (MVP) The system can generate "easy" level summaries from provided content.
+*   FR-004: (MVP) The system can generate "medium" level summaries from provided content.
+*   FR-005: (MVP) The system can generate "hard" level summaries from provided content.
+*   FR-006: (MVP) Users can select the desired difficulty level for summaries.
+*   FR-007: (MVP) Users can switch between different difficulty levels of generated summaries seamlessly.
+*   FR-008: (MVP) Content (summaries) is structured for maximum readability (bullet points, headings, sections).
 
 **Quizzing & Assessment:**
-*   FR9: The system can generate quizzes based on provided content.
-*   FR10: The system can generate "easy" level quizzes.
-*   FR11: The system can generate "medium" level quizzes.
-*   FR12: The system can generate "hard" level quizzes.
-*   FR13: Users can answer quiz questions.
-*   FR14: The system can assess user quiz answers.
-*   FR15: The system can provide immediate feedback on quiz answers (correct/incorrect).
-*   FR16: The system can provide a summary score for completed quizzes.
-*   FR17: The system can generate adaptive follow-up quizzes to target user weak spots.
+*   FR-009: (MVP) The system can generate quizzes based on provided content.
+*   FR-010: (MVP) The system can generate "easy" level quizzes.
+*   FR-011: (MVP) The system can generate "medium" level quizzes.
+*   FR-012: (MVP) The system can generate "hard" level quizzes.
+*   FR-013: (MVP) Users can answer quiz questions.
+*   FR-014: (MVP) The system can assess user quiz answers.
+*   FR-015: (MVP) The system can provide immediate feedback on quiz answers (correct/incorrect).
+*   FR-016: (MVP) The system can provide a summary score for completed quizzes.
+*   FR-017: (MVP) The system can generate adaptive follow-up quizzes to target user weak spots.
 
 **User Experience & Platform:**
-*   FR18: The application runs as a Single Page Application (SPA).
-*   FR19: The application functions on the latest stable versions of Google Chrome, Microsoft Edge, Mozilla Firefox, Brave, and Opera on desktop.
-*   FR20: The application is fully responsive across various screen sizes (desktop, tablet, mobile).
-*   FR21: The system provides a radically simple and intuitive user interface.
-*   FR22: The system supports an active and "playable" learning experience.
+*   FR-018: (MVP) The application runs as a Single Page Application (SPA).
+*   FR-019: (MVP) The application functions on the latest stable versions of Google Chrome, Microsoft Edge, Mozilla Firefox, Brave, and Opera on desktop.
+*   FR-020: (MVP) The application is fully responsive across various screen sizes (desktop, tablet, mobile).
+*   FR-21: (MVP) The system provides a radically simple and intuitive user interface.
+*   FR-022: (MVP) The system supports an active and "playable" learning experience.
+
+---
+
+## Functional Requirement Dependencies
+
+*   **Summarization (FR-003, FR-004, FR-005)** depends on **Content Input (FR-001 or FR-002)**.
+*   **Difficulty Selection (FR-006, FR-007)** depends on **Summarization (FR-003, FR-004, FR-005)**.
+*   **Quizzing (FR-009, FR-010, FR-011, FR-012)** depends on **Content Input (FR-001 or FR-002)**.
+*   **Quiz Interaction (FR-013, FR-014, FR-015, FR-016, FR-017)** depends on **Quizzing (FR-009, FR-010, FR-011, FR-012)**.
 
 ---
 
@@ -155,6 +180,67 @@ For a hobby project, the primary validation will be through personal use and ite
 
 ### Integration
 *   NFR6: The system must seamlessly integrate with chosen Large Language Model (LLM) providers (e.g., Gemini, ChatGPT) for core summarization and quiz generation functionalities.
+
+---
+
+## Technical Overview
+
+This section provides a high-level overview of the proposed technical implementation. It is not exhaustive and will be detailed further in the architecture design phase.
+
+### High-Level API Endpoints
+
+The backend will expose a RESTful API. The following endpoints are envisioned for the MVP:
+
+*   `POST /api/upload/text`: Accepts plain text for processing.
+*   `POST /api/upload/pdf`: Accepts a PDF file for processing.
+*   `POST /api/summarize`: Accepts content and a difficulty level, and returns a summary.
+*   `POST /api/quiz`: Accepts content and a difficulty level, and returns a quiz.
+
+Authentication is not in scope for the MVP.
+
+### Data Model
+
+The following high-level data model is proposed:
+
+*   **Content**: Represents a piece of user-provided content (from text or PDF).
+    *   `id`: Unique identifier.
+    *   `raw_text`: The raw text extracted from the input.
+*   **Summary**: Represents a generated summary.
+    *   `id`: Unique identifier.
+    *   `content_id`: Foreign key to Content.
+    *   `difficulty`: Easy, Medium, or Hard.
+    *   `summary_text`: The generated summary.
+*   **Quiz**: Represents a generated quiz.
+    *   `id`: Unique identifier.
+    *   `content_id`: Foreign key to Content.
+    *   `difficulty`: Easy, Medium, or Hard.
+    *   `questions`: A list of Question objects.
+*   **Question**: Represents a single question in a quiz.
+    *   `id`: Unique identifier.
+    *   `text`: The question text.
+    *   `options`: A list of possible answers.
+    *   `correct_answer`: The correct answer.
+
+---
+
+## Assumptions, Constraints, and Risks
+
+### Technical Constraints and Unknowns
+
+*   **LLM Performance**: The quality and latency of the chosen LLM provider are a primary technical constraint. The ability of the model to follow instructions for generating multi-level summaries and adaptive quizzes is a technical unknown that requires prototyping and testing.
+*   **PDF Parsing**: The accuracy of text extraction from PDFs, especially those with complex layouts, images, or tables, is a technical challenge.
+*   **Cost**: For a hobby project, the cost of LLM API calls is a significant constraint. This will limit the ability to scale the application or offer it to a wider audience without a monetization strategy.
+
+### Potential Edge Cases
+
+*   **Input Content**:
+    *   Very long documents may exceed token limits of the LLM.
+    *   Documents with very little text (e.g., image-heavy PDFs).
+    *   Documents in unsupported languages.
+    *   Malformed or corrupted PDF files.
+*   **User Interaction**:
+    *   Rapidly switching between difficulty levels may trigger multiple API calls.
+    *   Attempting to take a quiz on content that has not been processed.
 
 ---
 
