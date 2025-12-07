@@ -43,7 +43,7 @@ workflow_status:
       - id: "validate-prd"
         agent: "pm"
         command: "validate-prd"
-        status: "pending"
+        status: "docs/validation-report-2025-12-05-final.md"
       - id: "create-design"
         agent: "ux-designer"
         command: "create-design"
