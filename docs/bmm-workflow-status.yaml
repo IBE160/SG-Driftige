@@ -63,7 +63,7 @@ workflow_status:
       - id: "test-design"
         agent: "tea"
         command: "test-design"
-        status: "pending"
+        status: "docs/test-design-system.md"
       - id: "validate-architecture"
         agent: "architect"
         command: "validate-architecture"
