@@ -71,7 +71,7 @@ workflow_status:
       - id: "implementation-readiness"
         agent: "architect"
         command: "implementation-readiness"
-        status: "pending"
+        status: "docs/implementation-readiness-report-2025-12-08.md"
   - phase: 3
     name: "Implementation"
     workflows:
