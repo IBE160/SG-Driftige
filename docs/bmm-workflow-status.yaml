@@ -48,7 +48,7 @@ workflow_status:
         agent: "ux-designer"
         command: "create-design"
         conditional: "if_has_ui"
-        status: "pending"
+        status: "docs/ux-design-specification.md"
   - phase: 2
     name: "Solutioning"
     workflows:

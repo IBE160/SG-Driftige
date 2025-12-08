@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizZum Design Directions: Input Screen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Serene Learning Theme (Theme 3) */
+        :root {
+            --primary: #A8DADC; /* Soft Cyan-Blue */
+            --secondary: #FDCEDF; /* Pale Pink */
+            --accent: #F8D8A9; /* Light Peach */
+            --success: #C3E88D; /* Pale Green */
+            --error: #FF8A80; /* Light Coral */
+            --neutral-0: #F2F2F2; /* Light Background */
+            --neutral-1: #D9D9D9; /* Border/Divider */
+            --neutral-2: #A0A0A0; /* Subtle Text */
+            --neutral-3: #4A4A4A; /* Body Text */
+            --text-color: var(--neutral-3);
+            --bg-color: var(--neutral-0);
+            --card-bg: white;
+            --border-color: var(--neutral-1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Quicksand', sans-serif; /* Friendly heading font */
+            color: var(--neutral-3);
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 0.5em;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            color: var(--primary);
+            font-size: 2.5em;
+        }
+        .header p {
+            font-size: 1.1em;
+            color: var(--neutral-2);
+        }
+
+        .design-directions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .direction-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .direction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .direction-card h2 {
+            color: var(--primary);
+            font-size: 1.8em;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .direction-card h3 {
+            font-size: 1.2em;
+            color: var(--neutral-3);
+            margin-bottom: 5px;
+        }
+        .direction-card p {
+            font-size: 0.95em;
+            color: var(--neutral-3);
+        }
+
+        .mockup-preview {
+            background-color: var(--bg-color);
+            border-radius: 6px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Common component styles (Chakra-like) */
+        .chakra-button {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chakra-button:active { transform: translateY(1px); }
+
+        .chakra-button.primary {
+            background-color: var(--primary);
+            color: var(--neutral-3); /* Text color for light primary */
+            border: 1px solid var(--primary);
+        }
+        .chakra-button.primary:hover {
+            background-color: color-mix(in srgb, var(--primary) 90%, black);
+        }
+
+        .chakra-button.secondary {
+            background-color: var(--secondary);
+            color: var(--neutral-3);
+            border: 1px solid var(--secondary);
+        }
+        .chakra-button.secondary:hover {
+            background-color: color-mix(in srgb, var(--secondary) 90%, black);
+        }
+
+        .chakra-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--neutral-1);
+            border-radius: 6px;
+            font-size: 1em;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .chakra-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 30%, transparent);
+        }
+        .chakra-textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--neutral-1);
+            border-radius: 6px;
+            font-size: 1em;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            min-height: 120px;
+            resize: vertical;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .chakra-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 30%, transparent);
+        }
+
+        .chakra-label {
+            font-size: 0.9em;
+            color: var(--neutral-3);
+            margin-bottom: 5px;
+            display: block;
+            font-weight: 600;
+        }
+
+        .chakra-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .icon {
+            margin-right: 8px;
+            /* Placeholder for SVG icons or similar */
+        }
+
+        /* Specific Mockup Styles */
+        /* Minimalist Focus */
+        .mockup-minimalist {
+            align-items: center;
+            justify-content: center;
+        }
+        .mockup-minimalist .input-group {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        .mockup-minimalist .chakra-button {
+            margin-top: 20px;
+        }
+        .mockup-minimalist .sub-actions {
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: var(--neutral-2);
+        }
+        .mockup-minimalist .sub-actions a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Playful Card Layout */
+        .mockup-playful {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+            min-height: 300px;
+        }
+        .mockup-playful .card-input {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .mockup-playful .card-input h3 {
+            color: var(--neutral-3);
+            font-size: 1.3em;
+            text-align: center;
+        }
+        .mockup-playful .card-input .chakra-button.primary {
+            margin-top: auto; /* Push button to bottom */
+        }
+
+        /* Feature-forward Guided */
+        .mockup-guided {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            text-align: center;
+            min-height: 300px;
+        }
+        .mockup-guided .step-indicator {
+            background-color: var(--secondary);
+            color: var(--neutral-3);
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85em;
+        }
+        .mockup-guided h3 {
+            color: var(--neutral-3);
+            font-size: 1.4em;
+        }
+        .mockup-guided .guidance-text {
+            color: var(--neutral-2);
+            font-size: 0.95em;
+            max-width: 500px;
+        }
+        .mockup-guided .input-area {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .mockup-guided .chakra-button.primary {
+            width: fit-content;
+            align-self: center;
+        }
+
+
+        @media (max-width: 768px) {
+            .design-directions-grid {
+                grid-template-columns: 1fr;
+            }
+            .mockup-playful {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>QuizZum: Input Screen Design Directions</h1>
+            <p>Explore different visual and interaction approaches for how users will input their notes. All mockups use our chosen "Serene Learning" color palette and Chakra UI principles.</p>
+        </div>
+
+        <div class="design-directions-grid">
+
+            <!-- Direction 1: Minimalist Focus -->
+            <div class="direction-card">
+                <h2>1. Minimalist Focus</h2>
+                <h3>Philosophy: Calm, Efficient, Direct</h3>
+                <p>This direction emphasizes clarity and a direct path to the core action. It uses ample white space and subtle elements to keep the user focused solely on providing their notes and generating summaries. Perfect for users who want to get straight to it.</p>
+                <div class="mockup-preview mockup-minimalist">
+                    <div class="input-group">
+                        <label class="chakra-label" for="notes-minimal">Your Lecture Notes</label>
+                        <textarea id="notes-minimal" class="chakra-textarea" placeholder="Paste your lecture notes here, or type them out..."></textarea>
+                        <div class="sub-actions">
+                            Or <a href="#">Upload a PDF</a>
+                        </div>
+                        <button class="chakra-button primary">Generate Summaries</button>
+                    </div>
+                </div>
+                <h4>Key Characteristics:</h4>
+                <ul>
+                    <li>**Layout:** Centered, spacious.</li>
+                    <li>**Visual Hierarchy:** Prominent input area.</li>
+                    <li>**Interaction:** Direct, single-minded.</li>
+                    <li>**Visual Weight:** Minimal, serene.</li>
+                </ul>
+            </div>
+
+            <!-- Direction 2: Playful Card Layout -->
+            <div class="direction-card">
+                <h2>2. Playful Card Layout</h2>
+                <h3>Philosophy: Friendly, Organized, Approachable</h3>
+                <p>This direction uses distinct, visually separated cards to present the two main input methods (text vs. PDF upload). It feels organized and inviting, making the choices clear and adding a touch of playful structure. Great for users who appreciate clear options.</p>
+                <div class="mockup-preview mockup-playful">
+                    <div class="chakra-card card-input">
+                        <h3>Type Notes</h3>
+                        <textarea class="chakra-textarea" placeholder="Paste your lecture notes here..."></textarea>
+                        <button class="chakra-button primary">Generate from Text</button>
+                    </div>
+                    <div class="chakra-card card-input">
+                        <h3>Upload PDF</h3>
+                        <p>Have a PDF of your notes? Upload it for quick processing.</p>
+                        <button class="chakra-button secondary">Choose PDF File</button>
+                        <p style="font-size:0.85em; color:var(--neutral-2);">No file selected</p>
+                    </div>
+                </div>
+                <h4>Key Characteristics:</h4>
+                <ul>
+                    <li>**Layout:** Two-column card-based.</li>
+                    <li>**Visual Hierarchy:** Options clearly segmented.</li>
+                    <li>**Interaction:** Choice-driven.</li>
+                    <li>**Visual Weight:** Balanced, structured.</li>
+                </ul>
+            </div>
+
+            <!-- Direction 3: Feature-forward (Guided) -->
+            <div class="direction-card">
+                <h2>3. Feature-forward (Guided)</h2>
+                <h3>Philosophy: Supportive, Clear, Proactive</h3>
+                <p>This direction focuses on guiding the user through the process, potentially hinting at the value proposition or upcoming steps. It's ideal for new users or those who appreciate a more structured, hand-held experience. It ensures clarity from the very start.</p>
+                <div class="mockup-preview mockup-guided">
+                    <div class="step-indicator">STEP 1 OF 2: PROVIDE YOUR NOTES</div>
+                    <h3>Ready to transform your notes?</h3>
+                    <p class="guidance-text">Simply paste your lecture notes or upload a PDF, and QuizZum will handle the rest. Get ready to learn once and for all!</p>
+                    <div class="input-area">
+                        <label class="chakra-label" for="notes-guided">Paste or Type Your Notes</label>
+                        <textarea id="notes-guided" class="chakra-textarea" placeholder="Paste your lecture notes here..."></textarea>
+                        <div style="text-align: center; color:var(--neutral-2);">— OR —</div>
+                        <button class="chakra-button secondary">
+                            <span class="icon">📄</span> Upload a PDF
+                        </button>
+                    </div>
+                    <button class="chakra-button primary">Generate Summaries & Quiz</button>
+                </div>
+                <h4>Key Characteristics:</h4>
+                <ul>
+                    <li>**Layout:** Guided, sequential.</li>
+                    <li>**Visual Hierarchy:** Strong instructional elements.</li>
+                    <li>**Interaction:** Hand-held, supportive.</li>
+                    <li>**Visual Weight:** Balanced, informative.</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

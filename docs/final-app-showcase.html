@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizZum Final App Showcase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Serene Learning Theme (Theme 3) */
+        :root {
+            --primary: #A8DADC; /* Soft Cyan-Blue */
+            --secondary: #FDCEDF; /* Pale Pink */
+            --accent: #F8D8A9; /* Light Peach */
+            --success: #C3E88D; /* Pale Green */
+            --error: #FF8A80; /* Light Coral */
+            --neutral-0: #F2F2F2; /* Light Background */
+            --neutral-1: #D9D9D9; /* Border/Divider */
+            --neutral-2: #A0A0A0; /* Subtle Text */
+            --neutral-3: #4A4A4A; /* Body Text */
+            --text-color: var(--neutral-3);
+            --bg-color: var(--neutral-0);
+            --card-bg: white;
+            --border-color: var(--neutral-1);
+            --breakpoint-sm: 480px;
+            --breakpoint-md: 768px;
+            --breakpoint-lg: 992px;
+            --breakpoint-xl: 1280px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Quicksand', sans-serif; /* Friendly heading font */
+            color: var(--neutral-3);
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 0.5em;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .screen-section {
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--bg-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .screen-section h2 {
+            color: var(--primary);
+            font-size: 1.8em;
+            margin-top: 0;
+        }
+        .screen-content {
+            background-color: white;
+            border-radius: 6px;
+            padding: 20px;
+            border: 1px solid var(--neutral-1);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center; /* Center content for guided direction */
+            text-align: center;
+        }
+        .screen-content.summary-results {
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        /* Chakra-like component styles */
+        .chakra-button {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.2;
+        }
+        .chakra-button:active { transform: translateY(1px); }
+        .chakra-button.primary {
+            background-color: var(--primary);
+            color: var(--neutral-3);
+            border: 1px solid var(--primary);
+        }
+        .chakra-button.primary:hover {
+            background-color: color-mix(in srgb, var(--primary) 90%, black);
+        }
+        .chakra-button.secondary {
+            background-color: var(--secondary);
+            color: var(--neutral-3);
+            border: 1px solid var(--secondary);
+        }
+        .chakra-button.secondary:hover {
+            background-color: color-mix(in srgb, var(--secondary) 90%, black);
+            color: var(--neutral-3);
+        }
+        .chakra-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--neutral-1);
+            border-radius: 6px;
+            font-size: 1em;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .chakra-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 30%, transparent);
+        }
+        .chakra-textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--neutral-1);
+            border-radius: 6px;
+            font-size: 1em;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            min-height: 120px;
+            resize: vertical;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .chakra-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 30%, transparent);
+        }
+        .chakra-label {
+            font-size: 0.9em;
+            color: var(--neutral-3);
+            margin-bottom: 5px;
+            display: block;
+            font-weight: 600;
+            text-align: left;
+            width: 100%;
+        }
+
+        /* Input Screen Specifics (Feature-forward Guided) */
+        .input-screen-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+        .step-indicator {
+            background-color: var(--secondary);
+            color: var(--neutral-3);
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85em;
+            width: fit-content;
+            margin: 0 auto;
+        }
+        .guidance-text {
+            color: var(--neutral-2);
+            font-size: 0.95em;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .input-area-group {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .or-divider {
+            text-align: center;
+            color: var(--neutral-2);
+            font-size: 0.9em;
+            margin: 10px 0;
+        }
+
+        /* Summary Results Screen Specifics */
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .summary-toggles {
+            display: flex;
+            gap: 10px;
+        }
+        .summary-toggle-button {
+            background-color: var(--neutral-1);
+            color: var(--text-color);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-size: 0.9em;
+        }
+        .summary-toggle-button.active {
+            background-color: var(--primary);
+            color: var(--neutral-3);
+        }
+        .summary-toggle-button:hover {
+            background-color: color-mix(in srgb, var(--primary) 80%, var(--neutral-1));
+        }
+        .summary-content {
+            background-color: var(--neutral-0);
+            border: 1px solid var(--neutral-1);
+            border-radius: 6px;
+            padding: 20px;
+            min-height: 200px;
+            width: 100%;
+            overflow-y: auto;
+            color: var(--text-color);
+            line-height: 1.8;
+            text-align: left;
+        }
+        .summary-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: flex-end; /* Align buttons to the right */
+            width: 100%;
+        }
+
+        /* Responsive Layouts */
+        @media (min-width: 992px) { /* Desktop */
+            .main-container {
+                flex-direction: row; /* Side-by-side */
+            }
+            .screen-section {
+                flex: 1; /* Distribute space evenly */
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991px) and (orientation: landscape) { /* Tablet Landscape */
+            .main-container {
+                flex-direction: row; /* Side-by-side, but maybe narrower columns */
+                gap: 20px;
+            }
+            .screen-section {
+                flex: 1;
+            }
+        }
+        @media (max-width: 767px), (min-width: 768px) and (max-width: 991px) and (orientation: portrait) { /* Mobile & Tablet Portrait */
+            .main-container {
+                flex-direction: column; /* Stacked */
+            }
+            .screen-section {
+                width: 100%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="screen-section">
+            <h2>Input Screen (Feature-forward Guided)</h2>
+            <div class="screen-content">
+                <div class="input-screen-layout">
+                    <div class="step-indicator">STEP 1 OF 2: PROVIDE YOUR NOTES</div>
+                    <h3>Ready to transform your notes?</h3>
+                    <p class="guidance-text">Simply paste your lecture notes or upload a PDF, and QuizZum will handle the rest. Get ready to learn once and for all!</p>
+                    <div class="input-area-group">
+                        <label class="chakra-label" for="notes-input">Paste or Type Your Notes</label>
+                        <textarea id="notes-input" class="chakra-textarea" placeholder="Paste your lecture notes here..."></textarea>
+                        <div class="or-divider">— OR —</div>
+                        <button class="chakra-button secondary">
+                            <span class="icon">📄</span> Upload a PDF
+                        </button>
+                    </div>
+                    <button class="chakra-button primary">Generate Summaries & Quiz</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="screen-section">
+            <h2>Summary Results Screen</h2>
+            <div class="screen-content summary-results">
+                <div class="summary-header">
+                    <h3>Your Summaries:</h3>
+                    <div class="summary-toggles">
+                        <button class="summary-toggle-button active" onclick="showSummary('easy')">Easy</button>
+                        <button class="summary-toggle-button" onclick="showSummary('medium')">Medium</button>
+                        <button class="summary-toggle-button" onclick="showSummary('hard')">Hard</button>
+                    </div>
+                </div>
+                <div class="summary-content" id="activeSummaryContent">
+                    <h4>Easy Summary</h4>
+                    <p>
+                        QuizZum is a tool that helps students learn better. It takes your notes, like from lectures or PDFs, and makes them easy to understand summaries. You can choose if you want a super simple (easy), a little more detail (medium), or a full explanation (hard) summary. It also makes quizzes for you to test what you learned. If you get something wrong, it helps you study that part again. The main goal is to help you learn everything without feeling stressed or overwhelmed.
+                    </p>
+                </div>
+                <div class="summary-actions">
+                    <button class="chakra-button primary">Generate Quiz</button>
+                    <button class="chakra-button secondary">Back to Input</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const summaries = {
+            easy: `
+                <h4>Easy Summary</h4>
+                <p>
+                    QuizZum is a tool that helps students learn better. It takes your notes, like from lectures or PDFs, and makes them easy to understand summaries. You can choose if you want a super simple (easy), a little more detail (medium), or a full explanation (hard) summary. It also makes quizzes for you to test what you learned. If you get something wrong, it helps you study that part again. The main goal is to help you learn everything without feeling stressed or overwhelmed.
+                </p>
+            `,
+            medium: `
+                <h4>Medium Summary</h4>
+                <p>
+                    QuizZum is an AI-powered educational tool designed to alleviate student overwhelm and cognitive overload. It processes lecture notes or PDF documents to generate multi-level summaries (Easy, Medium, Hard) and adaptive quizzes. Users can select a summary difficulty and seamlessly toggle between them. The platform aims to make learning more efficient and engaging by providing structured, digestible content and personalized assessments that target individual weak spots for improved retention.
+                </p>
+            `,
+            hard: `
+                <h4>Hard Summary</h4>
+                <p>
+                    QuizZum is an innovative AI-driven learning platform conceptualized to mitigate academic stress and cognitive saturation among students. Its core functionality involves transforming raw lecture material (textual or PDF formats) into hierarchically structured, adaptive summaries and targeted, dynamic quizzes. The system's primary differentiators are its radical emphasis on UI/UX simplicity, fostering an "active and playable" learning paradigm, and offering adaptive content delivery. This methodology facilitates superior comprehension, optimizes study efficacy, and promotes long-term knowledge retention by iteratively addressing learning deficits identified via adaptive quizzing, thereby enabling a truly "learn once and for all" educational outcome.
+                </p>
+            `
+        };
+
+        function showSummary(level) {
+            document.getElementById('activeSummaryContent').innerHTML = summaries[level];
+            document.querySelectorAll('.summary-toggle-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

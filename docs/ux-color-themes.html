@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizZum Color Theme Visualizer</title>
+    <style>
+        :root {
+            --current-primary: #A8DADC;
+            --current-secondary: #FDCEDF;
+            --current-accent: #F8D8A9;
+            --current-success: #C3E88D;
+            --current-error: #FF8A80;
+            --current-neutral-0: #F2F2F2;
+            --current-neutral-1: #D9D9D9;
+            --current-neutral-2: #A0A0A0;
+            --current-neutral-3: #4A4A4A;
+            --current-text-color: var(--current-neutral-3);
+            --current-bg-color: var(--current-neutral-0);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        h1, h2, h3 { color: #222; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .theme-selector {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .theme-selector button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s ease;
+        }
+        .theme-selector button.active {
+            background-color: #0056b3;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .theme-selector button:hover:not(.active) {
+            background-color: #0069d9;
+        }
+
+        .theme-section {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 40px;
+            background-color: var(--current-bg-color);
+            color: var(--current-text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .theme-section h2 {
+            margin-top: 0;
+            color: var(--current-text-color);
+        }
+
+        .color-palette {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .color-swatch {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .color-swatch.light-text { color: #333; text-shadow: none; }
+        .color-swatch span { display: block; text-align: center; margin-top: 5px; }
+
+        .component-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .component-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .component-card button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+        .component-card button:active { transform: translateY(1px); }
+
+        .component-card .btn-primary { background-color: var(--current-primary); color: white; }
+        .component-card .btn-primary:hover { background-color: color-mix(in srgb, var(--current-primary) 85%, black); }
+        .component-card .btn-secondary { background-color: var(--current-secondary); color: var(--current-text-color); border: 1px solid var(--current-secondary); }
+        .component-card .btn-secondary:hover { background-color: color-mix(in srgb, var(--current-secondary) 85%, black); color: white; }
+        .component-card .btn-success { background-color: var(--current-success); color: white; }
+        .component-card .btn-success:hover { background-color: color-mix(in srgb, var(--current-success) 85%, black); }
+        .component-card .btn-error { background-color: var(--current-error); color: white; }
+        .component-card .btn-error:hover { background-color: color-mix(in srgb, var(--current-error) 85%, black); }
+
+        .component-card input[type="text"] {
+            padding: 10px;
+            border: 1px solid var(--current-neutral-1);
+            border-radius: 5px;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: var(--current-neutral-0);
+            color: var(--current-text-color);
+        }
+        .component-card input[type="text"]:focus {
+            outline: none;
+            border-color: var(--current-primary);
+            box-shadow: 0 0 0 2px color-mix(in srgb, var(--current-primary) 30%, transparent);
+        }
+        .component-card .card-example {
+            border: 1px solid var(--current-neutral-1);
+            background-color: var(--current-neutral-0);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .component-card .card-example h3 {
+            color: var(--current-primary);
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .component-card .card-example p {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .theme-description {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: var(--current-neutral-0);
+            border-radius: 8px;
+            border: 1px solid var(--current-neutral-1);
+        }
+        .theme-description h3 {
+            color: var(--current-text-color);
+            margin-top: 0;
+        }
+
+        /* Define themes using CSS variables */
+        #theme1 {
+            --primary: #AEC6F3; /* Muted Sky Blue */
+            --secondary: #F9AECB; /* Dusty Rose */
+            --accent: #FFFAD3; /* Creamy Yellow */
+            --success: #9DE2B5; /* Soft Mint Green */
+            --error: #FFB6C1; /* Light Pink Red */
+            --neutral-0: #F8F8F8;
+            --neutral-1: #E0E0E0;
+            --neutral-2: #9E9E9E;
+            --neutral-3: #3C3C3C;
+        }
+        #theme2 {
+            --primary: #89CFF0; /* Baby Blue */
+            --secondary: #F0A7BB; /* Muted Rose Pink */
+            --accent: #E0BBE4; /* Light Lavender */
+            --success: #B4E0B4; /* Pastel Green */
+            --error: #FF6B6B; /* Soft Red */
+            --neutral-0: #F0F0F0;
+            --neutral-1: #CCCCCC;
+            --neutral-2: #888888;
+            --neutral-3: #282828;
+        }
+        #theme3 {
+            --primary: #A8DADC; /* Soft Cyan-Blue */
+            --secondary: #FDCEDF; /* Pale Pink */
+            --accent: #F8D8A9; /* Light Peach */
+            --success: #C3E88D; /* Pale Green */
+            --error: #FF8A80; /* Light Coral */
+            --neutral-0: #F2F2F2;
+            --neutral-1: #D9D9D9;
+            --neutral-2: #A0A0A0;
+            --neutral-3: #4A4A4A;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>QuizZum Color Theme Exploration</h1>
+        <p>Explore different pastel, muted pink and blue themes with a playful personality. Click on a theme button to see it applied to the UI components below.</p>
+
+        <div class="theme-selector">
+            <button id="btnTheme1" onclick="applyTheme('theme1', 'Playful Progress', 'Energetic, fun, encouraging.', 'Muted vibrant blues and pinks, with a touch of soft yellow. Reflects engagement and joy in learning.')">1. Playful Progress</button>
+            <button id="btnTheme2" onclick="applyTheme('theme2', 'Focused Fun', 'Clean, energetic, joyful, productive.', 'Desaturated blues and pinks, combined with ample white space and subtle grays. Emphasizes ease of use and modern aesthetic.')">2. Focused Fun</button>
+            <button id="btnTheme3" onclick="applyTheme('theme3', 'Serene Learning', 'Calm, focused, gentle.', 'Soft blues and pale pinks, with natural greens for accent. Evokes peace and clarity.')">3. Serene Learning</button>
+        </div>
+
+        <div id="activeThemeDisplay" class="theme-section">
+            <h2 id="currentThemeName">Current Theme: Playful Progress</h2>
+
+            <div class="color-palette" id="currentColorPalette">
+                <!-- Color swatches will be dynamically inserted here -->
+            </div>
+
+            <div class="component-preview">
+                <div class="component-card">
+                    <h3>Button Examples</h3>
+                    <button class="btn-primary">Primary Action</button>
+                    <button class="btn-secondary">Secondary Action</button>
+                    <button class="btn-success">Success Button</button>
+                    <button class="btn-error">Error Button</button>
+                </div>
+                <div class="component-card">
+                    <h3>Input Field</h3>
+                    <input type="text" placeholder="Type your notes here..." />
+                    <input type="text" value="Quiz Title" disabled />
+                </div>
+                <div class="component-card">
+                    <h3>Example Card</h3>
+                    <div class="card-example">
+                        <h3>Module Title</h3>
+                        <p>This is a short summary of a learning module. It should be easy to read and digest, using the selected theme's colors for emphasis.</p>
+                        <button class="btn-primary">Start Learning</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="theme-description">
+                <h3>Theme Personality: <span id="themePersonality">Energetic, fun, encouraging.</span></h3>
+                <p id="themeStrategy">Muted vibrant blues and pinks, with a touch of soft yellow. Reflects engagement and joy in learning.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const themes = {
+            theme1: {
+                primary: '#AEC6F3', secondary: '#F9AECB', accent: '#FFFAD3', success: '#9DE2B5', error: '#FFB6C1',
+                neutral0: '#F8F8F8', neutral1: '#E0E0E0', neutral2: '#9E9E9E', neutral3: '#3C3C3C',
+                text: '#3C3C3C', bg: '#F8F8F8',
+                name: 'Playful Progress', personality: 'Energetic, fun, encouraging.', strategy: 'Muted vibrant blues and pinks, with a touch of soft yellow. Reflects engagement and joy in learning.'
+            },
+            theme2: {
+                primary: '#89CFF0', secondary: '#F0A7BB', accent: '#E0BBE4', success: '#B4E0B4', error: '#FF6B6B',
+                neutral0: '#F0F0F0', neutral1: '#CCCCCC', neutral2: '#888888', neutral3: '#282828',
+                text: '#282828', bg: '#F0F0F0',
+                name: 'Focused Fun', personality: 'Clean, energetic, joyful, productive.', strategy: 'Desaturated blues and pinks, combined with ample white space and subtle grays. Emphasizes ease of use and modern aesthetic.'
+            },
+            theme3: {
+                primary: '#A8DADC', secondary: '#FDCEDF', accent: '#F8D8A9', success: '#C3E88D', error: '#FF8A80',
+                neutral0: '#F2F2F2', neutral1: '#D9D9D9', neutral2: '#A0A0A0', neutral3: '#4A4A4A',
+                text: '#4A4A4A', bg: '#F2F2F2',
+                name: 'Serene Learning', personality: 'Calm, focused, gentle.', strategy: 'Soft blues and pale pinks, with natural greens for accent. Evokes peace and clarity.'
+            }
+        };
+
+        function getContrastYIQ(hexcolor){
+            if (!hexcolor) return '#000000'; // Default for undefined
+            var r = parseInt(hexcolor.substr(1,2),16);
+            var g = parseInt(hexcolor.substr(3,2),16);
+            var b = parseInt(hexcolor.substr(5,2),16);
+            var yiq = ((r*299)+(g*587)+(b*114))/1000;
+            return (yiq >= 128) ? 'black' : 'white';
+        }
+
+
+        function applyTheme(themeId, name, personality, strategy) {
+            const theme = themes[themeId];
+            if (!theme) return;
+
+            const root = document.documentElement;
+            root.style.setProperty('--current-primary', theme.primary);
+            root.style.setProperty('--current-secondary', theme.secondary);
+            root.style.setProperty('--current-accent', theme.accent);
+            root.style.setProperty('--current-success', theme.success);
+            root.style.setProperty('--current-error', theme.error);
+            root.style.setProperty('--current-neutral-0', theme.neutral0);
+            root.style.setProperty('--current-neutral-1', theme.neutral1);
+            root.style.setProperty('--current-neutral-2', theme.neutral2);
+            root.style.setProperty('--current-neutral-3', theme.neutral3);
+            root.style.setProperty('--current-text-color', theme.text);
+            root.style.setProperty('--current-bg-color', theme.bg);
+
+            document.getElementById('currentThemeName').innerText = `Current Theme: ${name}`;
+            document.getElementById('themePersonality').innerText = personality;
+            document.getElementById('themeStrategy').innerText = strategy;
+
+            // Update color palette swatches
+            const colorPaletteDiv = document.getElementById('currentColorPalette');
+            colorPaletteDiv.innerHTML = `
+                <div class="color-swatch" style="background-color: ${theme.primary}; color: ${getContrastYIQ(theme.primary)}">Primary<br>${theme.primary}</div>
+                <div class="color-swatch" style="background-color: ${theme.secondary}; color: ${getContrastYIQ(theme.secondary)}">Secondary<br>${theme.secondary}</div>
+                <div class="color-swatch" style="background-color: ${theme.accent}; color: ${getContrastYIQ(theme.accent)}">Accent<br>${theme.accent}</div>
+                <div class="color-swatch" style="background-color: ${theme.success}; color: ${getContrastYIQ(theme.success)}">Success<br>${theme.success}</div>
+                <div class="color-swatch" style="background-color: ${theme.error}; color: ${getContrastYIQ(theme.error)}">Error<br>${theme.error}</div>
+                <div class="color-swatch light-text" style="background-color: ${theme.neutral0}; color: ${getContrastYIQ(theme.neutral0)}">Neutral 0<br>${theme.neutral0}</div>
+                <div class="color-swatch light-text" style="background-color: ${theme.neutral1}; color: ${getContrastYIQ(theme.neutral1)}">Neutral 1<br>${theme.neutral1}</div>
+                <div class="color-swatch" style="background-color: ${theme.neutral2}; color: ${getContrastYIQ(theme.neutral2)}">Neutral 2<br>${theme.neutral2}</div>
+                <div class="color-swatch" style="background-color: ${theme.neutral3}; color: ${getContrastYIQ(theme.neutral3)}">Neutral 3<br>${theme.neutral3}</div>
+            `;
+
+            // Update active button state
+            document.querySelectorAll('.theme-selector button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.getElementById(`btn${themeId.charAt(0).toUpperCase() + themeId.slice(1)}`).classList.add('active');
+        }
+
+        // Initialize with the first theme
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTheme('theme1', themes.theme1.name, themes.theme1.personality, themes.theme1.strategy);
+        });
+    </script>
+</body>
+</html>
