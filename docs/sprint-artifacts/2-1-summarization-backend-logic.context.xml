@@ -1,0 +1,163 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>1</storyId>
+    <title>Summarization Backend Logic</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-09</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-1-summarization-backend-logic.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a developer</asA>
+    <iWant>to create a backend service that accepts content and generates summaries at different difficulty levels</iWant>
+    <soThat>the core summarization feature is functional</soThat>
+    <tasks>
+- [ ] **Task 1: Implement Summarization Service (AC: 1, 2, 3)**
+  - [ ] Subtask 1.1: Create a `SummarizationService` in `backend/app/core/`.
+  - [ ] Subtask 1.2: Implement a method that takes content and difficulty level as input and returns a summary.
+  - [ ] Subtask 1.3: Integrate the `LLMClient` to communicate with the LLM provider.
+  - [ ] Subtask 1.4: Implement error handling for LLM API calls.
+- [ ] **Task 2: Create API Endpoint (AC: 1, 2, 3)**
+  - [ ] Subtask 2.1: Create a `POST /api/summarize` endpoint in `backend/app/api/`.
+  - [ ] Subtask 2.2: The endpoint should accept `content_id` and `difficulty` in the request body.
+  - [ ] Subtask 2.3: The endpoint should call the `SummarizationService` and return the summary.
+- [ ] **Task 3: Asynchronous Task (AC: 1, 2, 3)**
+    - [ ] Subtask 3.1: Create a Celery task for the summarization process.
+    - [ ] Subtask 3.2: The API endpoint should initiate the Celery task and return a `202 Accepted` response.
+- [ ] **Task 4: Write Backend Tests (AC: 1, 2, 3)**
+  - [ ] Subtask 4.1: Write unit tests for the `SummarizationService`.
+  - [ ] Subtask 4.2: Write integration tests for the `POST /api/summarize` endpoint.
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1.  Given the backend receives content and a difficulty level ('easy', 'medium', 'hard'), when I call the summarization service, then it returns a summary corresponding to that difficulty.
+2.  (NFR2) Given the LLM API call fails, when I call the service, then a proper error is returned and the system handles it gracefully.
+3.  (NFR6) The service seamlessly integrates with the chosen LLM provider.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-2.md</path>
+        <title>Epic Technical Specification: Multi-level Summarization</title>
+        <section>Detailed Design</section>
+        <snippet>| Service/Module | Responsibility | Inputs | Outputs | Owner |
+| --- | --- | --- | --- | --- |
+| `SummarizationService` | Orchestrates the summarization process. | Raw text, difficulty level | Summary text | Backend Team |
+| `LLMClient` | Communicates with the external LLM provider. | Prompt, content | LLM response | Backend Team |</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>API Contracts</section>
+        <snippet>All API responses will be in JSON format. Use standard HTTP status codes (e.g., 200 OK, 201 Created, 400 Bad Request, 500 Internal Server Error).</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics-QuizZum-2025-12-05.md</path>
+        <title>QuizZum - Epic Breakdown</title>
+        <section>Story 2.1: (MVP) Summarization Backend Logic</section>
+        <snippet>User Story: As a developer, I want to create a backend service that accepts content and generates summaries at different difficulty levels, so that the core summarization feature is functional.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>backend/app/core/summarization_service.py</path>
+        <action>Create</action>
+        <reason>The service for handling summarization logic.</reason>
+      </file>
+      <file>
+        <path>backend/app/api/summarize.py</path>
+        <action>Create</action>
+        <reason>The endpoint for handling summarization requests.</reason>
+      </file>
+      <file>
+        <path>backend/app/tasks/summarization_tasks.py</path>
+        <action>Create</action>
+        <reason>The Celery task for asynchronous summarization.</reason>
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem>
+        <name>Node.js (frontend)</name>
+        <package>
+          <name>react</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>next</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>@chakra-ui/react</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>@emotion/react</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>@emotion/styled</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>framer-motion</name>
+          <version>latest</version>
+        </package>
+      </ecosystem>
+      <ecosystem>
+        <name>Python (backend)</name>
+        <package>
+          <name>fastapi</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>uvicorn</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>python-multipart</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>celery</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>redis</name>
+          <version>latest</version>
+        </package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+      <constraint>The backend is a FastAPI application.</constraint>
+      <constraint>Long-running tasks like summarization must be handled asynchronously using Celery.</constraint>
+      <constraint>The `LLMClient` will be used for all communication with the LLM provider.</constraint>
+      <constraint>All API responses must be in JSON format and use standard HTTP status codes.</constraint>
+    </constraints>
+  <interfaces>
+      <interface>
+        <name>Summarization API</name>
+        <kind>REST endpoint</kind>
+        <signature>POST /api/summarize</signature>
+        <path>backend/app/api/summarize.py</path>
+      </interface>
+    </interfaces>
+  <tests>
+      <standards>
+        A layered testing approach will be adopted: Unit, Integration, E2E. Backend integration tests for API endpoints.
+      </standards>
+      <locations>
+        Tests should be co-located with the source code. For example, `backend/app/tests/test_summarize.py`.
+      </locations>
+      <ideas>
+        - Write unit tests for the `SummarizationService`.
+        - Write integration tests for the `POST /api/summarize` endpoint, mocking the LLM client.
+        - Write tests to ensure graceful error handling when the LLM API fails.
+      </ideas>
+    </tests>
+</story-context>

@@ -1,0 +1,146 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>2</storyId>
+    <title>Quiz Taking UI</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-09</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-2-quiz-taking-ui.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a user</asA>
+    <iWant>to see and answer quiz questions</iWant>
+    <soThat>I can test my understanding</soThat>
+    <tasks>
+- [ ] **Task 1: Implement Quiz Question Display (AC: 1)**
+  - [ ] Subtask 1.1: Create a `QuizQuestion` React component in `frontend/src/app/quiz/`.
+  - [ ] Subtask 1.2: The component should display a single quiz question and its answer options.
+- [ ] **Task 2: Implement Answer Selection (AC: 2)**
+  - [ ] Subtask 2.1: Implement logic to allow the user to select one answer option.
+  - [ ] Subtask 2.2: Record the user's selected answer.
+- [ ] **Task 3: Integrate with API (AC: 1, 2)**
+  - [ ] Subtask 3.1: The frontend should call the `POST /api/quiz` endpoint to retrieve quiz questions.
+  - [ ] Subtask 3.2: The frontend should send user answers to `POST /api/quiz/submit` (to be implemented in a future story).
+- [ ] **Task 4: Write UI Tests (AC: 1, 2)**
+  - [ ] Subtask 4.1: Write UI tests for the `QuizQuestion` component.
+  - [ ] Subtask 4.2: Write UI tests to verify answer selection.
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1.  Given a quiz is generated, when it is displayed, then questions are shown one at a time.
+2.  Given a question is shown, when I select an answer, then my choice is recorded.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>QuizZum UX Design Specification</title>
+        <section>User Journey: Take Adaptive Quizzes</section>
+        <snippet>User sees: One multiple-choice quiz question at a time, with multiple-choice answers. Their chosen feedback style is active.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Adaptive Quizzing</title>
+        <section>Detailed Design</section>
+        <snippet>| Service/Module | Responsibility | Inputs | Outputs | Owner |
+| --- | --- | --- | --- | --- |
+| `QuizUI` | React component for displaying quizzes, handling user interaction, and showing results. | Quiz questions, user input, feedback | User answers, quiz requests | Frontend Team |</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics-QuizZum-2025-12-05.md</path>
+        <title>QuizZum - Epic Breakdown</title>
+        <section>Story 3.2: (MVP) Quiz Taking UI</section>
+        <snippet>User Story: As a user, I want to see and answer quiz questions, so that I can test my understanding.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>frontend/src/app/quiz/page.tsx</path>
+        <action>Create</action>
+        <reason>The page for displaying quiz questions and handling user interaction.</reason>
+      </file>
+      <file>
+        <path>frontend/src/components/QuizQuestion.tsx</path>
+        <action>Create</action>
+        <reason>A reusable component for displaying a single quiz question and its answer options.</reason>
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem>
+        <name>Node.js (frontend)</name>
+        <package>
+          <name>react</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>next</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>@chakra-ui/react</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>@emotion/react</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>@emotion/styled</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>framer-motion</name>
+          <version>latest</version>
+        </package>
+      </ecosystem>
+      <ecosystem>
+        <name>Python (backend)</name>
+        <package>
+          <name>fastapi</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>uvicorn</name>
+          <version>latest</version>
+        </package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+      <constraint>The frontend is a Next.js application using Chakra UI.</constraint>
+      <constraint>The UI should be simple and intuitive, supporting an "active and playable" learning experience.</constraint>
+      <constraint>Quiz questions should be displayed one at a time.</constraint>
+      <constraint>User answers should be recorded.</constraint>
+    </constraints>
+  <interfaces>
+      <interface>
+        <name>Quiz Generation API</name>
+        <kind>REST endpoint</kind>
+        <signature>POST /api/quiz</signature>
+        <path>backend/app/api/quiz.py</path>
+      </interface>
+      <interface>
+        <name>Quiz Submission API (Future)</name>
+        <kind>REST endpoint</kind>
+        <signature>POST /api/quiz/submit</signature>
+        <path>backend/app/api/quiz.py</path>
+      </interface>
+    </interfaces>
+  <tests>
+      <standards>
+        A layered testing approach will be adopted: Unit, Integration, E2E. UI tests for component functionality.
+      </standards>
+      <locations>
+        Tests should be co-located with the source code. For example, `frontend/src/app/quiz/page.test.tsx` and `frontend/src/components/QuizQuestion.test.tsx`.
+      </locations>
+      <ideas>
+        - Write UI tests for the `QuizQuestion` component to verify that it correctly displays the question and options.
+        - Write UI tests to verify that the user can select an answer and that the selection is recorded.
+      </ideas>
+    </tests>
+</story-context>

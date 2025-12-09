@@ -1,0 +1,136 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>4</storyId>
+    <title>Seamless Difficulty Switching</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-09</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-4-seamless-difficulty-switching.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a user</asA>
+    <iWant>after a summary is generated, I want to switch between difficulty levels without re-uploading the content</iWant>
+    <soThat>I can easily compare the summaries</soThat>
+    <tasks>
+- [ ] **Task 1: Implement Difficulty Switching UI (AC: 1)**
+  - [ ] Subtask 1.1: On the summary display screen, provide UI elements (e.g., tabs, buttons) to select a different difficulty level.
+- [ ] **Task 2: Implement Client-side Logic (AC: 1)**
+  - [ ] Subtask 2.1: When a new difficulty is selected, the frontend should make a new API call to `POST /api/summarize` with the same `content_id` and the new `difficulty`.
+  - [ ] Subtask 2.2: The UI should display a loading indicator while the new summary is being generated.
+  - [ ] Subtask 2.3: The new summary should replace the old one in the `SummaryDisplay` component.
+- [ ] **Task 3: Write UI Tests (AC: 1)**
+  - [ ] Subtask 3.1: Write UI tests to verify that selecting a new difficulty triggers a new summary to be displayed.
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1.  Given a summary is displayed, when I select a different difficulty level, then a new summary for that level is generated and displayed without leaving the page.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>QuizZum UX Design Specification</title>
+        <section>User Journey: Generate Multi-level Summaries</section>
+        <snippet>User sees: Upon successful generation, a new, dedicated screen displays the multi-level summaries. Clear and intuitive UI elements (e.g., tabs, buttons, or a dropdown) are present, allowing the user to seamlessly toggle between the Easy, Medium, and Hard difficulty levels.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-2.md</path>
+        <title>Epic Technical Specification: Multi-level Summarization</title>
+        <section>Detailed Design</section>
+        <snippet>| Service/Module | Responsibility | Inputs | Outputs | Owner |
+| --- | --- | --- | --- | --- |
+| `SummarizationUI` | React component for displaying summaries and handling user interaction. | Summaries, difficulty levels | User selections | Frontend Team |</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics-QuizZum-2025-12-05.md</path>
+        <title>QuizZum - Epic Breakdown</title>
+        <section>Story 2.4: (MVP) Seamless Difficulty Switching</section>
+        <snippet>User Story: As a user, after a summary is generated, I want to switch between difficulty levels without re-uploading the content, so that I can easily compare the summaries.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>frontend/src/app/summaries/page.tsx</path>
+        <action>Modify</action>
+        <reason>Integrate difficulty switching logic and UI into the summaries page.</reason>
+      </file>
+      <file>
+        <path>frontend/src/components/SummaryDisplay.tsx</path>
+        <action>Modify</action>
+        <reason>Update the SummaryDisplay component to receive and display summaries based on selected difficulty.</reason>
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem>
+        <name>Node.js (frontend)</name>
+        <package>
+          <name>react</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>next</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>@chakra-ui/react</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>@emotion/react</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>@emotion/styled</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>framer-motion</name>
+          <version>latest</version>
+        </package>
+      </ecosystem>
+      <ecosystem>
+        <name>Python (backend)</name>
+        <package>
+          <name>fastapi</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>uvicorn</name>
+          <version>latest</version>
+        </package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+      <constraint>The frontend is a Next.js application using Chakra UI.</constraint>
+      <constraint>The UI should be simple and intuitive.</constraint>
+      <constraint>The frontend should call the `POST /api/summarize` endpoint to get summaries for different difficulty levels.</constraint>
+      <constraint>Seamless switching means that the user should not perceive a page reload when changing difficulty.</constraint>
+    </constraints>
+  <interfaces>
+      <interface>
+        <name>Summarization API</name>
+        <kind>REST endpoint</kind>
+        <signature>POST /api/summarize</signature>
+        <path>backend/app/api/summarize.py</path>
+      </interface>
+    </interfaces>
+  <tests>
+      <standards>
+        A layered testing approach will be adopted: Unit, Integration, E2E. UI tests for seamless difficulty switching functionality.
+      </standards>
+      <locations>
+        Tests should be co-located with the source code. For example, `frontend/src/app/summaries/page.test.tsx` and `frontend/src/components/SummaryDisplay.test.tsx`.
+      </locations>
+      <ideas>
+        - Write UI tests to verify that selecting a new difficulty level initiates an API call for a new summary.
+        - Write UI tests to confirm that the loading indicator is displayed during summary generation after difficulty switching.
+        - Write UI tests to verify that the newly generated summary replaces the old one without a full page reload.
+      </ideas>
+    </tests>
+</story-context>

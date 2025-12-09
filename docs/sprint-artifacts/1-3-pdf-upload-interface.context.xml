@@ -1,0 +1,169 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>3</storyId>
+    <title>PDF Upload Interface</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-09</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-3-pdf-upload-interface.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a user</asA>
+    <iWant>to upload a PDF file containing my notes</iWant>
+    <soThat>I can provide content for summarization without manual copying</soThat>
+    <tasks>
+- [ ] **Task 1: Implement PDF Upload UI (AC: 1)**
+  - [ ] Subtask 1.1: Create a React component for PDF upload within `frontend/src/app/input-screen/`.
+  - [ ] Subtask 1.2: Ensure a clearly labeled "Upload PDF" button or drag-and-drop zone is visible, leveraging Chakra UI.
+- [ ] **Task 2: Handle PDF File Selection and Display (AC: 2)**
+  - [ ] Subtask 2.1: Implement logic to capture selected PDF file.
+  - [ ] Subtask 2.2: Display the selected PDF file's name in the UI.
+- [ ] **Task 3: Implement "Generate" Button and PDF Preparation (AC: 3)**
+  - [ ] Subtask 3.1: Ensure a "Generate" button is present on the input screen (reusing from Story 1.2 or similar).
+  - [ ] Subtask 3.2: On button click, capture the selected PDF file.
+  - [ ] Subtask 3.3: Implement client-side logic to prepare the PDF for `POST /api/upload/pdf` (e.g., `multipart/form-data`).
+- [ ] **Task 4: Write UI and Unit Tests (AC: 1, 2, 3)**
+  - [ ] Subtask 4.1: Write UI tests to verify the presence and functionality of the upload component.
+  - [ ] Subtask 4.2: Write UI tests to confirm file name display upon selection.
+  - [ ] Subtask 4.3: Write unit tests for the client-side PDF preparation logic and API call mock.
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1.  Given the application is loaded, when I navigate to the input screen, then a clearly labeled "Upload PDF" button or drag-and-drop zone is visible.
+2.  Given the upload component is visible, when I select a PDF file, then the file name is displayed.
+3.  Given a PDF file is uploaded, when I click "Generate", then the PDF content is prepared for processing.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/prd-QuizZum-2025-12-05.md</path>
+        <title>QuizZum - Product Requirements Document</title>
+        <section>Functional Requirements</section>
+        <snippet>FR-002: (MVP) Users can upload PDF documents containing notes.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Project Structure</section>
+        <snippet>Our project will follow a split-repository structure for now, with dedicated directories for the frontend and backend.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Epic to Architecture Mapping</section>
+        <snippet>Epic 1: Foundation &amp; Core Content Input:
+    *   **Frontend:** `frontend/src/app/input-screen/*` (Input UI components)
+    *   **Backend:** `backend/app/api/upload/*` (API endpoints for text/PDF), `backend/app/core/pdf_parser.py` (PDF processing logic)
+    *   **Shared:** `docker-compose.yml` (local dev setup)</snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>QuizZum UX Design Specification</title>
+        <section>Design System Foundation</section>
+        <snippet>We've definitively chosen **Chakra UI** as our primary design system.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>QuizZum UX Design Specification</title>
+        <section>User Journey: Generate Multi-level Summaries</section>
+        <snippet>User does: Either types/pastes their lecture notes into the text area OR clicks "Upload PDF" and selects their desired file. Subsequently, the user clicks the "Generate Summaries" button.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics-QuizZum-2025-12-05.md</path>
+        <title>QuizZum - Epic Breakdown</title>
+        <section>Story 1.3: (MVP) PDF Upload Interface</section>
+        <snippet>User Story: As a user, I want to upload a PDF file containing my notes, so that I can provide content for summarization without manual copying.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>frontend/src/app/input-screen/page.tsx</path>
+        <action>Modify</action>
+        <reason>Add the PDF upload component to the main input screen page.</reason>
+      </file>
+      <file>
+        <path>frontend/src/components/PdfUpload.tsx</path>
+        <action>Create</action>
+        <reason>A reusable PDF upload component using Chakra UI, with drag-and-drop functionality.</reason>
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem>
+        <name>Node.js (frontend)</name>
+        <package>
+          <name>react</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>next</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>@chakra-ui/react</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>@emotion/react</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>@emotion/styled</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>framer-motion</name>
+          <version>latest</version>
+        </package>
+      </ecosystem>
+      <ecosystem>
+        <name>Python (backend)</name>
+        <package>
+          <name>fastapi</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>uvicorn</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>python-multipart</name>
+          <version>latest</version>
+        </package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+      <constraint>The project follows a split-repository structure with `frontend` (Next.js) and `backend` (FastAPI).</constraint>
+      <constraint>Use Next.js App Router for frontend development.</constraint>
+      <constraint>UI components should be built using Chakra UI.</constraint>
+      <constraint>Frontend to Backend communication for PDF upload will use `POST /api/upload/pdf` endpoint with `multipart/form-data`.</constraint>
+      <constraint>Asynchronous processing for long-running tasks (PDF parsing, LLM calls) should be handled by the backend.</constraint>
+      <constraint>Follow the naming conventions and code organization specified in the architecture document.</constraint>
+    </constraints>
+  <interfaces>
+      <interface>
+        <name>PDF Upload API</name>
+        <kind>REST endpoint</kind>
+        <signature>POST /api/upload/pdf</signature>
+        <path>backend/app/api/upload/pdf.py</path>
+      </interface>
+    </interfaces>
+  <tests>
+      <standards>
+        A layered testing approach will be adopted: Unit, Integration, E2E. UI tests for component functionality. Unit tests for logic related to file preparation and API calls.
+      </standards>
+      <locations>
+        Tests should be co-located with the source code. For example, `frontend/src/app/input-screen/page.test.tsx` and `frontend/src/components/PdfUpload.test.tsx`.
+      </locations>
+      <ideas>
+        - Write UI tests to verify the presence and functionality of the upload component.
+        - Write UI tests to confirm file name display upon selection.
+        - Write unit tests for the client-side PDF preparation logic and API call mock.
+      </ideas>
+    </tests>
+</story-context>

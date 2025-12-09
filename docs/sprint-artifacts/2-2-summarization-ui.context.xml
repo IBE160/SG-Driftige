@@ -1,0 +1,141 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>2</epicId>
+    <storyId>2</storyId>
+    <title>Summarization UI</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-09</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-2-summarization-ui.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a user</asA>
+    <iWant>to see the generated summary displayed clearly</iWant>
+    <soThat>I can read and understand it</soThat>
+    <tasks>
+- [ ] **Task 1: Implement Summary Display (AC: 1, 3)**
+  - [ ] Subtask 1.1: Create a `SummaryDisplay` React component in `frontend/src/app/summaries/`.
+  - [ ] Subtask 1.2: The component should take the summary text as a prop and display it.
+  - [ ] Subtask 1.3: Ensure the component has a scrollbar for long summaries.
+- [ ] **Task 2: Implement Loading State (AC: 2)**
+  - [ ] Subtask 2.1: The UI should display a loading indicator (e.g., a Chakra UI spinner) while the summary is being generated.
+- [ ] **Task 3: Integrate with API (AC: 1, 2)**
+  - [ ] Subtask 3.1: The frontend should call the `POST /api/summarize` endpoint.
+  - [ ] Subtask 3.2: The frontend should handle the response and pass the summary text to the `SummaryDisplay` component.
+- [ ] **Task 4: Write UI Tests (AC: 1, 2, 3)**
+  - [ ] Subtask 4.1: Write UI tests for the `SummaryDisplay` component.
+  - [ ] Subtask 4.2: Write UI tests for the loading state.
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1.  Given a summary is generated, when it is returned to the frontend, then the summary text is displayed in a designated output area.
+2.  (NFR1) While the summary is being generated, a progress indicator (e.g., a spinner) is displayed to the user.
+3.  Given the summary is displayed, when the content is long, then a scrollbar is available.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>QuizZum UX Design Specification</title>
+        <section>User Journey: Generate Multi-level Summaries</section>
+        <snippet>User sees: Upon successful generation, a new, dedicated screen displays the multi-level summaries. Clear and intuitive UI elements (e.g., tabs, buttons, or a dropdown) are present, allowing the user to seamlessly toggle between the Easy, Medium, and Hard difficulty levels.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-2.md</path>
+        <title>Epic Technical Specification: Multi-level Summarization</title>
+        <section>Detailed Design</section>
+        <snippet>| Service/Module | Responsibility | Inputs | Outputs | Owner |
+| --- | --- | --- | --- | --- |
+| `SummarizationUI` | React component for displaying summaries and handling user interaction. | Summaries, difficulty levels | User selections | Frontend Team |</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics-QuizZum-2025-12-05.md</path>
+        <title>QuizZum - Epic Breakdown</title>
+        <section>Story 2.2: (MVP) Summarization UI</section>
+        <snippet>User Story: As a user, I want to see the generated summary displayed clearly, so that I can read and understand it.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>frontend/src/app/summaries/page.tsx</path>
+        <action>Create</action>
+        <reason>The page for displaying the summarization results.</reason>
+      </file>
+      <file>
+        <path>frontend/src/components/SummaryDisplay.tsx</path>
+        <action>Create</action>
+        <reason>A reusable component for displaying the summary text.</reason>
+      </file>
+    </code>
+    <dependencies>
+      <ecosystem>
+        <name>Node.js (frontend)</name>
+        <package>
+          <name>react</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>next</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>@chakra-ui/react</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>@emotion/react</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>@emotion/styled</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>framer-motion</name>
+          <version>latest</version>
+        </package>
+      </ecosystem>
+      <ecosystem>
+        <name>Python (backend)</name>
+        <package>
+          <name>fastapi</name>
+          <version>latest</version>
+        </package>
+        <package>
+          <name>uvicorn</name>
+          <version>latest</version>
+        </package>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+      <constraint>The frontend is a Next.js application using Chakra UI.</constraint>
+      <constraint>The UI should be simple and intuitive.</constraint>
+      <constraint>The frontend should call the `POST /api/summarize` endpoint to get the summary.</constraint>
+    </constraints>
+  <interfaces>
+      <interface>
+        <name>Summarization API</name>
+        <kind>REST endpoint</kind>
+        <signature>POST /api/summarize</signature>
+        <path>backend/app/api/summarize.py</path>
+      </interface>
+    </interfaces>
+  <tests>
+      <standards>
+        A layered testing approach will be adopted: Unit, Integration, E2E. UI tests for component functionality.
+      </standards>
+      <locations>
+        Tests should be co-located with the source code. For example, `frontend/src/app/summaries/page.test.tsx` and `frontend/src/components/SummaryDisplay.test.tsx`.
+      </locations>
+      <ideas>
+        - Write UI tests for the `SummaryDisplay` component to verify that it correctly renders the summary text.
+        - Write UI tests to verify that the loading indicator is displayed while the summary is being generated.
+        - Write UI tests to verify that the scrollbar is visible for long summaries.
+      </ideas>
+    </tests>
+</story-context>

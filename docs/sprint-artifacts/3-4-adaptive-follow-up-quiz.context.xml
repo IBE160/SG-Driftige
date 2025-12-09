@@ -1,0 +1,106 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>4</storyId>
+    <title>Adaptive Follow-up Quiz</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-09</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-4-adaptive-follow-up-quiz.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a user</asA>
+    <iWant>after a quiz, I want to take a follow-up quiz on the questions I got wrong</iWant>
+    <soThat>I can reinforce my weak spots</soThat>
+    <tasks>
+- [ ] **Task 1: Implement "Practice Weak Spots" UI (AC: 1)**
+  - [ ] Subtask 1.1: On the quiz results screen, if incorrect answers are present, display a "Practice weak spots" button.
+- [ ] **Task 2: Implement Adaptive Quiz Logic (AC: 2)**
+  - [ ] Subtask 2.1: When "Practice weak spots" is clicked, the frontend should make a new API call to `POST /api/quiz` with an adaptive context (e.g., `previous_incorrect_questions`).
+  - [ ] Subtask 2.2: The backend `QuizService` should use this context to generate a new quiz focusing on the identified weak spots.
+- [ ] **Task 3: Write Tests (AC: 1, 2)**
+  - [ ] Subtask 3.1: Write UI tests to verify the "Practice weak spots" button appears conditionally.
+  - [ ] Subtask 3.2: Write integration tests to verify the adaptive quiz generation logic on the backend.
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1.  Given I have completed a quiz with incorrect answers, when the score is displayed, then an option to "Practice weak spots" is available.
+2.  Given I choose to practice weak spots, when the new quiz starts, then it contains questions related to the topics I answered incorrectly.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>QuizZum UX Design Specification</title>
+        <section>User Journey: Take Adaptive Quizzes</section>
+        <snippet>User sees:
+        If score is &lt; 90% (Not Mastered): A clear "Generate Follow-up Quiz" button appears, explicitly stating that this new quiz will target their problem areas based on the incorrect answers.
+        If score is &gt;= 90% (Mastered): A congratulatory message acknowledges their mastery for this specific difficulty level, encouraging them to progress (e.g., try the Medium or Hard quiz) or explore new topics.
+        A "Back to Summary" button remains visible, allowing the user to review content again.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Adaptive Quizzing</title>
+        <section>Detailed Design</section>
+        <snippet>| Service/Module | Responsibility | Inputs | Outputs | Owner |
+| --- | --- | --- | --- | --- |
+| `QuizService` | Orchestrates quiz generation, assessment, and adaptation logic. | Content, difficulty, user answers | Quiz questions, feedback, adaptive quiz parameters | Backend Team |</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics-QuizZum-2025-12-05.md</path>
+        <title>QuizZum - Epic Breakdown</title>
+        <section>Story 3.4: (MVP) Adaptive Follow-up Quiz</section>
+        <snippet>User Story: As a user, after a quiz, I want to take a follow-up quiz on the questions I got wrong, so that I can reinforce my weak spots.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <file>
+        <path>backend/app/core/quiz_service.py</path>
+        <action>Modify</action>
+        <reason>Enhance quiz generation logic to support adaptive context.</reason>
+      </file>
+      <file>
+        <path>backend/app/api/quiz.py</path>
+        <action>Modify</action>
+        <reason>Modify `POST /api/quiz` endpoint to accept adaptive context.</reason>
+      </file>
+      <file>
+        <path>frontend/src/app/quiz/page.tsx</path>
+        <action>Modify</action>
+        <reason>Implement UI for displaying the "Practice weak spots" button and triggering adaptive quizzes.</reason>
+      </file>
+    </code>
+    <dependencies>{{dependencies_artifacts}}</dependencies>
+  </artifacts>
+
+  <constraints>
+      <constraint>The backend `QuizService` must be enhanced to support adaptive quiz generation based on provided context.</constraint>
+      <constraint>The frontend must pass information about incorrect answers to the backend for adaptive quizzing.</constraint>
+      <constraint>The UI should provide a clear option to "Practice weak spots" after a quiz with incorrect answers.</constraint>
+    </constraints>
+  <interfaces>
+      <interface>
+        <name>Quiz Generation API (Adaptive Context)</name>
+        <kind>REST endpoint</kind>
+        <signature>POST /api/quiz</signature>
+        <path>backend/app/api/quiz.py</path>
+      </interface>
+    </interfaces>
+  <tests>
+      <standards>
+        A layered testing approach will be adopted: Unit, Integration, E2E. UI tests for conditional display and trigger of adaptive quizzes. Integration tests for backend adaptive logic.
+      </standards>
+      <locations>
+        - Backend: `backend/app/tests/test_quiz.py` (modification)
+        - Frontend: `frontend/src/app/quiz/page.test.tsx` (modification)
+      </locations>
+      <ideas>
+        - Write UI tests to verify that the "Practice weak spots" button appears only when there are incorrect answers.
+        - Write UI tests to verify that clicking the "Practice weak spots" button triggers a new adaptive quiz.
+        - Write integration tests for the backend `QuizService` to ensure it correctly generates adaptive quizzes based on provided context (incorrect answers).
+      </ideas>
+    </tests>
+</story-context>
