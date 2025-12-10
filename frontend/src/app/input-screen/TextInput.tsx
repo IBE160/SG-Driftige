@@ -17,7 +17,7 @@ export default function TextInput() {
   };
 
   return (
-    <VStack>
+    <VStack spacing={4} width="100%">
       <Textarea
         placeholder="Paste your text here"
         value={text}
