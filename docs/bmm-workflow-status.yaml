@@ -9,7 +9,6 @@
 #   - required: Must be completed to progress
 #   - optional: Can be completed but not required
 #   - recommended: Strongly suggested but not required
-#   - conditional: Required only if certain conditions met (e.g., if_has_ui)
 #
 # Completion Status:
 #   - {file-path}: File created/found (e.g., "docs/product-brief.md")
@@ -55,7 +54,7 @@ workflow_status:
       - id: "create-architecture"
         agent: "architect"
         command: "create-architecture"
-        status: "pending"
+        status: "docs/architecture.md"
       - id: "create-epics-and-stories"
         agent: "pm"
         command: "create-epics-and-stories"
