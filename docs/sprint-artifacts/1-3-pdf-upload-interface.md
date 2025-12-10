@@ -1,6 +1,6 @@
 # Story 1.3: PDF Upload Interface
 
-Status: COMPLETED
+Status: ready-for-dev
 
 ## Story
 
@@ -16,20 +16,20 @@ so that I can provide content for summarization without manual copying.
 
 ## Tasks / Subtasks
 
-- [x] **Task 1: Implement PDF Upload UI (AC: 1)**
-  - [x] Subtask 1.1: Create a React component for PDF upload within `frontend/src/app/input-screen/`.
-  - [x] Subtask 1.2: Ensure a clearly labeled "Upload PDF" button or drag-and-drop zone is visible, leveraging Chakra UI.
-- [x] **Task 2: Handle PDF File Selection and Display (AC: 2)**
-  - [x] Subtask 2.1: Implement logic to capture selected PDF file.
-  - [x] Subtask 2.2: Display the selected PDF file's name in the UI.
-- [x] **Task 3: Implement "Generate" Button and PDF Preparation (AC: 3)**
-  - [x] Subtask 3.1: Ensure a "Generate" button is present on the input screen (reusing from Story 1.2 or similar).
-  - [x] Subtask 3.2: On button click, capture the selected PDF file.
-  - [x] Subtask 3.3: Implement client-side logic to prepare the PDF for `POST /api/upload/pdf` (e.g., `multipart/form-data`).
-- [x] **Task 4: Write UI and Unit Tests (AC: 1, 2, 3)**
-  - [x] Subtask 4.1: Write UI tests to verify the presence and functionality of the upload component.
-  - [x] Subtask 4.2: Write UI tests to confirm file name display upon selection.
-  - [x] Subtask 4.3: Write unit tests for the client-side PDF preparation logic and API call mock.
+- [ ] **Task 1: Implement PDF Upload UI (AC: 1)**
+  - [ ] Subtask 1.1: Create a React component for PDF upload within `frontend/src/app/input-screen/`.
+  - [ ] Subtask 1.2: Ensure a clearly labeled "Upload PDF" button or drag-and-drop zone is visible, leveraging Chakra UI.
+- [ ] **Task 2: Handle PDF File Selection and Display (AC: 2)**
+  - [ ] Subtask 2.1: Implement logic to capture selected PDF file.
+  - [ ] Subtask 2.2: Display the selected PDF file's name in the UI.
+- [ ] **Task 3: Implement "Generate" Button and PDF Preparation (AC: 3)**
+  - [ ] Subtask 3.1: Ensure a "Generate" button is present on the input screen (reusing from Story 1.2 or similar).
+  - [ ] Subtask 3.2: On button click, capture the selected PDF file.
+  - [ ] Subtask 3.3: Implement client-side logic to prepare the PDF for `POST /api/upload/pdf` (e.g., `multipart/form-data`).
+- [ ] **Task 4: Write UI and Unit Tests (AC: 1, 2, 3)**
+  - [ ] Subtask 4.1: Write UI tests to verify the presence and functionality of the upload component.
+  - [ ] Subtask 4.2: Write UI tests to confirm file name display upon selection.
+  - [ ] Subtask 4.3: Write unit tests for the client-side PDF preparation logic and API call mock.
 
 ## Dev Notes
 
@@ -73,29 +73,12 @@ gemini-1.5-flash-latest
 ### Debug Log References
 
 ### Completion Notes List
-- Created `frontend/src/app/input-screen/PdfUpload.tsx` component.
-- The component includes a styled drag-and-drop zone and an "Upload PDF" button.
-- State management for the selected file is implemented using `useState`.
-- The name of the selected file is displayed in the UI.
-- A "Generate" button is included, which logs the selected file to the console.
-- A new test file, `PdfUpload.test.tsx`, was created.
-- The tests cover rendering, file selection, and the "Generate" button's `onClick` handler.
-- A `structuredClone` polyfill was added to `jest.setup.js` to resolve testing issues.
-- All tests for this component are passing.
-- Created `frontend/src/app/input-screen/InputTabs.tsx` to house the `Tabs` component and dynamically imported it with `ssr: false` to resolve hydration errors.
 
 ### File List
-- **Created**:
-    - `frontend/src/app/input-screen/PdfUpload.tsx`
-    - `frontend/src/app/input-screen/PdfUpload.test.tsx`
-    - `frontend/src/app/input-screen/InputTabs.tsx`
-- **Modified**:
-    - `frontend/app/page.tsx`
-    - `frontend/jest.setup.js`
 
 ### Learnings from Previous Story
 
-**From Story 1.2: Text Input Interface (Status: COMPLETED)**
+**From Story 1.2: Text Input Interface (Status: drafted)**
 
 - **New Capabilities**: Frontend text input UI is implemented, including state management and editing functionality.
 - **Architectural Context**: Client-side logic for preparing text for `POST /api/upload/text` is established.
@@ -107,4 +90,3 @@ gemini-1.5-flash-latest
 
 - **2025-12-09**: Initial draft created.
 - **2025-12-09**: Status changed to ready-for-dev. Context file created.
-- **2025-12-10**: All tasks implemented and verified. Story status updated to 'COMPLETED'.
