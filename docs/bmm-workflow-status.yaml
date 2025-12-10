@@ -67,7 +67,7 @@ workflow_status:
       - id: "validate-architecture"
         agent: "architect"
         command: "validate-architecture"
-        status: "docs/validation-report-2025-12-08.md"
+        status: "pending"
       - id: "implementation-readiness"
         agent: "architect"
         command: "implementation-readiness"
