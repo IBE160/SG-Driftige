@@ -26,7 +26,7 @@ export default function PdfUpload() {
   };
 
   return (
-    <VStack spacing={4} width="100%">
+    <VStack>
       <Box
         p={8}
         border="2px dashed"
@@ -57,7 +57,7 @@ export default function PdfUpload() {
         <Button
           colorScheme="blue"
           onClick={handleGenerate}
-          isDisabled={!selectedFile}
+          disabled={!selectedFile}
         >
           Generate
         </Button>
