@@ -1,6 +1,6 @@
 # Story 1.2: Text Input Interface
 
-Status: COMPLETED
+Status: ready-for-dev
 
 ## Story
 
@@ -16,20 +16,20 @@ so that I can easily provide content for summarization.
 
 ## Tasks / Subtasks
 
-- [x] **Task 1: Implement Text Area UI (AC: 1)**
-  - [x] Subtask 1.1: Create a React component for the text input area within `frontend/src/app/input-screen/`.
-  - [x] Subtask 1.2: Ensure the text area is prominent and usable, leveraging Chakra UI for styling.
-- [x] **Task 2: Enable Text Input and Editing (AC: 2)**
-  - [x] Subtask 2.1: Implement state management for the text area content.
-  - [x] Subtask 2.2: Verify text can be typed and pasted into the area.
-- [x] **Task 3: Implement "Generate" Button and Text Preparation (AC: 3)**
-  - [x] Subtask 3.1: Add a "Generate" button to the input screen.
-  - [x] Subtask 3.2: On button click, capture the text area content.
-  - [x] Subtask 3.3: Implement client-side logic to prepare the text for `POST /api/upload/text` (e.g., format as JSON).
-- [x] **Task 4: Write UI and Unit Tests (AC: 1, 2, 3)**
-  - [x] Subtask 4.1: Write UI tests to verify the text area's visibility and focus.
-  - [x] Subtask 4.2: Write UI tests to confirm text input and editing functionality.
-  - [x] Subtask 4.3: Write unit tests for the client-side text preparation logic and API call mock.
+- [ ] **Task 1: Implement Text Area UI (AC: 1)**
+  - [ ] Subtask 1.1: Create a React component for the text input area within `frontend/src/app/input-screen/`.
+  - [ ] Subtask 1.2: Ensure the text area is prominent and usable, leveraging Chakra UI for styling.
+- [ ] **Task 2: Enable Text Input and Editing (AC: 2)**
+  - [ ] Subtask 2.1: Implement state management for the text area content.
+  - [ ] Subtask 2.2: Verify text can be typed and pasted into the area.
+- [ ] **Task 3: Implement "Generate" Button and Text Preparation (AC: 3)**
+  - [ ] Subtask 3.1: Add a "Generate" button to the input screen.
+  - [ ] Subtask 3.2: On button click, capture the text area content.
+  - [ ] Subtask 3.3: Implement client-side logic to prepare the text for `POST /api/upload/text` (e.g., format as JSON).
+- [ ] **Task 4: Write UI and Unit Tests (AC: 1, 2, 3)**
+  - [ ] Subtask 4.1: Write UI tests to verify the text area's visibility and focus.
+  - [ ] Subtask 4.2: Write UI tests to confirm text input and editing functionality.
+  - [ ] Subtask 4.3: Write unit tests for the client-side text preparation logic and API call mock.
 
 ## Dev Notes
 
@@ -78,33 +78,15 @@ gemini-1.5-flash-latest
 ### Debug Log References
 
 ### Completion Notes List
-- Created `frontend/src/app/input-screen/` directory.
-- Created `TextInput.tsx` component with a Chakra UI `Textarea`.
-- Modified `page.tsx` to render the `TextInput` component.
-- Implemented state management for the text area using `useState`.
-- Added a "Generate" button with an `onClick` handler that logs the text content.
-- Added testing libraries (Jest, React Testing Library) to `package.json`.
-- Configured Jest with `jest.config.js` and a setup file (`jest.setup.js`) to polyfill `structuredClone`.
-- Wrote unit tests for the `TextInput` component, covering rendering, input, and button click.
-- All tests are passing.
 
 ### File List
-- **Created**:
-    - `frontend/src/app/input-screen/`
-    - `frontend/src/app/input-screen/TextInput.tsx`
-    - `frontend/src/app/input-screen/TextInput.test.tsx`
-    - `frontend/jest.config.js`
-    - `frontend/jest.setup.js`
-- **Modified**:
-    - `frontend/app/page.tsx`
-    - `frontend/package.json`
 
 ### Learnings from Previous Story
 
-**From Story 1.1: Project Setup & Initial Web App Structure (Status: COMPLETED)**
+**From Story 1.1: Project Setup & Initial Web App Structure (Status: drafted)**
 
 - **New Capabilities**: Initial project setup (git, Next.js frontend, FastAPI backend) and basic local dev environment (`docker-compose.yml`) are in place.
-- **Architectural Context**: The split-repository structure (`frontend/`, `backend/`) and core technologies (React/Next.js, Chakra UI) are established.
+- **Architectural Context**: The split-repository structure (`frontend/`, `backend/`) and core technologies (React/Next.js, FastAPI/Python) are established.
 - **Testing Setup**: Basic unit/integration tests for project setup are defined.
 
 [Source: docs/sprint-artifacts/1-1-project-setup-initial-web-app-structure.md]
@@ -113,5 +95,3 @@ gemini-1.5-flash-latest
 
 - **2025-12-09**: Initial draft created.
 - **2025-12-09**: Status changed to ready-for-dev. Context file created.
-- **2025-12-10**: All tasks implemented and verified. Story status updated to 'REVIEW'.
-- **2025-12-10**: Story approved and marked as 'COMPLETED'.
