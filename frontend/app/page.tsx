@@ -1,9 +1,12 @@
 "use client";
 
-import { Button } from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/react";
+import TextInput from "../src/app/input-screen/TextInput";
 
 export default function Home() {
   return (
-    <Button colorScheme="blue">Hello QuizZum!</Button>
+    <VStack spacing={4} p={8}>
+      <TextInput />
+    </VStack>
   );
 }

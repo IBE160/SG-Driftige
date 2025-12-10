@@ -1,59 +1,56 @@
-# generated: 2025-12-09
-# project: ibe160
-# project_key: ibe160
-# tracking_system: file-system
-# story_location: docs/sprint-artifacts
+# Sprint Status - 2025-12-10
 
-# STATUS DEFINITIONS:
-# ==================
-# Epic Status:
-#   - backlog: Epic exists in epic file but not contexted
-#   - contexted: Epic tech context created (required before drafting stories)
-#
-# Story Status:
-#   - backlog: Story only exists in epic file
-#   - drafted: Story file created in stories folder
-#   - ready-for-dev: Draft approved and story context created
-#   - in-progress: Developer actively working on implementation
-#   - review: Under SM review (via code-review workflow)
-#   - done: Story completed
-#
-# Retrospective Status:
-#   - optional: Can be completed but not required
-#   - completed: Retrospective has been done
-#
-# WORKFLOW NOTES:
-# ===============
-# - Epics should be 'contexted' before stories can be 'drafted'
-# - Stories can be worked in parallel if team capacity allows
-# - SM typically drafts next story after previous one is 'done' to incorporate learnings
-# - Dev moves story to 'review', SM reviews, then Dev moves to 'done'
+sprint_name: "Sprint 1 - Foundation & Core Features"
+sprint_goal: "Establish the basic application infrastructure, enable content input (text and PDF), and implement the core summarization and quizzing features."
 
-generated: 2025-12-09
-project: ibe160
-project_key: ibe160
-tracking_system: file-system
-story_location: docs/sprint-artifacts
+epics:
+  - epic_id: "Epic 1: Foundation & Core Content Input"
+    status: "in-progress"
+    stories:
+      - story_id: "1.1"
+        title: "(MVP) Project Setup & Initial Web App Structure"
+        status: "COMPLETED"
+      - story_id: "1.2"
+        title: "(MVP) Text Input Interface"
+        status: "COMPLETED"
+      - story_id: "1.3"
+        title: "(MVP) PDF Upload Interface"
+        status: "PENDING"
+      - story_id: "1.4"
+        title: "(MVP) Core Backend Setup for Content Reception"
+        status: "PENDING"
+      - story_id: "1.5"
+        title: "(MVP) Basic Browser Compatibility & Responsiveness"
+        status: "PENDING"
 
-development_status:
-  epic-1: contexted
-  1-1-project-setup-initial-web-app-structure: review
-  1-2-text-input-interface: ready-for-dev
-  1-3-pdf-upload-interface: ready-for-dev
-  1-4-core-backend-setup-for-content-reception: ready-for-dev
-  1-5-basic-browser-compatibility-responsiveness: ready-for-dev
-  epic-1-retrospective: optional
+  - epic_id: "Epic 2: Multi-level Summarization"
+    status: "not-started"
+    stories:
+      - story_id: "2.1"
+        title: "(MVP) Summarization Backend Logic"
+        status: "PENDING"
+      - story_id: "2.2"
+        title: "(MVP) Summarization UI"
+        status: "PENDING"
+      - story_id: "2.3"
+        title: "(MVP) Difficulty Selection UI"
+        status: "PENDING"
+      - story_id: "2.4"
+        title: "(MVP) Seamless Difficulty Switching"
+        status: "PENDING"
 
-  epic-2: contexted
-  2-1-summarization-backend-logic: ready-for-dev
-  2-2-summarization-ui: ready-for-dev
-  2-3-difficulty-selection-ui: ready-for-dev
-  2-4-seamless-difficulty-switching: ready-for-dev
-  epic-2-retrospective: optional
-
-  epic-3: contexted
-  3-1-quiz-generation-backend: ready-for-dev
-  3-2-quiz-taking-ui: ready-for-dev
-  3-3-quiz-assessment-and-feedback: ready-for-dev
-  3-4-adaptive-follow-up-quiz: ready-for-dev
-  epic-3-retrospective: optional
+  - epic_id: "Epic 3: Adaptive Quizzing"
+    status: "not-started"
+    stories:
+      - story_id: "3.1"
+        title: "(MVP) Quiz Generation Backend"
+        status: "PENDING"
+      - story_id: "3.2"
+        title: "(MVP) Quiz Taking UI"
+        status: "PENDING"
+      - story_id: "3.3"
+        title: "(MVP) Quiz Assessment and Feedback"
+        status: "PENDING"
+      - story_id: "3.4"
+        title: "(MVP) Adaptive Follow-up Quiz"
+        status: "PENDING"
