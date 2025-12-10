@@ -7,7 +7,7 @@ const InputTabs = dynamic(() => import('../src/app/input-screen/InputTabs'), { s
 
 export default function Home() {
   return (
-    <VStack>
+    <VStack spacing={4} p={8} width="100%">
       <InputTabs />
     </VStack>
   );
