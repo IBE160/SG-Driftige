@@ -15,7 +15,7 @@ epics:
         status: "COMPLETED"
       - story_id: "1.3"
         title: "(MVP) PDF Upload Interface"
-        status: "ready-for-dev"
+        status: "COMPLETED"
       - story_id: "1.4"
         title: "(MVP) Core Backend Setup for Content Reception"
         status: "ready-for-dev"
