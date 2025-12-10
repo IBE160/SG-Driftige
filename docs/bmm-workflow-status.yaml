@@ -78,4 +78,4 @@ workflow_status:
       - id: "sprint-planning"
         agent: "sm"
         command: "sprint-planning"
-        status: "docs/sprint-artifacts/sprint-status.yaml"
+        status: "pending"
