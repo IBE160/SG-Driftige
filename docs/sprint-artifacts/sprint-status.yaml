@@ -43,12 +43,14 @@ development_status:
   1-4-core-backend-setup-for-content-reception: ready-for-dev
   1-5-basic-browser-compatibility-responsiveness: ready-for-dev
   epic-1-retrospective: optional
+
   epic-2: contexted
   2-1-summarization-backend-logic: ready-for-dev
   2-2-summarization-ui: ready-for-dev
   2-3-difficulty-selection-ui: ready-for-dev
   2-4-seamless-difficulty-switching: ready-for-dev
   epic-2-retrospective: optional
+
   epic-3: contexted
   3-1-quiz-generation-backend: ready-for-dev
   3-2-quiz-taking-ui: ready-for-dev
