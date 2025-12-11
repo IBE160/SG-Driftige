@@ -1,15 +1,7 @@
-import { Geist, Geist_Mono } from "next/font/google";
+// import { Inter } from "next/font/google"; // Commented out
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// const inter = Inter({ subsets: ["latin"] }); // Commented out
 
 export const metadata = {
   title: "Create Next App",
@@ -19,11 +11,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+      {/* <body className={inter.className}>{children}</body> */} {/* Replaced with simple body */}
+      <body>{children}</body>
     </html>
   );
 }
