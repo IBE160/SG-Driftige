@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+prisma
+psycopg2-binary
+python-dotenv
+python-multipart
+pdfminer.six
+httpx

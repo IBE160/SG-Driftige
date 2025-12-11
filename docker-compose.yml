@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: quizum_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+  backend:
+    build:
+      context: ./fastapi-backend
+      dockerfile: Dockerfile
+    command: uvicorn app:app --host 0.0.0.0 --port 8000 --reload # Assuming app.py is entry
+    volumes:
+      - ./fastapi-backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://user:password@db/quizum_db
+      # LLM_API_KEY: your_llm_api_key
+    depends_on:
+      - db
+  frontend:
+    build:
+      context: ./nextjs-frontend
+      dockerfile: Dockerfile
+    command: npm run dev
+    volumes:
+      - ./nextjs-frontend:/app
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_BACKEND_URL: http://localhost:8000
+    depends_on:
+      - backend
+volumes:
+  db-data:

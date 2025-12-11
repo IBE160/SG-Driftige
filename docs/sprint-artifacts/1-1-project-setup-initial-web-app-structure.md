@@ -1,6 +1,6 @@
 # Story 1.1: Project Setup & Initial Web App Structure
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -16,13 +16,13 @@ so that I can begin implementing core features.
 
 ## Tasks / Subtasks
 
-- [ ] Task: Initialize Git repository. (AC: 1)
-- [ ] Task: Scaffold Next.js project (`nextjs-frontend`) with JavaScript and Tailwind CSS using `npx create-next-app@latest --js --tailwind`. (AC: 2)
-- [ ] Task: Set up basic FastAPI backend structure (`fastapi-backend`). (AC: 2)
-- [ ] Task: Configure PostgreSQL and Prisma ORM for initial Content data model. (AC: 2)
-- [ ] Task: Configure `docker-compose.yml` for local development environment with frontend, backend, and database services. (AC: 2)
-- [ ] Task: Verify successful launch of frontend, backend, and database via Docker Compose. (AC: 3)
-- [ ] Task: Write P0 E2E test (`Playwright` or `Cypress`) to verify basic empty web page display. (AC: 3)
+- [x] Task: Initialize Git repository. (AC: 1)
+- [x] Task: Scaffold Next.js project (`nextjs-frontend`) with JavaScript and Tailwind CSS using `npx create-next-app@latest --js --tailwind`. (AC: 2)
+- [x] Task: Set up basic FastAPI backend structure (`fastapi-backend`). (AC: 2)
+- [x] Task: Configure PostgreSQL and Prisma ORM for initial Content data model. (AC: 2)
+- [x] Task: Configure `docker-compose.yml` for local development environment with frontend, backend, and database services. (AC: 2)
+- [x] Task: Verify successful launch of frontend, backend, and database via Docker Compose. (AC: 3)
+- [x] Task: Write P0 E2E test (`Playwright` or `Cypress`) to verify basic empty web page display. (AC: 3)
 
 ## Dev Notes
 
@@ -75,7 +75,22 @@ This story directly implements the foundational elements of the defined project 
 
 ### Completion Notes List
 
+*   Verified successful Docker Compose launch, with FastAPI backend responding at `http://localhost:8000` and Next.js frontend displaying the basic starter page at `http://localhost:3000`.
+*   Implemented P0 E2E test (`nextjs-frontend/tests/home.spec.js`) using Playwright, which successfully passed.
+
 ### File List
+
+*   NEW: `nextjs-frontend/tests/home.spec.js`
+*   NEW: `docker-compose.yml`
+*   MODIFIED: `fastapi-backend/app.py`
+*   MODIFIED: `fastapi-backend/requirements.txt`
+*   MODIFIED: `fastapi-backend/Dockerfile`
+*   MODIFIED: `nextjs-frontend/Dockerfile`
+*   MODIFIED: `nextjs-frontend/package.json`
+*   MODIFIED: `nextjs-frontend/src/app/layout.js`
+*   NEW: `nextjs-frontend/postcss.config.js`
+*   NEW: `nextjs-frontend/playwright.config.js`
+*   NEW: `.github/workflows/playwright.yml`
 
 ## Story Quality Validation Report
 
