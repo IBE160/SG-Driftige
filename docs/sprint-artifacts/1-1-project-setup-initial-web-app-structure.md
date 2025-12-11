@@ -1,6 +1,6 @@
 # Story 1.1: Project Setup & Initial Web App Structure
 
-Status: in-progress
+Status: review
 
 ## Story
 
@@ -17,12 +17,12 @@ so that I can begin implementing core features.
 ## Tasks / Subtasks
 
 - [x] Task: Initialize Git repository. (AC: 1)
-- [ ] Task: Scaffold Next.js project (`nextjs-frontend`) with JavaScript and Tailwind CSS using `npx create-next-app@latest --js --tailwind`. (AC: 2)
+- [x] Task: Scaffold Next.js project (`nextjs-frontend`) with JavaScript and Tailwind CSS using `npx create-next-app@latest --js --tailwind`. (AC: 2)
 - [x] Task: Set up basic FastAPI backend structure (`fastapi-backend`). (AC: 2)
 - [x] Task: Configure PostgreSQL and Prisma ORM for initial Content data model. (AC: 2)
 - [x] Task: Configure `docker-compose.yml` for local development environment with frontend, backend, and database services. (AC: 2)
-- [ ] Task: Verify successful launch of frontend, backend, and database via Docker Compose. (AC: 3)
-- [ ] Task: Write P0 E2E test (`Playwright` or `Cypress`) to verify basic empty web page display. (AC: 3)
+- [x] Task: Verify successful launch of frontend, backend, and database via Docker Compose. (AC: 3)
+- [x] Task: Write P0 E2E test (`Playwright` or `Cypress`) to verify basic empty web page display. (AC: 3)
 
 ## Dev Notes
 
