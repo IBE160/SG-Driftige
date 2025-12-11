@@ -1,6 +1,6 @@
 # Story 1.2: Text Input Interface
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
@@ -54,13 +54,13 @@ This story primarily involves frontend development within `nextjs-frontend/src/a
 *   [Source: docs/architecture.md#Identified-Architectural-Decisions]
 *   [Source: docs/sprint-artifacts/tech-spec-epic-epic-1.md#Detailed-Design]
 *   [Source: docs/epics-QuizZum-2025-12-05.md#Epic-1-Foundation--Core-Content-Input]
-*   [Source: docs/epics-QuizZum-2025-12-05.md#Story-1.2:-%28MVP%29-Text-Input-Interface]
 
 ## Dev Agent Record
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+*   [Source: docs/sprint-artifacts/1-1-project-setup-initial-web-app-structure.context.xml]
+*   [Source: docs/sprint-artifacts/1-2-text-input-interface.context.xml]
 
 ### Agent Model Used
 

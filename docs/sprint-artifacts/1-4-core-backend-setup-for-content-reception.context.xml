@@ -1,0 +1,221 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>epic-1</epicId>
+    <storyId>1.4</storyId>
+    <title>Core Backend Setup for Content Reception</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-10</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-4-core-backend-setup-for-content-reception.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>a functional backend endpoint to receive text and PDF inputs</iWant>
+    <soThat>the frontend can send user content for processing</soThat>
+    <tasks>{{story_tasks}}</tasks>
+  </story>
+
+  <acceptanceCriteria>{{acceptance_criteria}}</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+<doc path="docs/prd-QuizZum-2025-12-05.md" title="QuizZum - Product Requirements Document">
+  <section name="Functional Requirements">
+    <snippet>FR-001: (MVP) Users can input text notes into the application. FR-002: (MVP) Users can upload PDF documents containing notes.</snippet>
+  </section>
+  <section name="Non-Functional Requirements">
+    <snippet>NFR3: The backend modules should incorporate general security best practices. NFR4: The backend architecture should be designed with future scalability in mind.</snippet>
+  </section>
+  <section name="Technical Overview">
+    <snippet>High-Level API Endpoints: `POST /api/upload/text`, `POST /api/upload/pdf`. High-level Data Model: Content (id, raw_text).</snippet>
+  </section>
+</doc>
+<doc path="docs/epics-QuizZum-2025-12-05.md" title="QuizZum - Epic Breakdown">
+  <section name="Epic 1: Foundation & Core Content Input">
+    <snippet>Goal: Establish the basic application infrastructure and allow users to provide content for processing.</snippet>
+  </section>
+  <section name="Story 1.4: (MVP) Core Backend Setup for Content Reception">
+    <snippet>User Story: As a developer, I want a functional backend endpoint to receive text and PDF inputs, so that the frontend can send user content for processing. Acceptance Criteria: Backend receives/acknowledges text, receives/extracts text from PDF, returns 201 Created with content_id, security best practices, scalability.</snippet>
+  </section>
+</doc>
+<doc path="docs/architecture.md" title="Architecture">
+  <section name="Decision Summary">
+    <snippet>Data Persistence: PostgreSQL with Prisma ORM. API Communication: RESTful (Next.js ↔ FastAPI). File Storage: Temporary/Ephemeral for PDFs.</snippet>
+  </section>
+  <section name="Project Structure">
+    <snippet>Backend: `fastapi-backend/app/api/v1/upload.py`, `fastapi-backend/app/services/content_service.py`, `fastapi-backend/app/db/`.</snippet>
+  </section>
+  <section name="Consistency Rules - Naming Conventions">
+    <snippet>Backend Python Modules/Files: snake_case. Functions/Methods: snake_case. Classes: PascalCase. API Endpoints: kebab-case.</snippet>
+  </section>
+  <section name="Consistency Rules - Code Organization">
+    <snippet>Backend `api/` for routers, `services/` for business logic, `db/` for data models.</snippet>
+  </section>
+  <section name="Consistency Rules - Testing Strategy">
+    <snippet>Backend Integration Tests: For API endpoints using `pytest` with FastAPI's `TestClient`.</snippet>
+  </section>
+  <section name="Data Architecture - Data Models and Relationships">
+    <snippet>Content: (id, raw_text, uploadedAt, fileName). Relationships: Content to Summaries/Quizzes.</snippet>
+  </section>
+  <section name="API Contracts - High-Level API Endpoints">
+    <snippet>`POST /api/upload/text`, `POST /api/upload/pdf`.</snippet>
+  </section>
+  <section name="Security Architecture - Security Approach">
+    <snippet>General Best Practices: Input validation, output encoding. PDF Handling: Temporary processing minimizes risk.</snippet>
+  </section>
+  <section name="Performance Considerations - Performance Strategies">
+    <snippet>FastAPI Asynchronous: Leverage for concurrent requests.</snippet>
+  </section>
+</doc>
+<doc path="docs/sprint-artifacts/tech-spec-epic-epic-1.md" title="Epic Technical Specification: Foundation & Core Content Input">
+  <section name="Detailed Design - Services and Modules">
+    <snippet>Backend: `api/v1/upload.py` (FastAPI router), `services/content_service.py` (extracts text, stores metadata), `llm_integrations/pdf_parser.py` (PDF text extraction).</snippet>
+  </section>
+  <section name="Detailed Design - Data Models and Contracts">
+    <snippet>Content Model (PostgreSQL via Prisma): `id` (UUID), `rawText` (String), `uploadedAt` (DateTime), `fileName` (String, optional).</snippet>
+  </section>
+  <section name="Detailed Design - APIs and Interfaces">
+    <snippet>`POST /api/upload/text`: Accepts `{"text_content": "string"}`, returns `{"status": "success", "data": {"content_id": "string"}}`.</snippet>
+    <snippet>`POST /api/upload/pdf`: Accepts `File (multipart/form-data)`, returns `{"status": "success", "data": {"content_id": "string"}}`.</snippet>
+  </section>
+  <section name="Detailed Design - Workflows and Sequencing">
+    <snippet>Backend processing: FastAPI endpoint receives request, extracts text from PDF, stores content metadata in PostgreSQL via Prisma, responds with `content_id`.</snippet>
+  </section>
+  <section name="Non-Functional Requirements - Security">
+    <snippet>Input Validation: Strict validation of incoming content. Data Handling: LLM API keys securely stored.</snippet>
+  </section>
+  <section name="Non-Functional Requirements - Reliability/Availability">
+    <snippet>PDF Parsing Robustness: Gracefully handle various PDF structures.</snippet>
+  </section>
+</doc>
+</docs>
+    <code>
+<code path="fastapi-backend/app/api/v1/upload.py" kind="FastAPI Router" symbol="upload_router">
+  <reason>This module will contain the API endpoints for receiving text and PDF content.</reason>
+</code>
+<code path="fastapi-backend/app/services/content_service.py" kind="Python Service" symbol="ContentService">
+  <reason>This service will handle the business logic for content processing, text extraction, and database interaction.</reason>
+</code>
+<code path="fastapi-backend/app/llm_integrations/pdf_parser.py" kind="Python Utility" symbol="PDFParser">
+  <reason>This utility will encapsulate PDF text extraction logic.</reason>
+</code>
+<code path="fastapi-backend/app/db/schemas.py" kind="Pydantic Schema" symbol="ContentCreate">
+  <reason>Pydantic schema for validating incoming content data.</reason>
+</code>
+<code path="fastapi-backend/app/db/models.py" kind="Prisma Model" symbol="Content">
+  <reason>Prisma model definition for storing content metadata.</reason>
+</code>
+</code>
+    <dependencies>
+<ecosystem name="Node.js/npm">
+    <package name="next" version="latest" />
+    <package name="react" version="latest" />
+    <package name="react-dom" version="latest" />
+    <package name="tailwindcss" version="latest" />
+    <package name="autoprefixer" version="latest" />
+    <package name="postcss" version="latest" />
+    <package name="headlessui" version="latest" />
+  </ecosystem>
+  <ecosystem name="Python/pip">
+    <package name="fastapi" version="latest" />
+    <package name="uvicorn" version="latest" />
+    <package name="prisma" version="latest" />
+    <package name="python-dotenv" version="latest" />
+    <package name="python-multipart" version="latest" />
+    <package name="pdfminer.six" version="latest" />
+    <package name="httpx" version="latest" />
+    <package name="psycopg2-binary" version="latest" />
+  </ecosystem>
+  <ecosystem name="Database">
+    <package name="PostgreSQL" version="15" />
+  </ecosystem>
+  <ecosystem name="Containerization">
+    <package name="Docker" version="latest" />
+  </ecosystem>
+</dependencies>
+  </artifacts>
+
+  <constraints>
+<constraint type="Architectural">
+  <description>Frontend is Next.js (JavaScript) with Tailwind CSS and Headless UI.</description>
+</constraint>
+<constraint type="Architectural">
+  <description>Backend is FastAPI (Python) with PostgreSQL and Prisma ORM.</description>
+</constraint>
+<constraint type="Architectural">
+  <description>API communication is RESTful via HTTP between frontend and backend.</description>
+</constraint>
+<constraint type="Development">
+  <description>Local development uses Docker Compose for frontend, backend, and PostgreSQL.</description>
+</constraint>
+<constraint type="Naming Convention">
+  <description>Backend Python Modules/Files: snake_case. Functions/Methods: snake_case. Classes: PascalCase. API Endpoints: kebab-case.</description>
+</constraint>
+<constraint type="Code Organization">
+  <description>Backend `api/` for routers, `services/` for business logic, `db/` for data models, `llm_integrations/` for PDF parsing.</description>
+</constraint>
+<constraint type="Testing">
+  <description>Integration tests for `/api/upload/text` and `/api/upload/pdf` endpoints using `pytest` and FastAPI's `TestClient`.</description>
+</constraint>
+<constraint type="Performance">
+  <description>Backend must handle at least 10 concurrent content upload requests. FastAPI Asynchronous for efficient handling (NFR1).</description>
+</constraint>
+<constraint type="Security">
+  <description>Strict input validation and sanitization for received content (NFR3).</description>
+</constraint>
+<constraint type="File Handling">
+  <description>PDFs are processed upon upload and not stored persistently (Temporary/Ephemeral Storage).</description>
+</constraint>
+</constraints>
+  <interfaces>
+<interface name="UploadTextAPI" kind="REST endpoint" signature="POST /api/upload/text" path="fastapi-backend/app/api/v1/upload.py">
+  <description>Accepts plain text content for processing.</description>
+</interface>
+<interface name="UploadPdfAPI" kind="REST endpoint" signature="POST /api/upload/pdf" path="fastapi-backend/app/api/v1/upload.py">
+  <description>Accepts PDF file for text extraction and processing. Frontend will call this endpoint.</description>
+</interface>
+</interfaces>
+  <tests>
+    <standards>
+<paragraph>Backend (FastAPI) Unit and Integration tests will use `pytest`.</paragraph>
+<paragraph>Testing will follow a layered approach including Unit, Integration, and E2E tests, with focus on Integration tests for API endpoints for this story.</paragraph>
+</standards>
+    <locations>
+<location kind="backend_integration" path="fastapi-backend/tests/api/v1/test_upload.py" />
+<location kind="backend_unit" path="fastapi-backend/app/services/test_content_service.py" />
+<location kind="backend_unit" path="fastapi-backend/app/llm_integrations/test_pdf_parser.py" />
+</locations>
+    <ideas>
+<idea type="Integration" priority="P0">
+  <description>Verify `POST /api/upload/text` successfully receives and acknowledges text, returns `content_id`.</description>
+  <acceptance-criteria ref="1.4.1" />
+  <acceptance-criteria ref="1.4.3" />
+</idea>
+<idea type="Integration" priority="P0">
+  <description>Verify `POST /api/upload/pdf` successfully receives and extracts text from PDF, returns `content_id`.</description>
+  <acceptance-criteria ref="1.4.2" />
+  <acceptance-criteria ref="1.4.3" />
+</idea>
+<idea type="Unit" priority="P1">
+  <description>Verify `pdfminer.six` utility correctly extracts text from a sample PDF.</description>
+  <acceptance-criteria ref="1.4.2" />
+</idea>
+<idea type="Integration" priority="P1">
+  <description>Verify input validation for `/api/upload/text` handles empty/invalid text content.</description>
+  <acceptance-criteria ref="1.4.4" />
+</idea>
+<idea type="Integration" priority="P1">
+  <description>Verify input validation for `/api/upload/pdf` handles invalid file types or oversized files.</description>
+  <acceptance-criteria ref="1.4.4" />
+</idea>
+</ideas>
+  </tests>
+<validation-report>
+  <summary>
+    <overall>✅ PASS: Story Context for Story 1.4 is complete and ready.</overall>
+    <criticalIssues>N/A</criticalIssues>
+    <recommendedActions>N/A</recommendedActions>
+  </summary>
+</validation-report>
+</story-context>

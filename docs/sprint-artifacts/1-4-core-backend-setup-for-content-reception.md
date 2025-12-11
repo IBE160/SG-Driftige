@@ -1,6 +1,6 @@
 # Story 1.4: Core Backend Setup for Content Reception
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
@@ -65,7 +65,7 @@ This story primarily involves backend development within `fastapi-backend/app/ap
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+*   [Source: docs/sprint-artifacts/1-4-core-backend-setup-for-content-reception.context.xml]
 
 ### Agent Model Used
 

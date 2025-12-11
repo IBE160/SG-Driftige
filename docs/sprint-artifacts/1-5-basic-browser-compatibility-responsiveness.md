@@ -1,6 +1,6 @@
 # Story 1.5: Basic Browser Compatibility & Responsiveness
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
@@ -58,7 +58,7 @@ This story primarily involves frontend development, focusing on CSS and UI compo
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+*   [Source: docs/sprint-artifacts/1-5-basic-browser-compatibility-responsiveness.context.xml]
 
 ### Agent Model Used
 

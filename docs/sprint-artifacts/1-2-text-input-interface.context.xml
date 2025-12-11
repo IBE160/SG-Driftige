@@ -1,0 +1,190 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>epic-1</epicId>
+    <storyId>1.2</storyId>
+    <title>Text Input Interface</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-10</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-2-text-input-interface.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>to paste or type my notes into a dedicated text area</iWant>
+    <soThat>I can easily provide content for summarization</soThat>
+    <tasks>{{story_tasks}}</tasks>
+  </story>
+
+  <acceptanceCriteria>{{acceptance_criteria}}</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+<doc path="docs/prd-QuizZum-2025-12-05.md" title="QuizZum - Product Requirements Document">
+  <section name="Functional Requirements">
+    <snippet>FR-001: (MVP) Users can input text notes into the application. FR-21: (MVP) The system provides a radically simple and intuitive user interface.</snippet>
+  </section>
+  <section name="web_app Specific Requirements - Platform Support">
+    <snippet>Responsive Design: The application should be fully responsive and function well across various screen sizes (desktop, tablet, mobile).</snippet>
+  </section>
+</doc>
+<doc path="docs/epics-QuizZum-2025-12-05.md" title="QuizZum - Epic Breakdown">
+  <section name="Epic 1: Foundation & Core Content Input">
+    <snippet>Goal: Establish the basic application infrastructure and allow users to provide content for processing.</snippet>
+  </section>
+  <section name="Story 1.2: (MVP) Text Input Interface">
+    <snippet>User Story: As a user, I want to paste or type my notes into a dedicated text area, so that I can easily provide content for summarization. Acceptance Criteria: Prominent and usable text area, text is visible/editable, "Generate" prepares text.</snippet>
+  </section>
+</doc>
+<doc path="docs/architecture.md" title="Architecture">
+  <section name="Project Initialization">
+    <snippet>The project will be initialized using Next.js (JavaScript), Tailwind CSS, and Headless UI.</snippet>
+  </section>
+  <section name="Project Structure">
+    <snippet>Frontend components in `nextjs-frontend/src/app/(input)` and `nextjs-frontend/src/components`.</snippet>
+  </section>
+  <section name="Technology Stack Details - Core Technologies">
+    <snippet>Frontend: Next.js (JavaScript), React, Tailwind CSS, Headless UI.</snippet>
+  </section>
+  <section name="Consistency Rules - Naming Conventions">
+    <snippet>Frontend React Components: PascalCase. JS Functions/Variables: camelCase.</snippet>
+  </section>
+  <section name="Consistency Rules - Code Organization">
+    <snippet>Frontend `app/` for pages, `components/` for reusable UI, `lib/` for utilities, `hooks/` for custom hooks, `styles/` for global styles.</snippet>
+  </section>
+  <section name="Consistency Rules - Testing Strategy">
+    <snippet>Frontend Unit/Component Tests: For React components using `Jest` and `React Testing Library`.</snippet>
+  </section>
+  <section name="API Contracts - High-Level API Endpoints">
+    <snippet>`POST /api/upload/text`: Accepts plain text for processing.</snippet>
+  </section>
+</doc>
+<doc path="docs/sprint-artifacts/tech-spec-epic-epic-1.md" title="Epic Technical Specification: Foundation & Core Content Input">
+  <section name="Detailed Design - Services and Modules">
+    <snippet>Frontend: `app/(input)/page.jsx` for text/PDF input UI. `components/InputForm.jsx` for text area and PDF upload button. `lib/api.js` for calling FastAPI backend.</snippet>
+  </section>
+  <section name="Detailed Design - APIs and Interfaces">
+    <snippet>`POST /api/upload/text`: Accepts `{"text_content": "string"}`, returns `{"status": "success", "data": {"content_id": "string"}}`.</snippet>
+  </section>
+  <section name="Detailed Design - Workflows and Sequencing">
+    <snippet>User interaction: user types text, clicks "Generate". Frontend to Backend: `POST /api/upload/text`. Frontend displays loading indicator.</snippet>
+  </section>
+  <section name="Non-Functional Requirements - Performance">
+    <snippet>Frontend UI should remain responsive with loading indicators during backend processing (NFR1 from PRD, implemented via FastAPI async/WebSockets).</snippet>
+  </section>
+</doc>
+<doc path="docs/ux-design-specification.md" title="QuizZum UX Design Specification">
+  <section name="Executive Summary">
+    <snippet>Core Experience: Effortless knowledge transformation, with "Generate Summaries" as critical interaction.</snippet>
+  </section>
+  <section name="4.1 Chosen Design Approach">
+    <snippet>Feature-forward (Guided) for input screen. Emphasizes clarity, support, proactive onboarding.</snippet>
+  </section>
+  <section name="User Journey: Generate Multi-level Summaries">
+    <snippet>User inputs content, clicks "Generate Summaries". System displays progress indicator. Error States: Informative error message + Retry button.</snippet>
+  </section>
+</doc>
+</docs>
+    <code>
+<code path="nextjs-frontend/src/components/InputForm.jsx" kind="React Component" symbol="InputForm">
+  <reason>This component will contain the text area and generate button for text input.</reason>
+</code>
+<code path="nextjs-frontend/src/app/(input)/page.jsx" kind="React Page" symbol="InputPage">
+  <reason>This page will host the InputForm component for text input.</reason>
+</code>
+</code>
+    <dependencies>
+<ecosystem name="Node.js/npm">
+    <package name="next" version="latest" />
+    <package name="react" version="latest" />
+    <package name="react-dom" version="latest" />
+    <package name="tailwindcss" version="latest" />
+    <package name="autoprefixer" version="latest" />
+    <package name="postcss" version="latest" />
+    <package name="headlessui" version="latest" />
+  </ecosystem>
+  <ecosystem name="Python/pip">
+    <package name="fastapi" version="latest" />
+    <package name="uvicorn" version="latest" />
+    <package name="prisma" version="latest" />
+    <package name="python-dotenv" version="latest" />
+    <package name="python-multipart" version="latest" />
+    <package name="pdfminer.six" version="latest" />
+    <package name="httpx" version="latest" />
+    <package name="psycopg2-binary" version="latest" />
+  </ecosystem>
+  <ecosystem name="Database">
+    <package name="PostgreSQL" version="15" />
+  </ecosystem>
+  <ecosystem name="Containerization">
+    <package name="Docker" version="latest" />
+  </ecosystem>
+</dependencies>
+  </artifacts>
+
+  <constraints>
+<constraint type="Architectural">
+  <description>Frontend is Next.js (JavaScript) with Tailwind CSS and Headless UI.</description>
+</constraint>
+<constraint type="Naming Convention">
+  <description>Frontend React Components: PascalCase (e.g., InputForm). JS Functions/Variables: camelCase.</description>
+</constraint>
+<constraint type="Code Organization">
+  <description>Input page in `nextjs-frontend/src/app/(input)`, reusable component in `nextjs-frontend/src/components`.</description>
+</constraint>
+<constraint type="Testing">
+  <description>Unit/Component tests for `InputForm.jsx` component using `Jest` and `React Testing Library`.</description>
+</constraint>
+<constraint type="Performance">
+  <description>Frontend UI must remain responsive with loading indicators during backend processing (NFR1).</description>
+</constraint>
+<constraint type="Security">
+  <description>Basic client-side validation (e.g., not empty) for text input.</description>
+</constraint>
+<constraint type="UX">
+  <description>Prominent and usable text area as per UX Design Specification (Feature-forward Guided approach).</description>
+</constraint>
+<constraint type="UX">
+  <description>Responsive design for input screen.</description>
+</constraint>
+</constraints>
+  <interfaces>
+<interface name="UploadTextAPI" kind="REST endpoint" signature="POST /api/upload/text" path="fastapi-backend/app/api/v1/upload.py">
+  <description>Accepts plain text content for processing. Frontend will call this endpoint.</description>
+</interface>
+</interfaces>
+  <tests>
+    <standards>
+<paragraph>Frontend (Next.js) Unit/Component Tests will use `Jest` and `React Testing Library`.</paragraph>
+<paragraph>Testing will follow a layered approach including Unit, Integration, and E2E tests, with focus on Unit/Component tests for isolated UI components for this story.</paragraph>
+</standards>
+    <locations>
+<location kind="frontend_component" path="nextjs-frontend/src/components/InputForm.test.jsx" />
+<location kind="frontend_page" path="nextjs-frontend/src/app/(input)/page.test.jsx" />
+</locations>
+    <ideas>
+<idea type="Unit/Component" priority="P0">
+  <description>Verify that the `InputForm` component renders a prominent and usable text area.</description>
+  <acceptance-criteria ref="1.2.1" />
+</idea>
+<idea type="Unit/Component" priority="P0">
+  <description>Verify that text entered into the text area is visible and editable.</description>
+  <acceptance-criteria ref="1.2.2" />
+</idea>
+<idea type="Unit/Component" priority="P0">
+  <description>Verify that clicking the "Generate" button prepares the text content for processing (e.g., calls a handler with the text).</description>
+  <acceptance-criteria ref="1.2.3" />
+</idea>
+<idea type="Unit/Component" priority="P1">
+  <description>Verify client-side validation prevents submission of empty text.</description>
+</idea>
+</ideas>
+  </tests>
+<validation-report>
+  <summary>
+    <overall>✅ PASS: Story Context for Story 1.2 is complete and ready.</overall>
+    <criticalIssues>N/A</criticalIssues>
+    <recommendedActions>N/A</recommendedActions>
+  </summary>
+</validation-report>
+</story-context>

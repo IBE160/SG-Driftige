@@ -1,6 +1,6 @@
 # Story 1.1: Project Setup & Initial Web App Structure
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
@@ -47,6 +47,12 @@ This story directly implements the foundational elements of the defined project 
 *   **Local Development:** Docker Compose.
 *   **Testing:** P0 E2E test for basic page display (`Playwright` or `Cypress`).
 
+### Learnings from Previous Story (1.1: Project Setup & Initial Web App Structure)
+
+*   **Project Setup:** The previous story established the Docker Compose setup for Next.js, FastAPI, and PostgreSQL. Developers should leverage this existing environment.
+*   **Frontend Scaffolding:** The `nextjs-frontend` project has been initialized. Developers should start building the input UI within this structure.
+*   **P0 E2E Test:** Story 1.1 included a P0 E2E test for basic page display. Subsequent stories can integrate similar E2E tests for critical user flows as needed, but this story focuses on component-level UI.
+
 ### References
 
 *   [Source: docs/architecture.md#Project-Initialization]
@@ -59,7 +65,7 @@ This story directly implements the foundational elements of the defined project 
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+*   [Source: docs/sprint-artifacts/1-1-project-setup-initial-web-app-structure.context.xml]
 
 ### Agent Model Used
 

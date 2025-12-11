@@ -1,6 +1,6 @@
 # Story 1.3: PDF Upload Interface
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
@@ -61,7 +61,7 @@ This story primarily involves frontend development within `nextjs-frontend/src/a
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+*   [Source: docs/sprint-artifacts/1-3-pdf-upload-interface.context.xml]
 
 ### Agent Model Used
 

@@ -1,0 +1,180 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>epic-1</epicId>
+    <storyId>1.1</storyId>
+    <title>Project Setup & Initial Web App Structure</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-10</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-1-project-setup-initial-web-app-structure.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>to set up the project repository and initial web application structure</iWant>
+    <soThat>I can begin implementing core features</soThat>
+    <tasks>{{story_tasks}}</tasks>
+  </story>
+
+  <acceptanceCriteria>{{acceptance_criteria}}</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+<doc path="docs/prd-QuizZum-2025-12-05.md" title="QuizZum - Product Requirements Document">
+  <section name="Executive Summary">
+    <snippet>QuizZum is an AI-powered learning tool designed to alleviate student overwhelm and cognitive overload when processing complex academic material. It achieves this by providing a frictionless platform to transform lecture notes (text or PDF) into structured, digestible multi-level summaries (easy, medium, hard) and adaptive quizzes that target weak spots. Its core differentiators include a radical focus on simplicity, an active and "playable" learning experience, and hierarchical, adaptive content. This tool aims to make learning more efficient, engaging, and less daunting for students.</snippet>
+  </section>
+  <section name="Project Classification">
+    <snippet>This project is classified as a Web Application (web_app) due to its web-first approach and browser-based accessibility. It operates within the EdTech domain, aligning with educational content and student learning. The overall complexity is assessed as Medium, reflecting the AI integration and adaptive features.</snippet>
+  </section>
+  <section name="Product Scope">
+    <snippet>MVP includes Text/Lecture Notes Input, PDF Upload for Notes, Multi-level Summaries, Quiz Module, Adaptive Follow-up Quizzes.</snippet>
+  </section>
+  <section name="web_app Specific Requirements - Platform Support">
+    <snippet>Single Page Application (SPA); Browser Matrix: Latest stable versions of Chrome, Edge, Firefox, Brave, Opera on desktop; Fully responsive design.</snippet>
+  </section>
+</doc>
+<doc path="docs/epics-QuizZum-2025-12-05.md" title="QuizZum - Epic Breakdown">
+  <section name="Epic 1: Foundation & Core Content Input">
+    <snippet>Goal: Establish the basic application infrastructure and allow users to provide content for processing. Covers FRs: FR1, FR2, FR18, FR19, FR20.</snippet>
+  </section>
+  <section name="Story 1.1: (MVP) Project Setup & Initial Web App Structure">
+    <snippet>User Story: As a developer, I want to set up the project repository and initial web application structure, so that I can begin implementing core features. Acceptance Criteria cover Git, SPA structure, and basic empty web page display.</snippet>
+  </section>
+</doc>
+<doc path="docs/architecture.md" title="Architecture">
+  <section name="Project Initialization">
+    <snippet>The project will be initialized using Next.js (JavaScript), Tailwind CSS, and Headless UI. Includes initial setup commands and architectural decisions provided by the starter.</snippet>
+  </section>
+  <section name="Decision Summary">
+    <snippet>Lists critical and important architectural decisions including Data Persistence (PostgreSQL with Prisma), API Communication (RESTful Next.js ↔ FastAPI), AI Integration (Direct API Calls), Deployment Target (Local/Docker).</snippet>
+  </section>
+  <section name="Project Structure">
+    <snippet>Details multi-repo structure: nextjs-frontend/, fastapi-backend/, docs/, docker-compose.yml.</snippet>
+  </section>
+  <section name="Epic to Architecture Mapping">
+    <snippet>Epic 1: Foundation & Core Content Input maps to nextjs-frontend/src/app/(input) and fastapi-backend/app/api/(upload).</snippet>
+  </section>
+  <section name="Technology Stack Details - Core Technologies">
+    <snippet>Frontend: Next.js (JavaScript), React, Tailwind CSS, Headless UI. Backend: FastAPI (Python), PostgreSQL, Prisma ORM.</snippet>
+  </section>
+  <section name="Technology Stack Details - Integration Points">
+    <snippet>Next.js Frontend ↔ FastAPI Backend (HTTP/REST), FastAPI Backend ↔ PostgreSQL (Prisma), FastAPI Backend ↔ External LLM APIs (HTTP), FastAPI Backend ↔ Frontend (WebSockets).</snippet>
+  </section>
+  <section name="Development Environment - Prerequisites">
+    <snippet>Node.js, Python, Docker, Git, pnpm/npm, pip/Poetry.</snippet>
+  </section>
+  <section name="Development Environment - Setup Commands">
+    <snippet>Includes commands for Next.js, FastAPI, and Docker Compose for local setup.</snippet>
+  </section>
+</doc>
+<doc path="docs/ux-design-specification.md" title="QuizZum UX Design Specification">
+  <section name="Executive Summary">
+    <snippet>QuizZum aims to alleviate student overwhelm. Vision: AI-powered learning, radical simplicity, active/playable learning, adaptive content. Platform: Responsive web application. UX Complexity: Medium.</snippet>
+  </section>
+  <section name="1.1 Design System Choice">
+    <snippet>Chosen Chakra UI. (NOTE: This is outdated; Architecture document specifies Tailwind CSS + Headless UI).</snippet>
+  </section>
+  <section name="3. Visual Foundation">
+    <snippet>Color System: "Serene Learning" (pastels). Typography System: Modern, readable sans-serif fonts. Spacing and Layout: 8px grid system, responsive 12-column grid.</snippet>
+  </section>
+  <section name="4.1 Chosen Design Approach">
+    <snippet>Feature-forward (Guided) for input screen. Emphasizes clarity, support, proactive onboarding.</snippet>
+  </section>
+</doc>
+</docs>
+    <code>
+</code>
+    <dependencies>
+<ecosystem name="Node.js/npm">
+    <package name="next" version="latest" />
+    <package name="react" version="latest" />
+    <package name="react-dom" version="latest" />
+    <package name="tailwindcss" version="latest" />
+    <package name="autoprefixer" version="latest" />
+    <package name="postcss" version="latest" />
+    <package name="headlessui" version="latest" />
+  </ecosystem>
+  <ecosystem name="Python/pip">
+    <package name="fastapi" version="latest" />
+    <package name="uvicorn" version="latest" />
+    <package name="prisma" version="latest" />
+    <package name="python-dotenv" version="latest" />
+    <package name="python-multipart" version="latest" />
+    <package name="pdfminer.six" version="latest" />
+    <package name="httpx" version="latest" />
+    <package name="psycopg2-binary" version="latest" />
+  </ecosystem>
+  <ecosystem name="Database">
+    <package name="PostgreSQL" version="15" />
+  </ecosystem>
+  <ecosystem name="Containerization">
+    <package name="Docker" version="latest" />
+  </ecosystem>
+</dependencies>
+  </artifacts>
+
+  <constraints>
+<constraint type="Architectural">
+  <description>Frontend is Next.js (JavaScript) with Tailwind CSS and Headless UI.</description>
+</constraint>
+<constraint type="Architectural">
+  <description>Backend is FastAPI (Python) with PostgreSQL and Prisma ORM.</description>
+</constraint>
+<constraint type="Architectural">
+  <description>API communication is RESTful via HTTP between frontend and backend.</description>
+</constraint>
+<constraint type="Development">
+  <description>Local development uses Docker Compose for frontend, backend, and PostgreSQL.</description>
+</constraint>
+<constraint type="Naming Convention">
+  <description>Frontend React Components: PascalCase. JS Functions/Variables: camelCase.</description>
+</constraint>
+<constraint type="Naming Convention">
+  <description>Backend Python Modules/Files: snake_case. Functions/Methods: snake_case. Classes: PascalCase. API Endpoints: kebab-case.</description>
+</constraint>
+<constraint type="Testing">
+  <description>P0 E2E test for basic page display required (Playwright or Cypress).</description>
+</constraint>
+<constraint type="Performance">
+  <description>Frontend UI must remain responsive with loading indicators during backend processing (NFR1).</description>
+</constraint>
+<constraint type="Security">
+  <description>Backend endpoints must incorporate general security best practices (input sanitization) (NFR3).</description>
+</constraint>
+</constraints>
+  <interfaces>
+<interface name="UploadTextAPI" kind="REST endpoint" signature="POST /api/upload/text" path="fastapi-backend/app/api/v1/upload.py">
+  <description>Accepts plain text content for processing.</description>
+</interface>
+<interface name="UploadPdfAPI" kind="REST endpoint" signature="POST /api/upload/pdf" path="fastapi-backend/app/api/v1/upload.py">
+  <description>Accepts PDF file for text extraction and processing.</description>
+</interface>
+</interfaces>
+  <tests>
+    <standards>
+<paragraph>Testing will follow a layered approach: Unit, Integration, and End-to-End (E2E).</paragraph>
+<paragraph>Backend (FastAPI) tests will use `pytest` for Unit and Integration tests. Frontend (Next.js) tests will use `Jest` and `React Testing Library` for Unit/Component tests.</paragraph>
+<paragraph>E2E tests will use `Playwright` or `Cypress` for critical user flows.</paragraph>
+<paragraph>Quality gate criteria include 100% pass rate for P0 tests, and coverage targets for unit/integration tests.</paragraph>
+</standards>
+    <locations>
+<location kind="backend" path="fastapi-backend/tests/" />
+<location kind="frontend" path="nextjs-frontend/tests/" />
+<location kind="frontend_component" path="nextjs-frontend/src/**/*.test.{js,jsx}" />
+</locations>
+    <ideas>
+<idea type="E2E" priority="P0">
+  <description>Verify basic empty web page is displayed and application launches successfully via Docker Compose.</description>
+  <acceptance-criteria ref="1.1.3" />
+</idea>
+</ideas>
+  </tests>
+<validation-report>
+  <summary>
+    <overall>✅ PASS: Story Context for Story 1.1 is complete and ready.</overall>
+    <criticalIssues>N/A</criticalIssues>
+    <recommendedActions>N/A</recommendedActions>
+  </summary>
+</validation-report>
+</story-context>

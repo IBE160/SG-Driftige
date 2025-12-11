@@ -1,0 +1,206 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>epic-1</epicId>
+    <storyId>1.3</storyId>
+    <title>PDF Upload Interface</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-10</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/1-3-pdf-upload-interface.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>to upload a PDF file containing my notes</iWant>
+    <soThat>I can provide content for summarization without manual copying</soThat>
+    <tasks>{{story_tasks}}</tasks>
+  </story>
+
+  <acceptanceCriteria>{{acceptance_criteria}}</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+<doc path="docs/prd-QuizZum-2025-12-05.md" title="QuizZum - Product Requirements Document">
+  <section name="Functional Requirements">
+    <snippet>FR-002: (MVP) Users can upload PDF documents containing notes. FR-21: (MVP) The system provides a radically simple and intuitive user interface.</snippet>
+  </section>
+  <section name="web_app Specific Requirements - Platform Support">
+    <snippet>Responsive Design: The application should be fully responsive and function well across various screen sizes (desktop, tablet, mobile).</snippet>
+  </section>
+  <section name="Assumptions, Constraints, and Risks - Technical Constraints and Unknowns">
+    <snippet>PDF Parsing: The accuracy of text extraction from PDFs, especially those with complex layouts, images, or tables, is a technical challenge.</snippet>
+  </section>
+</doc>
+<doc path="docs/epics-QuizZum-2025-12-05.md" title="QuizZum - Epic Breakdown">
+  <section name="Epic 1: Foundation & Core Content Input">
+    <snippet>Goal: Establish the basic application infrastructure and allow users to provide content for processing.</snippet>
+  </section>
+  <section name="Story 1.3: (MVP) PDF Upload Interface">
+    <snippet>User Story: As a user, I want to upload a PDF file containing my notes, so that I can provide content for summarization without manual copying. Acceptance Criteria: Clearly labeled "Upload PDF" button, file name displayed, PDF content prepared for processing.</snippet>
+  </section>
+</doc>
+<doc path="docs/architecture.md" title="Architecture">
+  <section name="Project Initialization">
+    <snippet>The project will be initialized using Next.js (JavaScript), Tailwind CSS, and Headless UI.</snippet>
+  </section>
+  <section name="Decision Summary">
+    <snippet>File Storage: Temporary/Ephemeral Storage for PDFs. API Communication: RESTful Next.js Frontend ↔ FastAPI Backend.</snippet>
+  </section>
+  <section name="Project Structure">
+    <snippet>Frontend components in `nextjs-frontend/src/app/(input)` and `nextjs-frontend/src/components`.</snippet>
+  </section>
+  <section name="Technology Stack Details - Core Technologies">
+    <snippet>Frontend: Next.js (JavaScript), React, Tailwind CSS, Headless UI. Backend: FastAPI (Python), PostgreSQL, Prisma ORM.</snippet>
+  </section>
+  <section name="Consistency Rules - Naming Conventions">
+    <snippet>Frontend React Components: PascalCase. JS Functions/Variables: camelCase.</snippet>
+  </section>
+  <section name="Consistency Rules - Code Organization">
+    <snippet>Frontend `app/` for pages, `components/` for reusable UI, `lib/` for utilities, `hooks/` for custom hooks, `styles/` for global styles.</snippet>
+  </section>
+  <section name="Consistency Rules - Testing Strategy">
+    <snippet>Frontend Unit/Component Tests: For React components using `Jest` and `React Testing Library`.</snippet>
+    <snippet>Backend Integration Tests: For API endpoints and service interactions using `pytest` with FastAPI's `TestClient`.</snippet>
+  </section>
+  <section name="API Contracts - High-Level API Endpoints">
+    <snippet>`POST /api/upload/pdf`: Accepts a PDF file for processing.</snippet>
+  </section>
+</doc>
+<doc path="docs/sprint-artifacts/tech-spec-epic-epic-1.md" title="Epic Technical Specification: Foundation & Core Content Input">
+  <section name="Detailed Design - Services and Modules">
+    <snippet>Frontend: `app/(input)/page.jsx` for text/PDF input UI. `components/InputForm.jsx` for text area and PDF upload button. `lib/api.js` for calling FastAPI backend.</snippet>
+  </section>
+  <section name="Detailed Design - APIs and Interfaces">
+    <snippet>`POST /api/upload/pdf`: Accepts `File (multipart/form-data)`, returns `{"status": "success", "data": {"content_id": "string"}}`.</snippet>
+  </section>
+  <section name="Detailed Design - Workflows and Sequencing">
+    <snippet>User interaction: user uploads PDF, clicks "Generate". Frontend to Backend: `POST /api/upload/pdf`. Frontend displays loading indicator.</snippet>
+  </section>
+  <section name="Non-Functional Requirements - Reliability/Availability">
+    <snippet>PDF Parsing Robustness: The PDF parser should gracefully handle various PDF structures and potential corruption, providing clear error messages for failures.</snippet>
+  </section>
+  <section name="Risks, Assumptions, Open Questions">
+    <snippet>PDF Parsing Accuracy: Risk of inaccurate text extraction from complex PDF layouts. Mitigation: Utilize robust PDF parsing library (`pdfminer.six`), implement error handling for parsing failures.</snippet>
+  </section>
+</doc>
+<doc path="docs/ux-design-specification.md" title="QuizZum UX Design Specification">
+  <section name="Executive Summary">
+    <snippet>Core Experience: Effortless knowledge transformation. Vision: AI-powered learning.</snippet>
+  </section>
+  <section name="4.1 Chosen Design Approach">
+    <snippet>Feature-forward (Guided) for input screen. Emphasizes clarity, support, proactive onboarding.</snippet>
+  </section>
+  <section name="User Journey: Generate Multi-level Summaries">
+    <snippet>Input Content: User uploads PDF, clicks "Generate Summaries". System displays progress indicator.</snippet>
+  </section>
+</doc>
+</docs>
+    <code>
+<code path="nextjs-frontend/src/components/InputForm.jsx" kind="React Component" symbol="InputForm">
+  <reason>This component will be enhanced to include PDF upload functionality.</reason>
+</code>
+<code path="nextjs-frontend/src/app/(input)/page.jsx" kind="React Page" symbol="InputPage">
+  <reason>This page will host the InputForm component for PDF upload.</reason>
+</code>
+</code>
+    <dependencies>
+<ecosystem name="Node.js/npm">
+    <package name="next" version="latest" />
+    <package name="react" version="latest" />
+    <package name="react-dom" version="latest" />
+    <package name="tailwindcss" version="latest" />
+    <package name="autoprefixer" version="latest" />
+    <package name="postcss" version="latest" />
+    <package name="headlessui" version="latest" />
+  </ecosystem>
+  <ecosystem name="Python/pip">
+    <package name="fastapi" version="latest" />
+    <package name="uvicorn" version="latest" />
+    <package name="prisma" version="latest" />
+    <package name="python-dotenv" version="latest" />
+    <package name="python-multipart" version="latest" />
+    <package name="pdfminer.six" version="latest" />
+    <package name="httpx" version="latest" />
+    <package name="psycopg2-binary" version="latest" />
+  </ecosystem>
+  <ecosystem name="Database">
+    <package name="PostgreSQL" version="15" />
+  </ecosystem>
+  <ecosystem name="Containerization">
+    <package name="Docker" version="latest" />
+  </ecosystem>
+</dependencies>
+  </artifacts>
+
+  <constraints>
+<constraint type="Architectural">
+  <description>Frontend is Next.js (JavaScript) with Tailwind CSS and Headless UI.</description>
+</constraint>
+<constraint type="Naming Convention">
+  <description>Frontend React Components: PascalCase (e.g., InputForm). JS Functions/Variables: camelCase.</description>
+</constraint>
+<constraint type="Code Organization">
+  <description>Input page in `nextjs-frontend/src/app/(input)`, reusable component in `nextjs-frontend/src/components`.</description>
+</constraint>
+<constraint type="Testing">
+  <description>Unit/Component tests for `InputForm.jsx` component using `Jest` and `React Testing Library`.</description>
+</constraint>
+<constraint type="Performance">
+  <description>Frontend UI must remain responsive with loading indicators during backend processing (NFR1).</description>
+</constraint>
+<constraint type="Security">
+  <description>Basic client-side validation for PDF file types and initial size checks.</description>
+</constraint>
+<constraint type="UX">
+  <description>Clearly labeled "Upload PDF" button or drag-and-drop zone as per UX Design Specification.</description>
+</constraint>
+<constraint type="UX">
+  <description>Responsive design for input screen.</description>
+</constraint>
+<constraint type="File Handling">
+  <description>PDFs are processed upon upload and not stored persistently (Temporary/Ephemeral Storage).</description>
+</constraint>
+</constraints>
+  <interfaces>
+<interface name="UploadPdfAPI" kind="REST endpoint" signature="POST /api/upload/pdf" path="fastapi-backend/app/api/v1/upload.py">
+  <description>Accepts PDF file for text extraction and processing. Frontend will call this endpoint.</description>
+</interface>
+</interfaces>
+  <tests>
+    <standards>
+<paragraph>Frontend (Next.js) Unit/Component Tests will use `Jest` and `React Testing Library`.</paragraph>
+<paragraph>Testing will follow a layered approach including Unit, Integration, and E2E tests, with focus on Unit/Component tests for isolated UI components for this story.</paragraph>
+</standards>
+    <locations>
+<location kind="frontend_component" path="nextjs-frontend/src/components/InputForm.test.jsx" />
+<location kind="frontend_page" path="nextjs-frontend/src/app/(input)/page.test.jsx" />
+</locations>
+    <ideas>
+<idea type="Unit/Component" priority="P0">
+  <description>Verify that the `InputForm` component displays a clearly labeled "Upload PDF" button or drag-and-drop zone.</description>
+  <acceptance-criteria ref="1.3.1" />
+</idea>
+<idea type="Unit/Component" priority="P0">
+  <description>Verify that when a PDF file is selected, its name is displayed to the user.</description>
+  <acceptance-criteria ref="1.3.2" />
+</idea>
+<idea type="Unit/Component" priority="P0">
+  <description>Verify that clicking the "Generate" button prepares the PDF content for processing (e.g., calls a handler with the file).</description>
+  <acceptance-criteria ref="1.3.3" />
+</idea>
+<idea type="Unit/Component" priority="P1">
+  <description>Verify client-side validation prevents submission of non-PDF file types.</description>
+</idea>
+<idea type="Unit/Component" priority="P1">
+  <description>Verify client-side validation prevents submission of files exceeding initial size checks.</description>
+</idea>
+</ideas>
+  </tests>
+<validation-report>
+  <summary>
+    <overall>✅ PASS: Story Context for Story 1.3 is complete and ready.</overall>
+    <criticalIssues>N/A</criticalIssues>
+    <recommendedActions>N/A</recommendedActions>
+  </summary>
+</validation-report>
+</story-context>
