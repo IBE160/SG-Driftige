@@ -1,0 +1,126 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>epic-2</epicId>
+    <storyId>2.2</storyId>
+    <title>Summarization UI</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-12</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-2-summarization-ui.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>to see the generated summary displayed clearly</iWant>
+    <soThat>I can read and understand it</soThat>
+  </story>
+
+  <acceptanceCriteria>
+    1.  Given a summary is generated, when it is returned to the frontend, then the summary text is displayed in a designated output area.
+    2.  (NFR1) While the summary is being generated, a progress indicator (e.g., a spinner) is displayed to the user.
+    3.  Given the summary is displayed, when the content is long, then a scrollbar is available.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd-QuizZum-2025-12-05.md" title="QuizZum - Product Requirements Document">
+        <section name="Functional Requirements">
+          <snippet>FR-008: (MVP) Content (summaries) is structured for maximum readability (bullet points, headings, sections). FR-21: (MVP) The system provides a radically simple and intuitive user interface.</snippet>
+        </section>
+        <section name="Non-Functional Requirements">
+          <snippet>NFR1: The application should provide responsive feedback (e.g., progress bars, animations) to the user during AI processing tasks...</snippet>
+        </section>
+      </doc>
+      <doc path="docs/epics-QuizZum-2025-12-05.md" title="QuizZum - Epic Breakdown">
+        <section name="Epic 2: Multi-level Summarization">
+          <snippet>Goal: Enable users to generate and consume multi-level summaries of their content.</snippet>
+        </section>
+        <section name="Story 2.2: (MVP) Summarization UI">
+          <snippet>User Story: As a user, I want to see the generated summary displayed clearly, so that I can read and understand it.</snippet>
+        </section>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture">
+        <section name="Technology Stack Details - Core Technologies">
+          <snippet>Frontend: Next.js (JavaScript), React, Tailwind CSS, Headless UI.</snippet>
+        </section>
+        <section name="API Contracts - High-Level API Endpoints">
+          <snippet>`POST /api/summarize`: Accepts content ID and a difficulty level, returns a summary.</snippet>
+        </section>
+      </doc>
+      <doc path="docs/sprint-artifacts/tech-spec-epic-epic-2.md" title="Epic Technical Specification: Multi-level Summarization">
+        <section name="Detailed Design - Services and Modules">
+          <snippet>Frontend: `app/(summaries)/[contentId]/page.jsx`, `components/SummaryDisplay.jsx`, `components/DifficultyToggle.jsx`, `lib/api.js`.</snippet>
+        </section>
+      </doc>
+    </docs>
+    <code>
+      <code path="nextjs-frontend/src/app/(input)/page.jsx" kind="React Page" symbol="InputPage">
+        <reason>This existing page can be used as a reference for page structure and styling.</reason>
+      </code>
+      <code path="nextjs-frontend/src/components/InputForm.jsx" kind="React Component" symbol="InputForm">
+        <reason>This existing component can be used as a reference for form handling and component structure.</reason>
+      </code>
+    </code>
+    <dependencies>
+      <ecosystem name="Node.js/npm">
+        <package name="next" version="latest" />
+        <package name="react" version="latest" />
+        <package name="tailwindcss" version="latest" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="Architectural">
+      <description>Frontend is Next.js (JavaScript) with Tailwind CSS.</description>
+    </constraint>
+    <constraint type="Architectural">
+      <description>The UI should be responsive across mobile, tablet, and desktop screen sizes.</description>
+    </constraint>
+    <constraint type="Code Organization">
+      <description>Create new files `(summaries)/[contentId]/page.jsx` and `SummaryDisplay.jsx` in the appropriate directories (`app` and `components`).</description>
+    </constraint>
+    <constraint type="Testing">
+      <description>Unit/Component tests for the `SummaryDisplay.jsx` component are required. E2E tests for the summary display flow are also required.</description>
+    </constraint>
+  </constraints>
+  <interfaces>
+    <interface name="SummarizeAPI" kind="REST endpoint" signature="POST /api/summarize">
+      <description>The frontend will consume this API to fetch the summary data.</description>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+      <paragraph>Frontend (Next.js) Unit and Component tests will use `Jest` and `React Testing Library`. E2E tests will use `Playwright`.</paragraph>
+    </standards>
+    <locations>
+      <location kind="frontend_unit" path="nextjs-frontend/src/components/__tests__/SummaryDisplay.test.jsx" />
+      <location kind="frontend_e2e" path="nextjs-frontend/tests/summaries.spec.js" />
+    </locations>
+    <ideas>
+      <idea type="Component" priority="P0">
+        <description>Verify `SummaryDisplay.jsx` renders a loading state when fetching data.</description>
+        <acceptance-criteria ref="2" />
+      </idea>
+      <idea type="Component" priority="P0">
+        <description>Verify `SummaryDisplay.jsx` renders the summary text when data is successfully fetched.</description>
+        <acceptance-criteria ref="1" />
+      </idea>
+      <idea type="Component" priority="P1">
+        <description>Verify `SummaryDisplay.jsx` displays an error message if the API call fails.</description>
+        <acceptance-criteria ref="1" />
+      </idea>
+      <idea type="E2E" priority="P1">
+        <description>Verify navigating to `/summaries/[contentId]` shows a summary (using a mocked backend response).</description>
+        <acceptance-criteria ref="1" />
+      </idea>
+    </ideas>
+  </tests>
+  <validation-report>
+    <summary>
+      <overall>✅ PASS: Story Context for Story 2.2 is complete and ready.</overall>
+      <criticalIssues>N/A</criticalIssues>
+      <recommendedActions>N/A</recommendedActions>
+    </summary>
+  </validation-report>
+</story-context>
