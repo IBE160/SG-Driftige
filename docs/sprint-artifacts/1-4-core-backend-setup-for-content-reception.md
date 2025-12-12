@@ -25,6 +25,14 @@ so that the frontend can send user content for processing.
 - [x] Task: Ensure backend code structure adheres to modular design (`services/content_service.py`, `llm_integrations/pdf_parser.py`) for future scalability. (AC: 5)
 - [x] Task: Write Integration tests for `/api/upload/text` and `/api/upload/pdf` endpoints using `pytest` and FastAPI's `TestClient`, ensuring correct data reception, text extraction, and database storage. (AC: 1, 2, 3)
 
+### Review Follow-ups (AI)
+
+*   [x] [AI-Review][High] Re-implement content metadata storage using Prisma ORM and PostgreSQL to fulfill AC3 and the architectural mandate. This requires resolving Docker build issues related to Prisma client generation. (files: `fastapi-backend/app/services/content_service.py`, `fastapi-backend/app/db/prisma_client.py`, `fastapi-backend/app/db/models.py`)
+*   [x] [AI-Review][Medium] Verify and ensure `pdfminer.six` is fully integrated for PDF text extraction, replacing any placeholder implementation as specified in Task 2. (file: `fastapi-backend/app/llm_integrations/pdf_parser.py`)
+*   [x] [AI-Review][High] Update integration tests in `fastapi-backend/tests/api/v1/test_upload.py` to validate the correct interaction with Prisma ORM and PostgreSQL for content metadata persistence, once the Prisma integration is restored. (file: `fastapi-backend/tests/api/v1/test_upload.py`)
+*   [x] [AI-Review][Low] Review `fastapi-backend/app/api/v1/upload.py` and `fastapi-backend/app/db/schemas.py` to ensure input validation and sanitization are sufficiently comprehensive to meet "strict input validation" security best practices. (files: `fastapi-backend/app/api/v1/upload.py`, `fastapi-backend/app/db/schemas.py`)
+*   [x] [AI-Review][Low] Note: The `architecture.md` document should be updated to include specific version numbers for all technologies and a defined caching strategy to address existing critical findings. This is a cross-story architectural improvement.
+
 ## Dev Notes
 
 ### Project Context Summary
@@ -81,25 +89,32 @@ This story primarily involves backend development within `fastapi-backend/app/ap
 - ✅ Ensured backend code structure adheres to modular design.
 - ✅ Wrote integration tests for `/api/upload/text` and `/api/upload/pdf` endpoints, verifying data reception, extraction, and in-memory storage.
 - ⚠️ Reverted from Prisma integration to an in-memory solution due to persistent Docker build issues related to Prisma client generation and pathing. This is a temporary workaround.
+- ✅ Resolved review finding [High]: Re-implemented content metadata storage using Prisma ORM and PostgreSQL. (files: `fastapi-backend/package.json`, `fastapi-backend/Dockerfile`, `fastapi-backend/app/db/prisma_client.py`, `fastapi-backend/app/services/content_service.py`)
+- ✅ Resolved review finding [High]: Updated integration tests in `fastapi-backend/tests/api/v1/test_upload.py` to validate Prisma ORM/PostgreSQL persistence.
+- ✅ Resolved review finding [Medium]: Verified and ensured `pdfminer.six` is fully integrated for PDF text extraction. (file: `fastapi-backend/app/llm_integrations/pdf_parser.py`)
+- ✅ Resolved review finding [Low]: Reviewed input validation and sanitization in `fastapi-backend/app/api/v1/upload.py` and `fastapi-backend/app/db/schemas.py`, ensuring comprehensive practices.
+- ✅ Resolved review finding [Low]: Noted that `architecture.md` document should be updated for specific version numbers and caching strategy (advisory).
+- ✅ Successfully implemented comprehensive testing strategy for FastAPI endpoints, utilizing `httpx.AsyncClient` with `ASGITransport` and `pytest-asyncio` for robust asynchronous testing, ensuring proper event loop management.
+- ✅ Refactored `fastapi-backend/tests/api/v1/test_upload.py` to use `async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:` within each test function, resolving `RuntimeError` due to event loop conflicts.
+- ✅ Ensured proper database connection and cleanup in `pytest` fixtures (`setup_db`).
+- ✅ Corrected `prisma/schema.prisma` to use `provider = "prisma-client-py"`, enabling correct Python client generation.
+- ✅ Updated `fastapi-backend/requirements.txt` to include `pdfminer.six` and `reportlab`.
+- ✅ Updated `fastapi-backend/Dockerfile` to include necessary system dependencies for `pdfminer.six` and `prisma generate`.
+- ✅ Added event handlers for `startup` and `shutdown` in `app/main.py` to manage global Prisma client lifecycle.
 
 ### File List
-- added: `fastapi-backend/app/api/v1/upload.py`
-- added: `fastapi-backend/app/services/content_service.py`
-- added: `fastapi-backend/app/llm_integrations/pdf_parser.py`
-- added: `fastapi-backend/app/db/schemas.py`
-- added: `fastapi-backend/app/db/prisma_client.py` (modified to be a placeholder)
-- added: `fastapi-backend/tests/api/v1/test_upload.py`
-- added: `fastapi-backend/pytest.ini`
-- added: `fastapi-backend/app/__init__.py`
-- added: `fastapi-backend/app/api/__init__.py`
-- added: `fastapi-backend/app/api/v1/__init__.py`
-- added: `fastapi-backend/app/db/__init__.py`
-- added: `fastapi-backend/app/services/__init__.py`
-- added: `fastapi-backend/app/llm_integrations/__init__.py`
-- modified: `fastapi-backend/app/main.py`
-- modified: `fastapi-backend/requirements.txt`
+- modified: `fastapi-backend/app/api/v1/upload.py`
+- modified: `fastapi-backend/app/services/content_service.py`
+- modified: `fastapi-backend/app/llm_integrations/pdf_parser.py`
 - modified: `fastapi-backend/Dockerfile`
+- modified: `fastapi-backend/app/db/prisma_client.py`
+- modified: `fastapi-backend/prisma/schema.prisma`
 - modified: `fastapi-backend/tests/api/v1/test_upload.py`
+- modified: `fastapi-backend/requirements.txt`
+- modified: `fastapi-backend/pytest.ini`
+- added: `fastapi-backend/package.json` (temporarily added then removed)
+- added: `fastapi-backend/tests/conftest.py` (temporarily added then removed)
+
 
 ## Story Quality Validation Report
 
@@ -126,3 +141,89 @@ N/A
 *   Tasks are clearly mapped to acceptance criteria, including specific testing subtasks.
 *   Dev Notes provide specific architectural and technical guidance with relevant citations.
 *   The story structure adheres to the defined format.
+
+---
+
+## Senior Developer Review (AI)
+
+**Reviewer:** Eline&Sindre
+**Date:** 2025-12-12
+**Outcome:** BLOCKED
+**Summary:**
+This review for Story 1.4: "Core Backend Setup for Content Reception" found critical discrepancies between the planned implementation (Prisma ORM with PostgreSQL) and the actual implementation (in-memory solution). This constitutes a significant architectural deviation and a task falsely marked as complete, leading to a BLOCKED outcome for this story. Clarification on PDF parsing is also required.
+
+**Key Findings:**
+
+*   **HIGH Severity Issues:**
+    *   **AC3 (PARTIAL / ARCHITECTURAL VIOLATION):** Acceptance criterion requires integration with Prisma ORM and PostgreSQL for content metadata storage. The implementation reverted to an in-memory solution. This is a critical deviation from the approved architecture and the task definition.
+    *   **Task 3 (NOT DONE):** Task explicitly states "Integrate Prisma ORM to save content metadata... to PostgreSQL". This task was not completed as specified.
+    *   **Architectural Constraint Violation (Data Persistence):** The implementation uses an in-memory solution for content metadata storage instead of PostgreSQL with Prisma ORM, directly violating the architectural decision for data persistence as detailed in `architecture.md` and `tech-spec-epic-epic-1.md`.
+    *   **Test Coverage Gap (DB Persistence):** Integration tests were developed for the in-memory solution, but not for the intended Prisma ORM/PostgreSQL database interaction. This leaves a critical component untested.
+
+*   **MEDIUM Severity Issues:**
+    *   **AC2 (QUESTIONABLE / Functional Gap):** The task for PDF text extraction specified `pdfminer.six`, but completion notes mention "using a placeholder". This ambiguity indicates a potential functional gap or incomplete implementation of PDF text extraction.
+    *   **Task 2 (QUESTIONABLE):** The task for PDF text extraction specified `pdfminer.six`, but completion notes mention "using a placeholder".
+    *   **Task 6 (QUESTIONABLE):** Integration tests (`fastapi-backend/tests/api/v1/test_upload.py`) were written for the in-memory content storage, not for the "database storage" implied by the original Prisma ORM integration task (AC3) and confirmed by the Epic Tech Spec.
+    *   **Architectural Constraint Violation (Docker Build Issues):** Persistent Docker build issues related to Prisma client generation led to the in-memory workaround, impacting the local development environment setup.
+
+*   **LOW Severity Issues:**
+    *   **AC4 (Security):** "Basic input validation" was implemented. Further review is recommended to ensure it fully adheres to "general security best practices" and "strict input validation" as outlined in the architecture and Epic Tech Spec.
+    *   **AC5 (Scalability):** While modular design is present, actual scalability for 10 concurrent requests cannot be verified from the provided files.
+
+**Acceptance Criteria Coverage:**
+
+| AC# | Description | Status | Evidence |
+| --- | --- | --- | --- |
+| 1 | `POST /api/upload/text` receives/acknowledges text. | IMPLEMENTED | `fastapi-backend/app/api/v1/upload.py` |
+| 2 | `POST /api/upload/pdf` receives/extracts text from PDF. | QUESTIONABLE | `fastapi-backend/app/api/v1/upload.py`, `fastapi-backend/app/llm_integrations/pdf_parser.py` (placeholder noted) |
+| 3 | Appropriate HTTP responses (201 Created) with `content_id` from persistent storage. | PARTIAL (HIGH severity) | In-memory solution, not Prisma/PostgreSQL. `fastapi-backend/app/services/content_service.py`, `fastapi-backend/app/db/prisma_client.py` (placeholder) |
+| 4 | Backend endpoints incorporate general security best practices (input sanitization). | IMPLEMENTED | `fastapi-backend/app/db/schemas.py`, `fastapi-backend/app/api/v1/upload.py` |
+| 5 | Backend architecture designed with future scalability in mind. | IMPLEMENTED | Modular design (`fastapi-backend/app/services`, `fastapi-backend/app/llm_integrations`) |
+
+**Task Completion Validation:**
+
+| Task | Marked As | Verified As | Evidence |
+| --- | --- | --- | --- |
+| Implement `POST /api/upload/text`. | ✅ | VERIFIED COMPLETE | `fastapi-backend/app/api/v1/upload.py` |
+| Implement `POST /api/upload/pdf` with `pdfminer.six`. | ✅ | QUESTIONABLE | `pdfminer.six` vs. "placeholder" in notes. |
+| **Integrate Prisma ORM for content metadata to PostgreSQL.** | ✅ | **NOT DONE (HIGH Severity)** | Reverted to in-memory solution. |
+| Implement basic input validation/sanitization. | ✅ | VERIFIED COMPLETE | `fastapi-backend/app/db/schemas.py` |
+| Ensure modular backend code structure for scalability. | ✅ | VERIFIED COMPLETE | Modular design adhered to. |
+| Write Integration tests for `/api/upload/text` and `/api/upload/pdf` (incl. DB storage). | ✅ | QUESTIONABLE | Tests for in-memory, not DB storage as intended. |
+
+**Test Coverage and Gaps:**
+*   Integration tests exist for the implemented endpoints, but they validate the in-memory storage solution, not the architecturally mandated Prisma ORM/PostgreSQL integration. This is a critical gap.
+*   Test ideas for input validation are present in the story context, suggesting tests exist for AC4, but explicit verification is needed.
+
+**Architectural Alignment:**
+*   **Deviation:** Critical violation of the "Data Persistence Strategy" (PostgreSQL with Prisma ORM) due to the in-memory solution, as confirmed by both `architecture.md` and `tech-spec-epic-epic-1.md`.
+*   Minor impact on "Deployment Target" (Docker Compose) due to issues with Prisma build, leading to the workaround.
+*   Other architectural patterns (API communication, naming conventions, code organization) appear to be followed based on the file list.
+
+**Security Notes:**
+*   "Basic input validation" is present, but given the "strict input validation" mandate in architecture and Epic Tech Spec, further review is recommended to ensure robust security.
+
+**Best-Practices and References:**
+*   Frontend: Next.js (React), Tailwind CSS, Headless UI.
+*   Backend: FastAPI (Python), PostgreSQL (intended, currently in-memory), Prisma ORM (intended), `pdfminer.six` (intended/placeholder) for PDF parsing. API is RESTful.
+*   Deployment: Docker.
+*   Note on Architecture Document: The current `architecture.md` document still has critical findings: missing specific version numbers for technologies and no defined caching strategy. These should be addressed for future stories.
+
+**Action Items:**
+
+**Code Changes Required:**
+- [x] [High] Re-implement content metadata storage using Prisma ORM and PostgreSQL to fulfill AC3 and the architectural mandate. This requires resolving Docker build issues related to Prisma client generation. [file: `fastapi-backend/app/services/content_service.py`, `fastapi-backend/app/db/prisma_client.py`, `fastapi-backend/app/db/models.py` (if created)]
+- [x] [Medium] Verify and ensure `pdfminer.six` is fully integrated for PDF text extraction, replacing any placeholder implementation as specified in Task 2. [file: `fastapi-backend/app/llm_integrations/pdf_parser.py`]
+- [x] [High] Update integration tests in `fastapi-backend/tests/api/v1/test_upload.py` to validate the correct interaction with Prisma ORM and PostgreSQL for content metadata persistence, once the Prisma integration is restored. [file: `fastapi-backend/tests/api/v1/test_upload.py`]
+- [x] [Low] Review `fastapi-backend/app/api/v1/upload.py` and `fastapi-backend/app/db/schemas.py` to ensure input validation and sanitization are sufficiently comprehensive to meet "strict input validation" security best practices. [file: `fastapi-backend/app/api/v1/upload.py`, `fastapi-backend/app/db/schemas.py`]
+
+**Advisory Notes:**
+- [x] Note: The `architecture.md` document should be updated to include specific version numbers for all technologies and a defined caching strategy to address existing critical findings. This is a cross-story architectural improvement.
+---
+
+## Change Log
+
+| Date | Version | Description |
+|---|---|---|
+| 2025-12-12 | 1.0 | Senior Developer Review notes appended. |
+| 2025-12-12 | 1.1 | Completed implementation of Prisma ORM, PDF extraction, and comprehensive integration tests. Resolved Docker build issues and `asyncio` test conflicts. |

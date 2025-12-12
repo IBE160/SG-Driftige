@@ -1,77 +1,140 @@
-from fastapi.testclient import TestClient
-from app.main import app
-from app.db.prisma_client import disconnect_from_db, connect_to_db # Import from your prisma_client.py
 import pytest
-import asyncio
+from httpx import AsyncClient, ASGITransport
+from io import BytesIO
 
-# Create a TestClient instance for your FastAPI app
-client = TestClient(app)
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 
-# Use a pytest fixture for setting up and tearing down the database connection
-@pytest.fixture(scope="module")
-def event_loop():
-    loop = asyncio.get_event_loop()
-    yield loop
-    loop.close()
+from app.main import app
+from app.db.prisma_client import db
 
-@pytest.fixture(scope="module", autouse=True)
+
+def create_dummy_pdf_with_text(text: str) -> bytes:
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
+    c.drawString(100, 750, text)
+    c.showPage()
+    c.save()
+    buffer.seek(0)
+    return buffer.getvalue()
+
+
+@pytest.fixture(autouse=True)
 async def setup_db():
-    await connect_to_db()
-    yield
-    await disconnect_from_db()
+    """
+    Function-scoped autouse fixture:
+    - Ensures Prisma connects/disconnects inside the SAME event loop as each test.
+    - Prevents "Future attached to a different loop" issues.
+    """
+    await db.connect()
+    try:
+        # Clean before each test (isolated tests)
+        await db.content.delete_many()
+        yield
+        # Clean after each test (optional but nice)
+        await db.content.delete_many()
+    finally:
+        await db.disconnect()
 
-def test_upload_text():
-    response = client.post(
+
+@pytest.fixture
+async def async_client():
+    """
+    Function-scoped async HTTP client using ASGITransport.
+    """
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        yield ac
+
+
+@pytest.mark.asyncio
+async def test_upload_text(async_client: AsyncClient):
+    test_text_content = "This is a test text content."
+
+    response = await async_client.post(
         "/api/v1/upload/text",
-        json={"text_content": "This is a test text content."},
+        json={"text_content": test_text_content},
     )
-    assert response.status_code == 200
-    assert response.json()["status"] == "success"
-    assert "content_id" in response.json()["data"]
 
-def test_upload_text_validation_min_length():
-    response = client.post(
+    assert response.status_code == 201
+    body = response.json()
+    assert body["status"] == "success"
+
+    content_id = body["data"]["content_id"]
+    assert content_id is not None
+
+    retrieved_content = await db.content.find_unique(where={"id": content_id})
+    assert retrieved_content is not None
+    assert retrieved_content.rawText == test_text_content
+    assert retrieved_content.fileName is None
+
+
+@pytest.mark.asyncio
+async def test_upload_text_validation_min_length(async_client: AsyncClient):
+    response = await async_client.post(
         "/api/v1/upload/text",
         json={"text_content": "short"},
     )
-    assert response.status_code == 422 # Unprocessable Entity for validation errors
+    assert response.status_code == 422
 
-def test_upload_text_validation_max_length():
+
+@pytest.mark.asyncio
+async def test_upload_text_validation_max_length(async_client: AsyncClient):
     long_text = "a" * 5001
-    response = client.post(
+    response = await async_client.post(
         "/api/v1/upload/text",
         json={"text_content": long_text},
     )
-    assert response.status_code == 422 # Unprocessable Entity for validation errors
+    assert response.status_code == 422
 
-def test_upload_pdf():
-    # Create a dummy PDF file for testing
-    # In a real scenario, you'd use a more robust way to create a dummy PDF or a fixture
-    # For simplicity, we'll just create a minimal valid PDF content
-    dummy_pdf_content = b"%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj 2 0 obj<</Type/Pages/Count 0>>endobj\nxref\n0 3\n0000000000 65535 f\n0000000009 00000 n\n0000000074 00000 n\ntrailer<</Size 3/Root 1 0 R>>startxref\n106\n%%EOF"
-    
-    response = client.post(
+
+@pytest.mark.asyncio
+async def test_upload_pdf(async_client: AsyncClient):
+    pdf_text = "This is a test PDF with some text."
+    dummy_pdf_content = create_dummy_pdf_with_text(pdf_text)
+    test_filename = "dummy.pdf"
+
+    response = await async_client.post(
         "/api/v1/upload/pdf",
-        files={"file": ("dummy.pdf", dummy_pdf_content, "application/pdf")},
+        files={"file": (test_filename, dummy_pdf_content, "application/pdf")},
     )
-    assert response.status_code == 200
-    assert response.json()["status"] == "success"
-    assert "content_id" in response.json()["data"]
 
-def test_upload_pdf_invalid_type():
-    response = client.post(
+    assert response.status_code == 201
+    body = response.json()
+    assert body["status"] == "success"
+
+    content_id = body["data"]["content_id"]
+    assert content_id is not None
+
+    retrieved_content = await db.content.find_unique(where={"id": content_id})
+    assert retrieved_content is not None
+    assert retrieved_content.fileName == test_filename
+
+    # Depending on your PDF extraction pipeline, rawText may vary.
+    # This assertion is OK if extraction is expected to include the text we generated:
+    assert retrieved_content.rawText is not None
+    assert pdf_text in retrieved_content.rawText
+
+
+@pytest.mark.asyncio
+async def test_upload_pdf_invalid_type(async_client: AsyncClient):
+    response = await async_client.post(
         "/api/v1/upload/pdf",
         files={"file": ("dummy.txt", b"some text", "text/plain")},
     )
     assert response.status_code == 400
     assert response.json()["detail"] == "Only PDF files are allowed."
 
-def test_upload_pdf_oversize():
-    # Create a dummy PDF content larger than MAX_PDF_SIZE (10MB)
-    oversize_pdf_content = b"A" * (10 * 1024 * 1024 + 1)
-    response = client.post(
+
+@pytest.mark.asyncio
+async def test_upload_pdf_oversize(async_client: AsyncClient):
+    # 10MB + 1 byte
+    oversize_pdf = b"A" * (10 * 1024 * 1024 + 1)
+
+    response = await async_client.post(
         "/api/v1/upload/pdf",
-        files={"file": ("oversize.pdf", oversize_pdf_content, "application/pdf")},
+        files={"file": ("oversize.pdf", oversize_pdf, "application/pdf")},
     )
+
     assert response.status_code == 413
-    assert response.json()["detail"].startswith("File size exceeds the limit")
+    assert "File size exceeds the limit" in response.json()["detail"]

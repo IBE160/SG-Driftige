@@ -1,23 +1,19 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from pydantic import BaseModel, Field
-import uuid
 from app.llm_integrations.pdf_parser import extract_text_from_pdf
 from app.services.content_service import ContentService
+from app.db.schemas import ContentCreate # Import ContentCreate
 
 router = APIRouter()
 content_service = ContentService()
 
 MAX_PDF_SIZE = 10 * 1024 * 1024 # 10 MB
 
-class TextContent(BaseModel):
-    text_content: str = Field(min_length=10, max_length=5000)
-
-@router.post("/upload/text")
-async def upload_text(content: TextContent):
+@router.post("/upload/text", status_code=201) # Set status_code to 201
+async def upload_text(content: ContentCreate): # Use ContentCreate
     content_id = await content_service.save_text_content(content.text_content)
     return {"status": "success", "data": {"content_id": content_id, "message": "Content processed"}}
 
-@router.post("/upload/pdf")
+@router.post("/upload/pdf", status_code=201) # Set status_code to 201
 async def upload_pdf(file: UploadFile = File(...)):
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
