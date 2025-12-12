@@ -1,0 +1,128 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>epic-2</epicId>
+    <storyId>2.1</storyId>
+    <title>Summarization Backend Logic</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-12</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-1-summarization-backend-logic.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>to create a backend service that accepts content and generates summaries at different difficulty levels</iWant>
+    <soThat>the core summarization feature is functional</soThat>
+  </story>
+
+  <acceptanceCriteria>
+    1.  Given the backend receives content and a difficulty level ('easy', 'medium', 'hard'), when I call the summarization service, then it returns a summary corresponding to that difficulty.
+    2.  Given the LLM API call fails, when I call the service, then a proper error is returned and the system handles it gracefully.
+    3.  The service seamlessly integrates with the chosen LLM provider.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd-QuizZum-2025-12-05.md" title="QuizZum - Product Requirements Document">
+        <section name="Functional Requirements">
+          <snippet>FR-003: (MVP) The system can generate "easy" level summaries... FR-004: (MVP) The system can generate "medium" level summaries... FR-005: (MVP) The system can generate "hard" level summaries...</snippet>
+        </section>
+        <section name="Non-Functional Requirements">
+          <snippet>NFR2: LLM API integrations should be reliable, with mechanisms for retries and graceful handling... NFR6: The system must seamlessly integrate with chosen Large Language Model (LLM) providers...</snippet>
+        </section>
+      </doc>
+      <doc path="docs/epics-QuizZum-2025-12-05.md" title="QuizZum - Epic Breakdown">
+        <section name="Epic 2: Multi-level Summarization">
+          <snippet>Goal: Enable users to generate and consume multi-level summaries of their content.</snippet>
+        </section>
+        <section name="Story 2.1: (MVP) Summarization Backend Logic">
+          <snippet>User Story: As a developer, I want to create a backend service that accepts content and generates summaries at different difficulty levels, so that the core summarization feature is functional.</snippet>
+        </section>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture">
+        <section name="Technology Stack Details - Core Technologies">
+          <snippet>Backend: FastAPI (Python), PostgreSQL, Prisma ORM.</snippet>
+        </section>
+        <section name="API Contracts - High-Level API Endpoints">
+          <snippet>`POST /api/summarize`: Accepts content ID and a difficulty level, returns a summary.</snippet>
+        </section>
+      </doc>
+      <doc path="docs/sprint-artifacts/tech-spec-epic-epic-2.md" title="Epic Technical Specification: Multi-level Summarization">
+        <section name="Detailed Design - Services and Modules">
+          <snippet>Backend: `api/v1/summarize.py` (FastAPI router), `services/summarization_service.py` (business logic), `llm_integrations/summarizer.py` (LLM interaction).</snippet>
+        </section>
+        <section name="Detailed Design - APIs and Interfaces">
+          <snippet>`POST /api/summarize`: Accepts `{"content_id": "string", "difficulty": "easy" | "medium" | "hard"}`, returns `{"status": "success", "data": {"summary_text": "string"}}`.</snippet>
+        </section>
+      </doc>
+    </docs>
+    <code>
+      <code path="fastapi-backend/app/services/content_service.py" kind="Python Service" symbol="ContentService">
+        <reason>This existing service can be used as a reference for how to interact with the database via Prisma.</reason>
+      </code>
+      <code path="fastapi-backend/app/api/v1/upload.py" kind="FastAPI Router" symbol="upload_router">
+        <reason>This existing router can be used as a template for the new `summarize.py` router.</reason>
+      </code>
+    </code>
+    <dependencies>
+      <ecosystem name="Python/pip">
+        <package name="fastapi" version="latest" />
+        <package name="uvicorn" version="latest" />
+        <package name="prisma" version="latest" />
+        <package name="httpx" version="latest" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="Architectural">
+      <description>Backend is FastAPI (Python).</description>
+    </constraint>
+    <constraint type="Architectural">
+      <description>LLM integration should be done via direct API calls.</description>
+    </constraint>
+    <constraint type="Architectural">
+      <description>The existing `Content` model should be used to retrieve text for summarization.</description>
+    </constraint>
+    <constraint type="Code Organization">
+      <description>Create new files `summarize.py`, `summarization_service.py`, and `summarizer.py` in the appropriate directories (`api/v1`, `services`, `llm_integrations`).</description>
+    </constraint>
+    <constraint type="Testing">
+      <description>Integration tests for the `/api/summarize` endpoint are required, mocking the external LLM call.</description>
+    </constraint>
+  </constraints>
+  <interfaces>
+    <interface name="SummarizeAPI" kind="REST endpoint" signature="POST /api/summarize" path="fastapi-backend/app/api/v1/summarize.py">
+      <description>Accepts a content_id and difficulty to generate and return a summary.</description>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+      <paragraph>Backend (FastAPI) Unit and Integration tests will use `pytest` and `httpx.AsyncClient`.</paragraph>
+    </standards>
+    <locations>
+      <location kind="backend_integration" path="fastapi-backend/tests/api/v1/test_summarize.py" />
+    </locations>
+    <ideas>
+      <idea type="Integration" priority="P0">
+        <description>Verify `POST /api/summarize` with a valid `content_id` and `difficulty` returns a successful response with the (mocked) summary text.</description>
+        <acceptance-criteria ref="1" />
+      </idea>
+      <idea type="Integration" priority="P1">
+        <description>Verify `POST /api/summarize` returns a 404 error when an invalid `content_id` is provided.</description>
+        <acceptance-criteria ref="1" />
+      </idea>
+      <idea type="Integration" priority="P1">
+        <description>Verify `POST /api/summarize` returns a 500 error when the mocked LLM service raises an exception.</description>
+        <acceptance-criteria ref="2" />
+      </idea>
+    </ideas>
+  </tests>
+  <validation-report>
+    <summary>
+      <overall>✅ PASS: Story Context for Story 2.1 is complete and ready.</overall>
+      <criticalIssues>N/A</criticalIssues>
+      <recommendedActions>N/A</recommendedActions>
+    </summary>
+  </validation-report>
+</story-context>
