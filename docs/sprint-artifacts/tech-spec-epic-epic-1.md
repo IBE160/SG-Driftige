@@ -206,11 +206,5 @@ This Epic-Tech-Spec directly covers Functional Requirements FR1, FR2, FR18, FR19
 
 **From Story 1.4: Core Backend Setup for Content Reception**
 
-*   **Code Changes Required:**
-    *   [High] Re-implement content metadata storage using Prisma ORM and PostgreSQL to fulfill AC3 and the architectural mandate. This requires resolving Docker build issues related to Prisma client generation. (files: `fastapi-backend/app/services/content_service.py`, `fastapi-backend/app/db/prisma_client.py`, `fastapi-backend/app/db/models.py`)
-    *   [Medium] Verify and ensure `pdfminer.six` is fully integrated for PDF text extraction, replacing any placeholder implementation as specified in Task 2. (file: `fastapi-backend/app/llm_integrations/pdf_parser.py`)
-    *   [High] Update integration tests in `fastapi-backend/tests/api/v1/test_upload.py` to validate the correct interaction with Prisma ORM and PostgreSQL for content metadata persistence, once the Prisma integration is restored. (file: `fastapi-backend/tests/api/v1/test_upload.py`)
-    *   [Low] Review `fastapi-backend/app/api/v1/upload.py` and `fastapi-backend/app/db/schemas.py` to ensure input validation and sanitization are sufficiently comprehensive to meet "strict input validation" security best practices. (files: `fastapi-backend/app/api/v1/upload.py`, `fastapi-backend/app/db/schemas.py`)
-
 *   **Advisory Notes:**
-    *   Note: The `architecture.md` document should be updated to include specific version numbers for all technologies and a defined caching strategy to address existing critical findings. This is a cross-story architectural improvement.
+    *   Note: For future sprints, consider replacing `print()` statements with a structured logging approach using Python's `logging` module to align with architectural guidelines. This is a non-blocking, good practice recommendation.
