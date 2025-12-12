@@ -1,0 +1,122 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>epic-2</epicId>
+    <storyId>2.4</storyId>
+    <title>Seamless Difficulty Switching</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-12</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/2-4-seamless-difficulty-switching.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>to switch between difficulty levels without re-uploading the content</iWant>
+    <soThat>I can easily compare the summaries</soThat>
+  </story>
+
+  <acceptanceCriteria>
+    1.  Given a summary is displayed, when I select a different difficulty level, then a new summary for that level is generated and displayed without leaving the page.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc path="docs/prd-QuizZum-2025-12-05.md" title="QuizZum - Product Requirements Document">
+        <section name="Functional Requirements">
+          <snippet>FR-007: (MVP) Users can switch between different difficulty levels of generated summaries seamlessly.</snippet>
+        </section>
+      </doc>
+      <doc path="docs/epics-QuizZum-2025-12-05.md" title="QuizZum - Epic Breakdown">
+        <section name="Epic 2: Multi-level Summarization">
+          <snippet>Goal: Enable users to generate and consume multi-level summaries of their content.</snippet>
+        </section>
+        <section name="Story 2.4: (MVP) Seamless Difficulty Switching">
+          <snippet>User Story: As a user, after a summary is generated, I want to switch between difficulty levels without re-uploading the content, so that I can easily compare the summaries.</snippet>
+        </section>
+      </doc>
+      <doc path="docs/architecture.md" title="Architecture">
+        <section name="Technology Stack Details - Core Technologies">
+          <snippet>Frontend: Next.js (JavaScript), React, Tailwind CSS.</snippet>
+        </section>
+        <section name="API Contracts - High-Level API Endpoints">
+          <snippet>`POST /api/summarize`: Accepts content ID and a difficulty level, returns a summary.</snippet>
+        </section>
+      </doc>
+      <doc path="docs/sprint-artifacts/tech-spec-epic-epic-2.md" title="Epic Technical Specification: Multi-level Summarization">
+        <section name="Detailed Design - Services and Modules">
+          <snippet>Frontend: `components/SummaryDisplay.jsx`, `components/DifficultyToggle.jsx`.</snippet>
+        </section>
+        <section name="Detailed Design - APIs and Interfaces">
+          <snippet>`POST /api/summarize`: Request Body (JSON): `{"content_id": "string", "difficulty": "easy" | "medium" | "hard"}`.</snippet>
+        </section>
+        <section name="Detailed Design - Workflows and Sequencing">
+          <snippet>User Switches Difficulty: A new API call is made to `/api/summarize` with the same `contentId` but the new `difficulty`.</snippet>
+        </section>
+      </doc>
+    </docs>
+    <code>
+      <code path="nextjs-frontend/src/components/SummaryDisplay.jsx" kind="React Component" symbol="SummaryDisplay">
+        <reason>This component will be enhanced to dynamically update its content based on difficulty selection.</reason>
+      </code>
+      <code path="nextjs-frontend/src/components/DifficultyToggle.jsx" kind="React Component" symbol="DifficultyToggle">
+        <reason>This component will be used to select the difficulty level for the summaries.</reason>
+      </code>
+      <code path="nextjs-frontend/src/lib/api.js" kind="JavaScript Library" symbol="apiClient">
+        <reason>This file will be updated to handle API calls for switching difficulty.</reason>
+      </code>
+    </code>
+    <dependencies>
+      <ecosystem name="Node.js/npm">
+        <package name="next" version="latest" />
+        <package name="react" version="latest" />
+        <package name="tailwindcss" version="latest" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="Architectural">
+      <description>Frontend is Next.js (JavaScript) with Tailwind CSS.</description>
+    </constraint>
+    <constraint type="Architectural">
+      <description>Switching difficulty must trigger a new call to the `POST /api/summarize` backend endpoint.</description>
+    </constraint>
+    <constraint type="Code Organization">
+      <description>Enhancements to `SummaryDisplay.jsx` and `DifficultyToggle.jsx` (or a parent component managing both).</description>
+    </constraint>
+    <constraint type="Testing">
+      <description>Unit/Component tests for updated `SummaryDisplay.jsx` and related logic. E2E tests for the seamless switching flow are required.</description>
+    </constraint>
+  </constraints>
+  <interfaces>
+    <interface name="SummarizeAPI" kind="REST endpoint" signature="POST /api/summarize" path="fastapi-backend/app/api/v1/summarize.py">
+      <description>The frontend will call this endpoint with the updated difficulty.</description>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+      <paragraph>Frontend (Next.js) Unit and Component tests will use `Jest` and `React Testing Library`. E2E tests will use `Playwright`.</paragraph>
+    </standards>
+    <locations>
+      <location kind="frontend_unit" path="nextjs-frontend/src/components/__tests__/SummaryDisplay.test.jsx" />
+      <location kind="frontend_e2e" path="nextjs-frontend/tests/summaries.spec.js" />
+    </locations>
+    <ideas>
+      <idea type="Component" priority="P0">
+        <description>Verify `SummaryDisplay.jsx` updates its displayed summary when a new difficulty is selected.</description>
+        <acceptance-criteria ref="1" />
+      </idea>
+      <idea type="E2E" priority="P0">
+        <description>Simulate user selecting a different difficulty and verify the summary content updates dynamically (mocking backend response).</description>
+        <acceptance-criteria ref="1" />
+      </idea>
+    </ideas>
+  </tests>
+  <validation-report>
+    <summary>
+      <overall>✅ PASS: Story Context for Story 2.4 is complete and ready.</overall>
+      <criticalIssues>N/A</criticalIssues>
+      <recommendedActions>N/A</recommendedActions>
+    </summary>
+  </validation-report>
+</story-context>

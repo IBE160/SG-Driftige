@@ -48,7 +48,7 @@ development_status:
   2-1-summarization-backend-logic: ready-for-dev
   2-2-summarization-ui: ready-for-dev
   2-3-difficulty-selection-ui: ready-for-dev
-  2-4-seamless-difficulty-switching: backlog
+  2-4-seamless-difficulty-switching: ready-for-dev
   epic-2-retrospective: optional
 
   epic-3: backlog
