@@ -1,6 +1,6 @@
 # Story 1.3: PDF Upload Interface
 
-Status: review
+Status: done
 
 ## Story
 
@@ -74,11 +74,22 @@ This story primarily involves frontend development within `nextjs-frontend/src/a
 - ✅ Added client-side logic to handle file selection, display the file name, and validate for PDF file type.
 - ✅ Updated the `InputForm.jsx` component to handle either text or file input, disabling the other when one is provided.
 - ✅ Updated the Jest tests for the `InputForm.jsx` component to cover the new file upload functionality.
+- ✅ Successfully debugged and resolved Tailwind CSS integration issues by downgrading to a stable v3.x version and correctly configuring PostCSS.
 
 ### File List
 - modified: `docs/sprint-artifacts/1-3-pdf-upload-interface.md`
 - modified: `nextjs-frontend/src/components/InputForm.jsx`
 - modified: `nextjs-frontend/src/components/__tests__/InputForm.test.jsx`
+- added: `nextjs-frontend/tailwind.config.js`
+- added: `nextjs-frontend/jest.config.js`
+- added: `nextjs-frontend/jest.setup.js`
+- added: `nextjs-frontend/src/app/(input)/page.jsx`
+- added: `nextjs-frontend/src/app/layout.jsx`
+- modified: `nextjs-frontend/src/app/globals.css`
+- modified: `nextjs-frontend/postcss.config.mjs`
+- modified: `nextjs-frontend/package.json`
+- deleted: `nextjs-frontend/src/app/layout.js`
+- deleted: `nextjs-frontend/src/app/page.js`
 
 ## Story Quality Validation Report
 
@@ -105,6 +116,7 @@ N/A
 *   Tasks are clearly mapped to acceptance criteria, including specific testing subtasks.
 *   Dev Notes provide specific architectural and technical guidance with relevant citations.
 *   The story structure adheres to the defined format.
+
 
 ## Senior Developer Review (AI)
 - **Reviewer:** Eline&Sindre
