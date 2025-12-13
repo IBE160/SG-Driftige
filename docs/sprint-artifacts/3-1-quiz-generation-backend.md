@@ -1,6 +1,6 @@
 # Story 3.1: Quiz Generation Backend
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -16,25 +16,25 @@ so that users can test their knowledge.
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Implement Pydantic Schemas (AC: #1)**
-    - [ ] In `fastapi-backend/app/schemas/quiz.py`, create the `QuizQuestion`, `QuizData`, `QuizSubmission`, and `QuizResult` models as defined in the Epic 3 Tech Spec.
-- [ ] **Task 2: Create Quiz Generator Service (AC: #1, #2)**
-    - [ ] Create `fastapi-backend/app/llm_integrations/quiz_generator.py`.
-    - [ ] Implement a function to construct a detailed prompt for the LLM, requesting a structured JSON output of multiple-choice questions based on input text and difficulty.
-    - [ ] Implement a function to make the API call to the LLM and handle the response.
-- [ ] **Task 3: Implement Quiz Validator Service (AC: #3)**
-    - [ ] Create `fastapi-backend/app/services/quiz_validator.py`.
-    - [ ] Implement a service that takes the raw LLM response and validates its structure against the `QuizData` Pydantic model.
-- [ ] **Task 4: Create Main Quiz Service (AC: #1, #3)**
-    - [ ] Create `fastapi-backend/app/services/quiz_service.py`.
-    - [ ] Implement the main service that retrieves content, calls the `quiz_generator`, validates the response with the `quiz_validator`, and implements the retry logic defined in the NFRs.
-- [ ] **Task 5: Implement API Endpoint (AC: #1, #3)**
-    - [ ] Create a new router in `fastapi-backend/app/api/quiz_router.py`.
-    - [ ] Implement the `POST /api/quiz` endpoint that uses the `quiz_service`.
-    - [ ] Ensure the endpoint is added to the main FastAPI app.
-- [ ] **Task 6: Write Tests (AC: #1, #3)**
-    - [ ] Create `fastapi-backend/tests/services/test_quiz_service.py` to unit test the service logic.
-    - [ ] Create `fastapi-backend/tests/api/test_quiz_api.py` to write integration tests for the new endpoint, mocking the LLM calls and testing for success and failure scenarios.
+- [x] **Task 1: Implement Pydantic Schemas (AC: #1)**
+    - [x] In `fastapi-backend/app/schemas/quiz.py`, create the `QuizQuestion`, `QuizData`, `QuizSubmission`, and `QuizResult` models as defined in the Epic 3 Tech Spec.
+- [x] **Task 2: Create Quiz Generator Service (AC: #1, #2)**
+    - [x] Create `fastapi-backend/app/llm_integrations/quiz_generator.py`.
+    - [x] Implement a function to construct a detailed prompt for the LLM, requesting a structured JSON output of multiple-choice questions based on input text and difficulty.
+    - [x] Implement a function to make the API call to the LLM and handle the response.
+- [x] **Task 3: Implement Quiz Validator Service (AC: #3)**
+    - [x] Create `fastapi-backend/app/services/quiz_validator.py`.
+    - [x] Implement a service that takes the raw LLM response and validates its structure against the `QuizData` Pydantic model.
+- [x] **Task 4: Create Main Quiz Service (AC: #1, #3)**
+    - [x] Create `fastapi-backend/app/services/quiz_service.py`.
+    - [x] Implement the main service that retrieves content, calls the `quiz_generator`, validates the response with the `quiz_validator`, and implements the retry logic defined in the NFRs.
+- [x] **Task 5: Implement API Endpoint (AC: #1, #3)**
+    - [x] Create a new router in `fastapi-backend/app/api/quiz_router.py`.
+    - [x] Implement the `POST /api/quiz` endpoint that uses the `quiz_service`.
+    - [x] Ensure the endpoint is added to the main FastAPI app.
+- [x] **Task 6: Write Tests (AC: #1, #3)**
+    - [x] Create `fastapi-backend/tests/services/test_quiz_service.py` to unit test the service logic.
+    - [x] Create `fastapi-backend/tests/api/test_quiz_api.py` to write integration tests for the new endpoint, mocking the LLM calls and testing for success and failure scenarios.
 
 ## Dev Notes
 
@@ -79,3 +79,11 @@ This story implements the core backend logic for quiz generation, which is the f
 ### Completion Notes List
 
 ### File List
+- `fastapi-backend/app/schemas/quiz.py`
+- `fastapi-backend/app/llm_integrations/quiz_generator.py`
+- `fastapi-backend/app/services/quiz_validator.py`
+- `fastapi-backend/app/services/quiz_service.py`
+- `fastapi-backend/app/api/quiz_router.py`
+- `fastapi-backend/app/main.py` (modified)
+- `fastapi-backend/tests/services/test_quiz_service.py`
+- `fastapi-backend/tests/api/test_quiz_api.py`
