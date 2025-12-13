@@ -1,0 +1,149 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.3</storyId>
+    <title>Quiz Assessment and Feedback</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-13</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-3-quiz-assessment-feedback.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>to get immediate feedback on my answers and see a final score</iWant>
+    <soThat>I know how I performed</soThat>
+    <tasks>
+- [ ] **Task 1: Create Backend Assessment Logic (AC: #3)**
+    - [ ] In `fastapi-backend/app/services/quiz_service.py`, implement a method to assess a `QuizSubmission`.
+    - [ ] This method will need to retrieve the correct answers for the given `quiz_id` (note: this implies a need for temporary caching or storage of quiz data on the backend).
+    - [ ] It will compare the user's answers and generate a `QuizResult` object.
+- [ ] **Task 2: Create Assessment API Endpoint (AC: #3)**
+    - [ ] In `fastapi-backend/app/api/quiz_router.py`, implement the `POST /api/quiz/{quiz_id}/submit` endpoint.
+    - [ ] This endpoint will take a `QuizSubmission` and return a `QuizResult`.
+- [ ] **Task 3: Create Quiz Results Component (AC: #1, #2)**
+    - [ ] Develop the `nextjs-frontend/src/components/QuizResults.jsx` component.
+    - [ ] This component will take a `QuizResult` object as props and display the final score and a breakdown of correct/incorrect answers.
+- [ ] **Task 4: Integrate Submission and Results Display (AC: #1, #2)**
+    - [ ] In `nextjs-frontend/src/app/quiz/[quizId]/page.jsx`, add a "Submit" button that becomes active after all questions are answered.
+    - [ ] Implement the logic to call the `POST /api/quiz/{quiz_id}/submit` endpoint and display the `QuizResults` component with the response.
+- [ ] **Task 5: Write Tests (AC: #1, #2, #3)**
+    - [ ] Write unit tests for the backend assessment logic in `quiz_service.py`.
+    - [ ] Write integration tests for the `POST /api/quiz/{quiz_id}/submit` endpoint.
+    - [ ] Write component tests for the `QuizResults.jsx` component.
+    - [ ] Update the E2E test to include submitting the quiz and verifying the results page.
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1.  Given I answer a question, when I submit my answer, then I am immediately shown if it was correct or incorrect. (Covers FR15)
+2.  Given I complete the quiz, when it is over, then a summary score (e.g., "You got 8/10 correct") is displayed. (Covers FR14, FR16)
+3.  The backend correctly assesses the submitted answers against the correct answers for the quiz.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Adaptive Quizzing</title>
+        <section>APIs and Interfaces</section>
+        <snippet>
+          <![CDATA[
+- Endpoint: `POST /api/quiz/{quiz_id}/submit`
+- Request Body: `QuizSubmission`
+- Response Body (200 OK): `QuizResult`
+          ]]>
+        </snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Adaptive Quizzing</title>
+        <section>Data Models and Contracts</section>
+        <snippet>
+          <![CDATA[
+- QuizSubmission: `answers: Dict[int, int]`
+- QuizResult: `score: float`, `correct_answers: int`, `total_questions: int`, `results: Dict[int, bool]`
+          ]]>
+        </snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>API Response Format</section>
+        <snippet>
+          <![CDATA[
+- Success: `{"status": "success", "data": { ... }}`
+- Error: `{"status": "error", "message": "...", "code": "..."}`
+          ]]>
+        </snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>fastapi-backend/app/services/quiz_service.py</path>
+        <kind>service</kind>
+        <symbol>QuizService</symbol>
+        <lines>N/A</lines>
+        <reason>This service will be modified to include the assessment logic.</reason>
+      </artifact>
+      <artifact>
+        <path>nextjs-frontend/src/app/quiz/[quizId]/page.jsx</path>
+        <kind>page component</kind>
+        <symbol>QuizPage</symbol>
+        <lines>N/A</lines>
+        <reason>This page component will be modified to handle the submission of the quiz and the display of the results.</reason>
+      </artifact>
+      <artifact>
+        <path>nextjs-frontend/src/components/QuizView.jsx</path>
+        <kind>component</kind>
+        <symbol>QuizView</symbol>
+        <lines>N/A</lines>
+        <reason>This component will provide the user's answers to be sent in the submission.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="Python">
+        <dependency>fastapi==0.124.2</dependency>
+        <dependency>pydantic==2.12.5</dependency>
+      </ecosystem>
+      <ecosystem name="Node.js">
+        <dependency>next==16.0.8</dependency>
+        <dependency>react==19.2.1</dependency>
+        <dependency>@testing-library/react==^16.3.0</dependency>
+        <dependency>@playwright/test==^1.57.0</dependency>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- The backend must have a mechanism to temporarily store or cache the correct answers for a quiz between the generation and submission steps.
+- The frontend must display a loading state while the submission is being processed.
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>Submit Quiz for Assessment</name>
+      <kind>REST endpoint</kind>
+      <signature>POST /api/quiz/{quiz_id}/submit</signature>
+      <path>fastapi-backend/app/api/quiz_router.py</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+      <![CDATA[
+- **Unit Tests (Backend):** Use `pytest` to test the assessment logic in `quiz_service.py`.
+- **Integration Tests (Backend):** Use `pytest` and FastAPI's `TestClient` to test the `POST /api/quiz/{quiz_id}/submit` endpoint.
+- **Component Tests (Frontend):** Use `Jest` and `React Testing Library` to test the `QuizResults.jsx` component.
+      ]]>
+    </standards>
+    <locations>
+- `fastapi-backend/tests/services/`
+- `fastapi-backend/tests/api/`
+- `nextjs-frontend/src/components/__tests__/`
+    </locations>
+    <ideas>
+- **Unit Test:** Test the scoring logic in `quiz_service.py` with various answer combinations.
+- **Integration Test:** Test the submit endpoint with a valid payload and assert the correct `QuizResult` is returned.
+- **Component Test:** Render the `QuizResults` component with mock data and verify the score and feedback are displayed correctly.
+    </ideas>
+  </tests>
+</story-context>
