@@ -41,9 +41,7 @@ export default function SummaryPage() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">Summary for Content ID: {contentId}</h1>
-      {/* For now, difficulty selection is not implemented, but it will be passed */}
-      {/* <DifficultySelector currentDifficulty={difficulty} setDifficulty={setDifficulty} /> */}
-      <SummaryDisplay summary={summary} loading={loading} error={error} />
+      <SummaryDisplay summary={summary} loading={loading} error={error} currentDifficulty={difficulty} setDifficulty={setDifficulty} />
     </div>
   );
 }
