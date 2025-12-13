@@ -46,7 +46,7 @@ development_status:
 
   epic-2: contexted
   2-1-summarization-backend-logic: done
-  2-2-summarization-ui: ready-for-dev
+  2-2-summarization-ui: review
   2-3-difficulty-selection-ui: ready-for-dev
   2-4-seamless-difficulty-switching: ready-for-dev
   epic-2-retrospective: optional
