@@ -1,0 +1,133 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.2</storyId>
+    <title>Quiz Taking UI</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-13</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-2-quiz-taking-ui.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>to see and answer quiz questions</iWant>
+    <soThat>I can test my understanding</soThat>
+    <tasks>
+- [ ] **Task 1: Create Quiz Page (AC: #1)**
+    - [ ] Create a new Next.js page at `nextjs-frontend/src/app/quiz/[quizId]/page.jsx`.
+    - [ ] This page will be responsible for fetching the quiz data from the backend using the `quizId`.
+- [ ] **Task 2: Create Quiz View Component (AC: #1, #2)**
+    - [ ] Develop the `nextjs-frontend/src/components/QuizView.jsx` component.
+    - [ ] The component should accept quiz data as props and display one question at a time with its multiple-choice options.
+    - [ ] Implement state management to track the current question number and the user's selected answers.
+    - [ ] Include "Next" and "Previous" buttons to navigate between questions.
+- [ ] **Task 3: Update API Library (AC: #1)**
+    - [ ] Update `nextjs-frontend/src/lib/api.js` to include a `getQuiz(quizId)` function that fetches the quiz data from the backend.
+- [ ] **Task 4: Write Tests (AC: #1, #2, #3)**
+    - [ ] Write unit tests for the `QuizView.jsx` component to verify question rendering, answer selection, and navigation.
+    - [ ] Write an E2E test using Playwright to simulate a user navigating to the quiz page and answering a few questions.
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1.  Given a quiz is generated, when it is displayed, then questions are shown one at a time. (Covers FR13, FR22)
+2.  Given a question is shown, when I select an answer, then my choice is recorded. (Covers FR13)
+3.  The UI is responsive and functions correctly on desktop and mobile browsers.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Adaptive Quizzing</title>
+        <section>APIs and Interfaces</section>
+        <snippet>
+          <![CDATA[
+The UI will need to call `POST /api/quiz` to initiate the quiz generation. The response will be `QuizData`, containing the questions to be displayed.
+          ]]>
+        </snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>User Journey: Take Adaptive Quizzes</section>
+        <snippet>
+          <![CDATA[
+The quiz dynamically loads within the main content area, replacing the summary view. The first quiz question is presented. A prominent "Back to Summary" button is consistently available. The user answers one multiple-choice quiz question at a time.
+          ]]>
+        </snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Naming Conventions</section>
+        <snippet>
+          <![CDATA[
+Frontend (Next.js/React - JavaScript):
+- React Components: `PascalCase` (e.g., `UserProfileCard`). File names should match.
+- Custom React Hooks: `use` prefix then `PascalCase` (e.g., `useAuth`).
+- JavaScript Functions/Variables: `camelCase` (e.g., `formatDate`).
+          ]]>
+        </snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>nextjs-frontend/src/lib/api.js</path>
+        <kind>library</kind>
+        <symbol>N/A</symbol>
+        <lines>N/A</lines>
+        <reason>This file should be updated to include a function to fetch the quiz data from the backend.</reason>
+      </artifact>
+      <artifact>
+        <path>nextjs-frontend/src/components/SummaryDisplay.jsx</path>
+        <kind>component</kind>
+        <symbol>SummaryDisplay</symbol>
+        <lines>N/A</lines>
+        <reason>This component provides an example of how to handle loading and error states when fetching data from the backend, a pattern which should be reused for the quiz view.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="Node.js">
+        <dependency>next==16.0.8</dependency>
+        <dependency>react==19.2.1</dependency>
+        <dependency>tailwindcss==^3.3.3</dependency>
+        <dependency>@testing-library/react==^16.3.0</dependency>
+        <dependency>jest==^30.2.0</dependency>
+        <dependency>@playwright/test==^1.57.0</dependency>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- UI components must be responsive and follow the design specified in the UX Design Specification.
+- Component naming must follow the `PascalCase` convention.
+- Loading and error states must be handled gracefully in the UI.
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>Get Quiz Data</name>
+      <kind>REST endpoint</kind>
+      <signature>POST /api/quiz</signature>
+      <path>fastapi-backend/app/api/quiz_router.py</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+      <![CDATA[
+- **Unit/Component Tests:** For React components using `Jest` and `React Testing Library`.
+- **Simple End-to-End (E2E) Tests:** For critical user flows using `Playwright`.
+      ]]>
+    </standards>
+    <locations>
+- `nextjs-frontend/src/components/__tests__/`
+- `nextjs-frontend/tests/`
+    </locations>
+    <ideas>
+- **Unit Test (QuizView):** Test that the component correctly renders a single question and its options from mock props.
+- **Unit Test (QuizView):** Test that clicking an answer option correctly updates the component's state.
+- **E2E Test:** A Playwright test to simulate a user navigating to a quiz page and asserting that the first question is displayed. Backend responses should be mocked.
+    </ideas>
+  </tests>
+</story-context>
