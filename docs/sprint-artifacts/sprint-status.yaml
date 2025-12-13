@@ -49,7 +49,7 @@ development_status:
   2-2-summarization-ui: done
   2-3-difficulty-selection-ui: done
   2-4-seamless-difficulty-switching: done
-  epic-2-retrospective: optional
+  epic-2-retrospective: done
 
   epic-3: backlog
   3-1-quiz-generation-backend: backlog
