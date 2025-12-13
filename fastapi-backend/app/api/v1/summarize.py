@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from prisma import Prisma
-from app.db.schemas import SummarizeRequest, Summary
+from app.db.schemas import SummarizeRequest, Summary, SummarizeResponse
 from app.services.summarization_service import SummarizationService
 from app.llm_integrations.summarizer import LLMSummarizer
 
@@ -26,14 +26,14 @@ def get_summarization_service(
 ):
     return SummarizationService(db, summarizer)
 
-@summarize_router.post("/summarize", response_model=Summary)
+@summarize_router.post("/summarize", response_model=SummarizeResponse)
 async def summarize_content_endpoint(
     request: SummarizeRequest,
     summarization_service: SummarizationService = Depends(get_summarization_service)
 ):
     try:
         summary = await summarization_service.get_summary(request.content_id, request.difficulty)
-        return summary
+        return SummarizeResponse(data=summary)
     except HTTPException as e:
         raise e
     except Exception as e:

@@ -159,3 +159,8 @@ This Epic-Tech-Spec directly covers Functional Requirements FR3, FR4, FR5, FR6, 
     *   **Backend:** An integration test for the `/api/summarize` endpoint using `pytest` and `httpx`. This test will use a valid `content_id` from a pre-populated test database and mock the external LLM API call to ensure the entire backend workflow functions correctly.
 *   **End-to-End (E2E) Tests:**
     *   A `Playwright` test for the critical user journey: after uploading content, the user is redirected to the summary page, a summary is displayed, and the user can successfully switch between difficulty levels. This test will mock the backend's `/api/summarize` endpoint to provide predictable summary text and avoid actual LLM calls during E2E runs.
+
+## Post-Review Follow-ups
+
+*   [ ] [Low] Update `POST /api/summarize` endpoint to return responses conforming to the `{"status": "success", "data": { ... }}` envelope. (from Story 2.1)
+*   [ ] [Low] Implement Python's `logging` module for error handling in `fastapi-backend/app/llm_integrations/summarizer.py` instead of `print()` statements. (from Story 2.1)

@@ -14,3 +14,7 @@ class SummarizeRequest(BaseModel):
 
 class Summary(BaseModel):
     summary_text: str
+
+class SummarizeResponse(BaseModel):
+    status: str = "success"
+    data: Summary

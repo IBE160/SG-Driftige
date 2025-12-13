@@ -101,7 +101,7 @@ async def test_summarize_success(client, mock_prisma, mock_summarizer):
     )
 
     assert response.status_code == 200
-    assert response.json() == {"summary_text": "This is a mocked summary."}
+    assert response.json() == {"status": "success", "data": {"summary_text": "This is a mocked summary."}}
 
     # Verify calls to mocks
     mock_prisma.content.find_unique.assert_called_once_with(

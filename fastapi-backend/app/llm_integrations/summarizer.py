@@ -1,8 +1,10 @@
 from typing import Literal
 from fastapi import HTTPException, status
+import logging
 
 class LLMSummarizer:
     def __init__(self):
+        self.logger = logging.getLogger(__name__)
         # Initialize LLM client here
         # For now, this is a placeholder
         pass
@@ -29,7 +31,7 @@ class LLMSummarizer:
             return summary
         except Exception as e:
             # Log the actual error for debugging (not just return to client)
-            print(f"LLM API integration error: {e}")
+            self.logger.error(f"LLM API integration error: {e}")
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
                 detail=f"LLM service temporarily unavailable or failed to process request: {e}"
