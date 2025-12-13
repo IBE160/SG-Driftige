@@ -1,0 +1,135 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.4</storyId>
+    <title>Adaptive Follow-up Quiz</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-13</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-4-adaptive-follow-up-quiz.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>user</asA>
+    <iWant>after a quiz, I want to take a follow-up quiz on the questions I got wrong</iWant>
+    <soThat>I can reinforce my weak spots</soThat>
+    <tasks>
+- [ ] **Task 1: Create Backend Adaptive Logic (AC: #3)**
+    - [ ] In `fastapi-backend/app/services/quiz_service.py`, implement a method that takes a `QuizResult` and identifies the topics of the incorrectly answered questions.
+    - [ ] In `fastapi-backend/app/llm_integrations/quiz_generator.py`, create a new prompt template for generating a follow-up quiz that focuses on a given list of topics (the "weak spots").
+- [ ] **Task 2: Create Adaptive Follow-up API Endpoint (AC: #3)**
+    - [ ] In `fastapi-backend/app/api/quiz_router.py`, implement the `POST /api/quiz/follow-up` endpoint.
+    - [ ] This endpoint will take a `content_id` and `QuizResult`, and return a new `QuizData` object.
+- [ ] **Task 3: Implement Frontend "Practice Weak Spots" Feature (AC: #1, #2)**
+    - [ ] In the `nextjs-frontend/src/components/QuizResults.jsx` component, add a "Practice weak spots" button that is only visible if the user scored less than 100%.
+    - [ ] Implement the logic for this button to call the `POST /api/quiz/follow-up` endpoint.
+    - [ ] Upon receiving the new `QuizData`, the `QuizView` component should be re-rendered with the new set of questions.
+- [ ] **Task 4: Write Tests (AC: #1, #2, #3)**
+    - [ ] Write unit tests for the backend logic that identifies weak spots and constructs the new prompts.
+    - [ ] Write integration tests for the `POST /api/quiz/follow-up` endpoint.
+    - [ ] Update the component tests for `QuizResults.jsx` to assert that the "Practice weak spots" button appears correctly.
+    - [ ] Update the E2E test to cover the full adaptive loop: take a quiz, get a non-perfect score, click the button, and verify a new quiz loads.
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1.  Given I have completed a quiz with incorrect answers, when the score is displayed, then an option to "Practice weak spots" is available. (Covers FR17)
+2.  Given I choose to practice weak spots, when the new quiz starts, then it contains new questions that target the topics I answered incorrectly. (Covers FR17)
+3.  The backend can identify the topics of incorrectly answered questions and request a new, targeted quiz from the LLM.
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Adaptive Quizzing</title>
+        <section>APIs and Interfaces</section>
+        <snippet>
+          <![CDATA[
+- Endpoint: `POST /api/quiz/follow-up`
+- Request Body: `{ "content_id": "string", "previous_results": QuizResult }`
+- Response Body (200 OK): `QuizData` (A new quiz)
+          ]]>
+        </snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Novel Architectural Patterns</section>
+        <snippet>
+          <![CDATA[
+**Adaptive Learning for Lasting Mastery**: If user re-quizzes weak spots: Frontend requests new quiz (with weak spots). Backend retrieves original content/weak spots, prompts LLM for targeted quiz.
+          ]]>
+        </snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>User Journey: Take Adaptive Quizzes</section>
+        <snippet>
+          <![CDATA[
+If score is < 90% (Not Mastered): A clear "Generate Follow-up Quiz" button appears, explicitly stating that this new quiz will target their problem areas based on the incorrect answers.
+          ]]>
+        </snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>fastapi-backend/app/services/quiz_service.py</path>
+        <kind>service</kind>
+        <symbol>QuizService</symbol>
+        <lines>N/A</lines>
+        <reason>This service will be modified to include the logic for identifying weak spots and generating a follow-up quiz.</reason>
+      </artifact>
+      <artifact>
+        <path>nextjs-frontend/src/components/QuizResults.jsx</path>
+        <kind>component</kind>
+        <symbol>QuizResults</symbol>
+        <lines>N/A</lines>
+        <reason>This component will be modified to include the "Practice weak spots" button and the logic to trigger the follow-up quiz.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="Python">
+        <dependency>fastapi==0.124.2</dependency>
+        <dependency>pydantic==2.12.5</dependency>
+      </ecosystem>
+      <ecosystem name="Node.js">
+        <dependency>next==16.0.8</dependency>
+        <dependency>react==19.2.1</dependency>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- For the MVP, the "topic" of a weak spot will be defined as the text of the incorrectly answered question. The backend will pass this text to the LLM to generate a new, related question.
+- The frontend should ensure the user cannot trigger multiple follow-up quizzes while one is already being generated.
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>Generate Adaptive Follow-up Quiz</name>
+      <kind>REST endpoint</kind>
+      <signature>POST /api/quiz/follow-up</signature>
+      <path>fastapi-backend/app/api/quiz_router.py</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+      <![CDATA[
+- **Unit Tests (Backend):** Test the logic for extracting weak spots from a `QuizResult`.
+- **Integration Tests (Backend):** Test the `POST /api/quiz/follow-up` endpoint, mocking the LLM to ensure the correct prompt is generated based on the weak spots.
+- **E2E Tests (Frontend):** The main E2E test should be updated to cover the full adaptive loop.
+      ]]>
+    </standards>
+    <locations>
+- `fastapi-backend/tests/services/`
+- `fastapi-backend/tests/api/`
+- `nextjs-frontend/tests/`
+    </locations>
+    <ideas>
+- **Unit Test:** Test the weak spot identification logic with a mock `QuizResult` object.
+- **Integration Test:** Call the follow-up endpoint and assert that the mocked LLM receives a prompt containing the correct "weak spot" topics.
+- **E2E Test:** Simulate a user failing a quiz, clicking "Practice weak spots", and verify that a new quiz is loaded.
+    </ideas>
+  </tests>
+</story-context>
