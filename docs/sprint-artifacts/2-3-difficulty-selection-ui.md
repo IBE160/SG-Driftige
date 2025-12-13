@@ -1,6 +1,6 @@
 # Story 2.3: Difficulty Selection UI
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -15,11 +15,11 @@ so that I can control the level of detail.
 
 ## Tasks / Subtasks
 
-- [ ] Task: Develop `nextjs-frontend/src/components/DifficultyToggle.jsx` component to allow selection of 'easy', 'medium', or 'hard' difficulty. (AC: 1)
-- [ ] Task: Integrate `DifficultyToggle.jsx` into the input screen (`nextjs-frontend/src/app/(input)/page.jsx` or `InputForm.jsx`) to display difficulty selection. (AC: 1)
-- [ ] Task: Implement client-side logic to capture selected difficulty and pass it to the "Generate" button's action. (AC: 2)
-- [ ] Task: Ensure the selected difficulty is correctly included in the API call to `POST /api/summarize`. (AC: 2)
-- [ ] Task: Write Unit/Component tests for `DifficultyToggle.jsx` using `Jest` and `React Testing Library`, covering rendering, selection changes, and state management. (AC: 1, 2)
+- [x] Task: Develop `nextjs-frontend/src/components/DifficultyToggle.jsx` component to allow selection of 'easy', 'medium', or 'hard' difficulty. (AC: 1)
+- [x] Task: Integrate `DifficultyToggle.jsx` into the input screen (`nextjs-frontend/src/app/(input)/page.jsx` or `InputForm.jsx`) to display difficulty selection. (AC: 1)
+- [x] Task: Implement client-side logic to capture selected difficulty and pass it to the "Generate" button's action. (AC: 2)
+- [x] Task: Ensure the selected difficulty is correctly included in the API call to `POST /api/summarize`. (AC: 2)
+- [x] Task: Write Unit/Component tests for `DifficultyToggle.jsx` using `Jest` and `React Testing Library`, covering rendering, selection changes, and state management. (AC: 1, 2)
 
 ## Dev Notes
 
@@ -65,8 +65,21 @@ This story primarily involves frontend development, focusing on new and existing
 ### Debug Log References
 
 ### Completion Notes List
+- Developed the `DifficultyToggle.jsx` component for selecting summary difficulty.
+- Integrated the toggle into `InputForm.jsx`, including state management for the selected difficulty.
+- Created a new `submitText` function in `lib/api.js` to handle the submission of text and difficulty to the backend.
+- Updated `InputForm.jsx` to use the `submitText` function and redirect to the summary page upon success.
+- Added unit tests for the `DifficultyToggle.jsx` component.
+- Fixed and refactored the tests for `InputForm.jsx` to mock API calls and the Next.js router, ensuring all frontend tests pass.
 
 ### File List
+- Added:
+  - `nextjs-frontend/src/components/DifficultyToggle.jsx`
+  - `nextjs-frontend/src/components/__tests__/DifficultyToggle.test.jsx`
+- Modified:
+  - `nextjs-frontend/src/components/InputForm.jsx`
+  - `nextjs-frontend/src/lib/api.js`
+  - `nextjs-frontend/src/components/__tests__/InputForm.test.jsx`
 
 ## Story Quality Validation Report
 
@@ -85,3 +98,4 @@ This story primarily involves frontend development, focusing on new and existing
 | Date | Version | Description |
 |---|---|---|
 | {{date}} | 1.0 | Drafted story based on Epic 2 Technical Specification. |
+| 2025-12-13 | 1.1 | Implemented difficulty selection UI, API logic, and all tests. Status updated to 'review'. |

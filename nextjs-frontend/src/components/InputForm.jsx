@@ -1,10 +1,17 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import DifficultyToggle from './DifficultyToggle';
+import { submitText } from '../lib/api';
 
 export default function InputForm() {
   const [text, setText] = useState('');
   const [file, setFile] = useState(null);
+  const [difficulty, setDifficulty] = useState('medium');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const router = useRouter();
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -17,15 +24,27 @@ export default function InputForm() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (file) {
-      // TODO: Implement API call for file upload
-      console.log('Submitted file:', file.name);
-    }
-    else if (text.trim()) {
-      // TODO: Implement API call for text submission
-      console.log('Submitted text:', text);
+    setLoading(true);
+    setError(null);
+
+    try {
+      if (file) {
+        // TODO: Implement API call for file upload
+        console.log('Submitted file:', file.name, 'with difficulty:', difficulty);
+        // const contentId = await submitFile(file, difficulty);
+        // router.push(`/summaries/${contentId}`);
+      } else if (text.trim()) {
+        const contentId = await submitText(text, difficulty);
+        router.push(`/summaries/${contentId}`);
+      }
+    } catch (err) {
+      setError(err.message);
+      // TODO: Display error to user in a better way
+      alert(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,7 +65,7 @@ export default function InputForm() {
             setText(e.target.value);
             if (file) setFile(null); // Clear file if text is entered
           }}
-          disabled={!!file}
+          disabled={!!file || loading}
         ></textarea>
       </div>
 
@@ -84,17 +103,19 @@ export default function InputForm() {
             </div>
             <p className="text-xs text-gray-600">PDF up to 10MB</p>
           </div>
-          <input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={handleFileChange} accept=".pdf" disabled={!!text.trim()} />
+          <input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={handleFileChange} accept=".pdf" disabled={!!text.trim() || loading} />
         </label>
       </div>
+
+      <DifficultyToggle currentDifficulty={difficulty} setDifficulty={setDifficulty} />
 
       <div className="flex justify-center pt-6">
         <button
           type="submit"
           className="px-16 py-4 bg-[#A8DADC] text-black font-bold rounded-xl shadow-lg hover:bg-[#90C2C3] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#A8DADC] transition disabled:opacity-50"
-          disabled={!text.trim() && !file}
+          disabled={!text.trim() && !file || loading}
         >
-          Generate
+          {loading ? 'Generating...' : 'Generate'}
         </button>
       </div>
     </form>
