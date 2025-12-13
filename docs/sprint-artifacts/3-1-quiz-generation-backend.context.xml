@@ -1,0 +1,143 @@
+<story-context id=".bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3.1</storyId>
+    <title>Quiz Generation Backend</title>
+    <status>drafted</status>
+    <generatedAt>2025-12-13</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/sprint-artifacts/3-1-quiz-generation-backend.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>to create a backend service that generates a quiz based on the original content</iWant>
+    <soThat>users can test their knowledge</soThat>
+    <tasks>
+- [ ] Task 1: Implement Pydantic Schemas (AC: #1)
+    - [ ] In `fastapi-backend/app/schemas/quiz.py`, create the `QuizQuestion`, `QuizData`, `QuizSubmission`, and `QuizResult` models as defined in the Epic 3 Tech Spec.
+- [ ] Task 2: Create Quiz Generator Service (AC: #1, #2)
+    - [ ] Create `fastapi-backend/app/llm_integrations/quiz_generator.py`.
+    - [ ] Implement a function to construct a detailed prompt for the LLM, requesting a structured JSON output of multiple-choice questions based on input text and difficulty.
+    - [ ] Implement a function to make the API call to the LLM and handle the response.
+- [ ] Task 3: Implement Quiz Validator Service (AC: #3)
+    - [ ] Create `fastapi-backend/app/services/quiz_validator.py`.
+    - [ ] Implement a service that takes the raw LLM response and validates its structure against the `QuizData` Pydantic model.
+- [ ] Task 4: Create Main Quiz Service (AC: #1, #3)
+    - [ ] Create `fastapi-backend/app/services/quiz_service.py`.
+    - [ ] Implement the main service that retrieves content, calls the `quiz_generator`, validates the response with the `quiz_validator`, and implements the retry logic defined in the NFRs.
+- [ ] Task 5: Implement API Endpoint (AC: #1, #3)
+    - [ ] Create a new router in `fastapi-backend/app/api/quiz_router.py`.
+    - [ ] Implement the `POST /api/quiz` endpoint that uses the `quiz_service`.
+    - [ ] Ensure the endpoint is added to the main FastAPI app.
+- [ ] Task 6: Write Tests (AC: #1, #3)
+    - [ ] Create `fastapi-backend/tests/services/test_quiz_service.py` to unit test the service logic.
+    - [ ] Create `fastapi-backend/tests/api/test_quiz_api.py` to write integration tests for the new endpoint, mocking the LLM calls and testing for success and failure scenarios.
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1.  Given content is available on the backend, when the quiz generation service is called with a specific difficulty, then a set of questions and answers is returned in a structured JSON format. (Corresponds to AC #1 in Tech Spec)
+2.  The service seamlessly integrates with the chosen LLM provider for quiz generation. (Corresponds to AC #1 in Tech Spec)
+3.  Given the LLM API call fails or returns invalid data, the service handles the error gracefully and returns a `502` or `503` status code. (Corresponds to PRD NFR2)
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Adaptive Quizzing</title>
+        <section>Data Models and Contracts</section>
+        <snippet>
+          <![CDATA[
+The following Pydantic schemas will be used for data validation and serialization.
+- QuizQuestion: A single question in a quiz.
+- QuizData: The full data for a generated quiz.
+- QuizSubmission: A user's submitted answers for a quiz.
+- QuizResult: The assessment result of a quiz submission.
+          ]]>
+        </snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Adaptive Quizzing</title>
+        <section>APIs and Interfaces</section>
+        <snippet>
+          <![CDATA[
+- POST /api/quiz: Generates a quiz from content and difficulty.
+- POST /api/quiz/{quiz_id}/submit: Submits quiz answers for assessment.
+- POST /api/quiz/follow-up: Generates an adaptive follow-up quiz based on previous results.
+          ]]>
+        </snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture</title>
+        <section>Naming Conventions</section>
+        <snippet>
+          <![CDATA[
+Backend (FastAPI/Python):
+- Python Modules/Files: `snake_case` (e.g., `user_api.py`).
+- Python Functions/Methods: `snake_case` (e.g., `get_user_summary`).
+- Python Classes: `PascalCase` (e.g., `UserSummary`).
+          ]]>
+        </snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>fastapi-backend/app/services/content_service.py</path>
+        <kind>service</kind>
+        <symbol>ContentService</symbol>
+        <lines>N/A</lines>
+        <reason>This service will be used to fetch the content from the database based on the content_id provided in the API request.</reason>
+      </artifact>
+      <artifact>
+        <path>fastapi-backend/app/db/prisma_client.py</path>
+        <kind>database client</kind>
+        <symbol>get_db</symbol>
+        <lines>N/A</lines>
+        <reason>The Prisma client is required to interact with the database. The `get_db` dependency will be used in the API endpoint.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="Python">
+        <dependency>fastapi==0.124.2</dependency>
+        <dependency>pydantic==2.12.5</dependency>
+        <dependency>httpx==0.28.1</dependency>
+        <dependency>prisma==0.15.0</dependency>
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- The LLM API key must be stored as an environment variable on the backend.
+- The service must implement a retry mechanism for transient LLM API failures.
+- All backend services must use structured (JSON-formatted) logging.
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>Generate a Quiz</name>
+      <kind>REST endpoint</kind>
+      <signature>POST /api/quiz</signature>
+      <path>fastapi-backend/app/api/quiz_router.py</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+      <![CDATA[
+- **Unit Tests (Backend):** Use `pytest` to test individual functions in `quiz_service` and `quiz_generator`.
+- **Integration Tests (Backend):** Use `pytest` and FastAPI's `TestClient` to test the full API flow for all quiz endpoints. All external calls, especially to the LLM, will be mocked.
+      ]]>
+    </standards>
+    <locations>
+- `fastapi-backend/tests/services/`
+- `fastapi-backend/tests/api/`
+    </locations>
+    <ideas>
+- **AC#1:** Integration test for `POST /api/quiz` that mocks the LLM and asserts a valid `QuizData` response.
+- **AC#3:** Integration test for `POST /api/quiz` that mocks an LLM failure and asserts a `502` or `503` response.
+- **Unit Test:** Test the prompt construction logic in `quiz_generator.py`.
+    </ideas>
+  </tests>
+</story-context>
