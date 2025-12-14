@@ -69,3 +69,27 @@ export async function getQuiz(contentId, difficulty) {
         throw error;
     }
 }
+
+export async function submitQuiz(quizId, submission) {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+    try {
+        const response = await fetch(`${backendUrl}/api/v1/quiz/${quizId}/submit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(submission),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Failed to submit quiz');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error submitting quiz:', error);
+        throw error;
+    }
+}

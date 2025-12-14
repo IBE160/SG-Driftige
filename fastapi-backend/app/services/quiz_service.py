@@ -1,7 +1,9 @@
 import logging
+from typing import Dict
+from uuid import UUID
 from app.llm_integrations.quiz_generator import generate_quiz_from_llm
 from app.services.quiz_validator import validate_llm_quiz_response
-from app.schemas.quiz import QuizData
+from app.schemas.quiz import QuizData, QuizSubmission, QuizResult
 
 logger = logging.getLogger(__name__)
 
@@ -10,6 +12,9 @@ logger = logging.getLogger(__name__)
 MOCK_CONTENT_STORE = {
     "sample_content_id": "This is a sample text about the history of the internet..."
 }
+
+# In-memory cache for quiz data (quiz_id -> QuizData)
+QUIZ_CACHE: Dict[str, QuizData] = {}
 
 
 async def create_quiz(content_id: str, difficulty: str) -> QuizData:
@@ -30,13 +35,13 @@ async def create_quiz(content_id: str, difficulty: str) -> QuizData:
     for attempt in range(max_retries):
         try:
             # 2. Call the quiz generator
-            # In a real app, the response would be a dictionary from the LLM
             llm_response_dict = await generate_quiz_from_llm(content, difficulty)
             
             # 3. Validate the response
-            # The generator currently returns a QuizData object, so this validation is somewhat redundant
-            # but in a real scenario, the generator would return a dict.
-            quiz_data = validate_llm_quiz_response(llm_response_dict.dict())
+            quiz_data = validate_llm_quiz_response(llm_response_dict.model_dump())
+            
+            # Store quiz data in cache
+            QUIZ_CACHE[str(quiz_data.quiz_id)] = quiz_data
             
             return quiz_data
 
@@ -47,4 +52,35 @@ async def create_quiz(content_id: str, difficulty: str) -> QuizData:
     
     # This line should not be reachable
     raise ValueError("An unexpected error occurred in quiz creation.")
+
+
+async def assess_quiz_submission(quiz_id: UUID, submission: QuizSubmission) -> QuizResult:
+    """
+    Assesses a user's quiz submission against the correct answers.
+    """
+    quiz_data = QUIZ_CACHE.get(str(quiz_id))
+    if not quiz_data:
+        raise ValueError(f"Quiz with ID {quiz_id} not found in cache.")
+
+    correct_answers_count = 0
+    results: Dict[int, bool] = {}
+    total_questions = len(quiz_data.questions)
+
+    for i, question in enumerate(quiz_data.questions):
+        user_answer_index = submission.answers.get(i)
+        is_correct = (user_answer_index is not None and 
+                      user_answer_index == question.correct_answer_index)
+        
+        results[i] = is_correct
+        if is_correct:
+            correct_answers_count += 1
+    
+    score = (correct_answers_count / total_questions) * 100 if total_questions > 0 else 0
+
+    return QuizResult(
+        score=score,
+        correct_answers=correct_answers_count,
+        total_questions=total_questions,
+        results=results
+    )
 

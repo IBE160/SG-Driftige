@@ -2,11 +2,23 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
-export default function QuizView({ quizData }) {
+export default function QuizView({ quizData, onAnswersChange, onSubmitQuiz }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState({}); // { questionIndex: selectedOptionIndex }
+
+  useEffect(() => {
+    if (!quizData) { // Add this check
+      onAnswersChange({}, false);
+      return;
+    }
+    // Notify parent about initial answer state or when answers change
+    const allQuestionsAnswered = Object.keys(userAnswers).length === quizData.questions.length;
+    onAnswersChange(userAnswers, allQuestionsAnswered);
+  }, [userAnswers, quizData?.questions?.length, onAnswersChange, quizData]); // Add quizData to dependency array
+
 
   if (!quizData || !quizData.questions || quizData.questions.length === 0) {
     return <div className="text-center py-8">No questions available for this quiz.</div>;
@@ -14,12 +26,14 @@ export default function QuizView({ quizData }) {
 
   const currentQuestion = quizData.questions[currentQuestionIndex];
   const totalQuestions = quizData.questions.length;
+  const allQuestionsAnswered = Object.keys(userAnswers).length === totalQuestions;
 
   const handleOptionSelect = (optionIndex) => {
-    setUserAnswers({
+    const newAnswers = {
       ...userAnswers,
       [currentQuestionIndex]: optionIndex,
-    });
+    };
+    setUserAnswers(newAnswers);
   };
 
   const handleNextQuestion = () => {
@@ -70,19 +84,40 @@ export default function QuizView({ quizData }) {
         >
           Previous
         </button>
-        <button
-          onClick={handleNextQuestion}
-          disabled={isLastQuestion}
-          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
-          data-testid="next-button"
-        >
-          {isLastQuestion ? 'Submit Quiz' : 'Next'}
-        </button>
+        {!isLastQuestion && (
+          <button
+            onClick={handleNextQuestion}
+            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            data-testid="next-button"
+          >
+            Next
+          </button>
+        )}
+        {isLastQuestion && allQuestionsAnswered && (
+          <button
+            onClick={onSubmitQuiz}
+            className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+            data-testid="submit-quiz-button"
+          >
+            Submit Quiz
+          </button>
+        )}
       </div>
-
-      {!isLastQuestion && <div className="mt-4 text-sm text-gray-500 text-center">
-        (Note: Quiz submission will be implemented in a future story)
-      </div>}
     </div>
   );
 }
+
+QuizView.propTypes = {
+  quizData: PropTypes.shape({
+    quiz_id: PropTypes.string.isRequired,
+    questions: PropTypes.arrayOf(
+      PropTypes.shape({
+        question_text: PropTypes.string.isRequired,
+        options: PropTypes.arrayOf(PropTypes.string).isRequired,
+        correct_answer_index: PropTypes.number.isRequired,
+      })
+    ).isRequired,
+  }).isRequired,
+  onAnswersChange: PropTypes.func.isRequired,
+  onSubmitQuiz: PropTypes.func.isRequired,
+};

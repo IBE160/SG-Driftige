@@ -1,6 +1,6 @@
 # Story 3.3: Quiz Assessment and Feedback
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -16,24 +16,24 @@ so that I know how I performed.
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Create Backend Assessment Logic (AC: #3)**
-    - [ ] In `fastapi-backend/app/services/quiz_service.py`, implement a method to assess a `QuizSubmission`.
-    - [ ] This method will need to retrieve the correct answers for the given `quiz_id` (note: this implies a need for temporary caching or storage of quiz data on the backend).
-    - [ ] It will compare the user's answers and generate a `QuizResult` object.
-- [ ] **Task 2: Create Assessment API Endpoint (AC: #3)**
-    - [ ] In `fastapi-backend/app/api/quiz_router.py`, implement the `POST /api/quiz/{quiz_id}/submit` endpoint.
-    - [ ] This endpoint will take a `QuizSubmission` and return a `QuizResult`.
-- [ ] **Task 3: Create Quiz Results Component (AC: #1, #2)**
-    - [ ] Develop the `nextjs-frontend/src/components/QuizResults.jsx` component.
-    - [ ] This component will take a `QuizResult` object as props and display the final score and a breakdown of correct/incorrect answers.
-- [ ] **Task 4: Integrate Submission and Results Display (AC: #1, #2)**
-    - [ ] In `nextjs-frontend/src/app/quiz/[quizId]/page.jsx`, add a "Submit" button that becomes active after all questions are answered.
-    - [ ] Implement the logic to call the `POST /api/quiz/{quiz_id}/submit` endpoint and display the `QuizResults` component with the response.
-- [ ] **Task 5: Write Tests (AC: #1, #2, #3)**
-    - [ ] Write unit tests for the backend assessment logic in `quiz_service.py`.
-    - [ ] Write integration tests for the `POST /api/quiz/{quiz_id}/submit` endpoint.
-    - [ ] Write component tests for the `QuizResults.jsx` component.
-    - [ ] Update the E2E test to include submitting the quiz and verifying the results page.
+- [x] **Task 1: Create Backend Assessment Logic (AC: #3)**
+    - [x] In `fastapi-backend/app/services/quiz_service.py`, implement a method to assess a `QuizSubmission`.
+    - [x] This method will need to retrieve the correct answers for the given `quiz_id` (note: this implies a need for temporary caching or storage of quiz data on the backend).
+    - [x] It will compare the user's answers and generate a `QuizResult` object.
+- [x] **Task 2: Create Assessment API Endpoint (AC: #3)**
+    - [x] In `fastapi-backend/app/api/quiz_router.py`, implement the `POST /api/quiz/{quiz_id}/submit` endpoint.
+    - [x] This endpoint will take a `QuizSubmission` and return a `QuizResult`.
+- [x] **Task 3: Create Quiz Results Component (AC: #1, #2)**
+    - [x] Develop the `nextjs-frontend/src/components/QuizResults.jsx` component.
+    - [x] This component will take a `QuizResult` object as props and display the final score and a breakdown of correct/incorrect answers.
+- [x] **Task 4: Integrate Submission and Results Display (AC: #1, #2)**
+    - [x] In `nextjs-frontend/src/app/quiz/[quizId]/page.jsx`, add a "Submit" button that becomes active after all questions are answered.
+    - [x] Implement the logic to call the `POST /api/quiz/{quiz_id}/submit` endpoint and display the `QuizResults` component with the response.
+- [x] **Task 5: Write Tests (AC: #1, #2, #3)**
+    - [x] Write unit tests for the backend assessment logic in `quiz_service.py`.
+    - [x] Write integration tests for the `POST /api/quiz/{quiz_id}/submit` endpoint.
+    - [x] Write component tests for the `QuizResults.jsx` component.
+    - [x] Update the E2E test to include submitting the quiz and verifying the results page.
 
 ## Dev Notes
 
@@ -49,6 +49,10 @@ This story implements the feedback loop for the user, which is critical for the 
     -   `fastapi-backend/app/api/quiz_router.py`
     -   `nextjs-frontend/src/app/quiz/[quizId]/page.jsx`
     -   `nextjs-frontend/src/lib/api.js`
+    -   `fastapi-backend/tests/services/test_quiz_service.py`
+    -   `fastapi-backend/tests/api/test_quiz_api.py`
+    -   `nextjs-frontend/src/components/__tests__/QuizView.test.jsx`
+    -   `nextjs-frontend/tests/quiz.spec.js`
 
 ### Learnings from Previous Story (3.2: Quiz Taking UI)
 
@@ -75,5 +79,25 @@ This story implements the feedback loop for the user, which is critical for the 
 ### Debug Log References
 
 ### Completion Notes List
+- Implemented backend quiz assessment logic in `fastapi-backend/app/services/quiz_service.py`, including an in-memory cache for quiz data.
+- Created `POST /api/v1/quiz/{quiz_id}/submit` API endpoint in `fastapi-backend/app/api/quiz_router.py` to handle quiz submissions.
+- Developed `nextjs-frontend/src/components/QuizResults.jsx` to display quiz scores and detailed results.
+- Integrated quiz submission and results display into `nextjs-frontend/src/app/quiz/[quizId]/page.jsx`, enabling user interaction and conditional rendering.
+- Wrote/updated comprehensive tests:
+    - Unit tests for `quiz_service.py` in `fastapi-backend/tests/services/test_quiz_service.py`.
+    - Integration tests for `quiz_router.py` in `fastapi-backend/tests/api/test_quiz_api.py`.
+    - Component tests for `QuizResults.jsx` in `nextjs-frontend/src/components/__tests__/QuizResults.test.jsx`.
+    - E2E tests for the full quiz flow (generation, submission, results display) in `nextjs-frontend/tests/quiz.spec.js`.
+- All tests (backend Python, frontend Jest, and frontend Playwright E2E) passed successfully.
 
 ### File List
+- `nextjs-frontend/src/components/QuizResults.jsx` (New)
+- `nextjs-frontend/src/components/__tests__/QuizResults.test.jsx` (New)
+- `fastapi-backend/app/services/quiz_service.py` (Modified)
+- `fastapi-backend/app/api/quiz_router.py` (Modified)
+- `nextjs-frontend/src/app/quiz/[quizId]/page.jsx` (Modified)
+- `nextjs-frontend/src/lib/api.js` (Modified)
+- `fastapi-backend/tests/services/test_quiz_service.py` (Modified)
+- `fastapi-backend/tests/api/test_quiz_api.py` (Modified)
+- `nextjs-frontend/src/components/__tests__/QuizView.test.jsx` (Modified)
+- `nextjs-frontend/tests/quiz.spec.js` (Modified)
