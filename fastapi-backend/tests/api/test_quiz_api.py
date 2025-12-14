@@ -5,18 +5,9 @@ from uuid import UUID
 
 from app.main import app
 from app.schemas.quiz import QuizData, QuizResult, QuizSubmission, AdaptiveQuizRequest
-from app.services.quiz_service import QUIZ_CACHE # Import QUIZ_CACHE
 from tests.services.test_quiz_service import SAMPLE_QUIZ_DATA, SAMPLE_ADAPTIVE_QUIZ_DATA
 
 client = TestClient(app)
-
-# Fixture to clear the QUIZ_CACHE before each test that uses the client
-@pytest.fixture(autouse=True)
-def clear_quiz_cache_for_api_tests():
-    QUIZ_CACHE.clear()
-    yield
-    QUIZ_CACHE.clear()
-
 
 @patch('app.api.quiz_router.create_quiz')
 def test_generate_quiz_success(mock_create_quiz):
@@ -29,9 +20,10 @@ def test_generate_quiz_success(mock_create_quiz):
     # Assertions
     assert response.status_code == 200
     data = response.json()
-    assert data["quiz_id"] == str(SAMPLE_QUIZ_DATA.quiz_id)
-    assert len(data["questions"]) == 3
-    assert data["questions"][0]["question_text"] == "What is the capital of France?"
+    assert data["status"] == "success"
+    assert data["data"]["quiz_id"] == str(SAMPLE_QUIZ_DATA.quiz_id)
+    assert len(data["data"]["questions"]) == 3
+    assert data["data"]["questions"][0]["question_text"] == "What is the capital of France?"
 
 @patch('app.api.quiz_router.create_quiz')
 def test_generate_quiz_content_not_found(mock_create_quiz):
@@ -54,15 +46,12 @@ def test_generate_quiz_llm_failure(mock_create_quiz):
     response = client.post("/api/v1/quiz", json={"content_id": "sample", "difficulty": "easy"})
 
     # Assertions
-    assert response.status_code == 502 # Corrected from 500 to 502
+    assert response.status_code == 502
     assert response.json() == {"detail": "LLM is down"}
 
 
 @patch('app.api.quiz_router.assess_quiz_submission')
 def test_submit_quiz_success(mock_assess_quiz_submission):
-    # Pre-populate the cache as the endpoint expects quiz_id to exist
-    QUIZ_CACHE[str(SAMPLE_QUIZ_DATA.quiz_id)] = SAMPLE_QUIZ_DATA
-
     # Mock the service response
     mock_quiz_result = QuizResult(
         score=100.0,
@@ -123,9 +112,10 @@ def test_generate_adaptive_quiz_success(mock_create_adaptive_quiz):
     # Assertions
     assert response.status_code == 200
     data = response.json()
-    assert data["quiz_id"] == str(SAMPLE_ADAPTIVE_QUIZ_DATA.quiz_id)
-    assert len(data["questions"]) == 1
-    assert data["questions"][0]["question_text"] == "Which famous landmark is in Paris?"
+    assert data["status"] == "success"
+    assert data["data"]["quiz_id"] == str(SAMPLE_ADAPTIVE_QUIZ_DATA.quiz_id)
+    assert len(data["data"]["questions"]) == 1
+    assert data["data"]["questions"][0]["question_text"] == "Which famous landmark is in Paris?"
 
 @patch('app.api.quiz_router.create_adaptive_quiz')
 def test_generate_adaptive_quiz_original_not_found(mock_create_adaptive_quiz):

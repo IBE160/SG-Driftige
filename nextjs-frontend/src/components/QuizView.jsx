@@ -2,22 +2,32 @@
 
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // Import useRef
 import PropTypes from 'prop-types';
 
 export default function QuizView({ quizData, onAnswersChange, onSubmitQuiz }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState({}); // { questionIndex: selectedOptionIndex }
 
+  // Use a ref to store the last seen quiz_id
+  const lastQuizIdRef = useRef(quizData?.quiz_id);
+
   useEffect(() => {
-    if (!quizData) { // Add this check
+    // Reset state if quizData.quiz_id changes, indicating a new quiz has been loaded
+    if (quizData && quizData.quiz_id !== lastQuizIdRef.current) {
+      setCurrentQuestionIndex(0);
+      setUserAnswers({});
+      lastQuizIdRef.current = quizData.quiz_id; // Update the ref
+    }
+
+    if (!quizData) {
       onAnswersChange({}, false);
       return;
     }
     // Notify parent about initial answer state or when answers change
     const allQuestionsAnswered = Object.keys(userAnswers).length === quizData.questions.length;
     onAnswersChange(userAnswers, allQuestionsAnswered);
-  }, [userAnswers, quizData?.questions?.length, onAnswersChange, quizData]); // Add quizData to dependency array
+  }, [userAnswers, quizData, onAnswersChange]); // Keep quizData in dependency array
 
 
   if (!quizData || !quizData.questions || quizData.questions.length === 0) {

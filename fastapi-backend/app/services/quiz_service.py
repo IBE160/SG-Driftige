@@ -1,5 +1,8 @@
 import logging
-from typing import Dict, List
+import os
+import json
+import redis.asyncio as redis
+from typing import Dict, List, Union
 from uuid import UUID
 from app.llm_integrations.quiz_generator import generate_quiz_from_llm, generate_adaptive_quiz_from_llm
 from app.services.quiz_validator import validate_llm_quiz_response
@@ -13,9 +16,18 @@ MOCK_CONTENT_STORE = {
     "sample_content_id": "This is a sample text about the history of the internet..."
 }
 
-# In-memory cache for quiz data (quiz_id -> QuizData)
-QUIZ_CACHE: Dict[str, QuizData] = {}
+# Initialize Redis client
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+redis_client = redis.from_url(REDIS_URL, decode_responses=True)
 
+async def get_quiz_from_cache(quiz_id: UUID) -> Union[QuizData, None]:
+    quiz_json = await redis_client.get(str(quiz_id))
+    if quiz_json:
+        return QuizData.model_validate_json(quiz_json)
+    return None
+
+async def set_quiz_in_cache(quiz_data: QuizData, ex: int = 3600): # expire in 1 hour
+    await redis_client.set(str(quiz_data.quiz_id), quiz_data.model_dump_json(), ex=ex)
 
 async def create_quiz(content_id: str, difficulty: str) -> QuizData:
     """
@@ -41,7 +53,7 @@ async def create_quiz(content_id: str, difficulty: str) -> QuizData:
             quiz_data = validate_llm_quiz_response(llm_response_dict.model_dump())
             
             # Store quiz data in cache
-            QUIZ_CACHE[str(quiz_data.quiz_id)] = quiz_data
+            await set_quiz_in_cache(quiz_data)
             
             return quiz_data
 
@@ -58,7 +70,7 @@ async def assess_quiz_submission(quiz_id: UUID, submission: QuizSubmission) -> Q
     """
     Assesses a user's quiz submission against the correct answers.
     """
-    quiz_data = QUIZ_CACHE.get(str(quiz_id))
+    quiz_data = await get_quiz_from_cache(quiz_id)
     if not quiz_data:
         raise ValueError(f"Quiz with ID {quiz_id} not found in cache.")
 
@@ -90,7 +102,7 @@ async def create_adaptive_quiz(content_id: str, previous_result: QuizResult, ori
     Creates a follow-up quiz that targets the user's weak spots.
     """
     # 1. Retrieve the original quiz to identify the text of incorrect questions
-    original_quiz_data = QUIZ_CACHE.get(str(original_quiz_id))
+    original_quiz_data = await get_quiz_from_cache(original_quiz_id)
     if not original_quiz_data:
         raise ValueError(f"Original quiz with ID {original_quiz_id} not found in cache.")
 
@@ -117,7 +129,7 @@ async def create_adaptive_quiz(content_id: str, previous_result: QuizResult, ori
             new_quiz_data = validate_llm_quiz_response(llm_response_dict.model_dump())
             
             # Store the new quiz data in cache
-            QUIZ_CACHE[str(new_quiz_data.quiz_id)] = new_quiz_data
+            await set_quiz_in_cache(new_quiz_data)
             
             return new_quiz_data
         except ValueError as e:

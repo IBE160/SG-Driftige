@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from uuid import UUID
-from app.services.quiz_service import create_quiz, assess_quiz_submission, create_adaptive_quiz, QUIZ_CACHE
+from app.services.quiz_service import create_quiz, assess_quiz_submission, create_adaptive_quiz
 from app.schemas.quiz import QuizData, QuizQuestion, QuizSubmission, QuizResult
 
 # Define a sample quiz data for testing
@@ -42,7 +42,8 @@ SAMPLE_ADAPTIVE_QUIZ_DATA = QuizData(
 @pytest.mark.asyncio
 @patch('app.services.quiz_service.generate_quiz_from_llm')
 @patch('app.services.quiz_service.MOCK_CONTENT_STORE', {"sample_content_id": "Sample content"})
-async def test_create_quiz_success(mock_generate_quiz):
+@patch('app.services.quiz_service.set_quiz_in_cache')
+async def test_create_quiz_success(mock_set_quiz_in_cache, mock_generate_quiz):
     # Mock the LLM response
     mock_generate_quiz.return_value = SAMPLE_QUIZ_DATA
 
@@ -54,8 +55,9 @@ async def test_create_quiz_success(mock_generate_quiz):
     assert quiz.quiz_id == SAMPLE_QUIZ_DATA.quiz_id
     assert len(quiz.questions) == 3
     assert quiz.questions[0].question_text == "What is the capital of France?"
-    # Verify it's in the cache
-    assert QUIZ_CACHE.get(str(SAMPLE_QUIZ_DATA.quiz_id)) == SAMPLE_QUIZ_DATA
+    # Verify set_quiz_in_cache was called
+    mock_set_quiz_in_cache.assert_called_once_with(SAMPLE_QUIZ_DATA)
+
 
 @pytest.mark.asyncio
 @patch('app.services.quiz_service.MOCK_CONTENT_STORE', {"sample_content_id": "Sample content"})
@@ -73,16 +75,12 @@ async def test_create_quiz_llm_failure(mock_generate_quiz):
     with pytest.raises(ValueError, match="Failed to generate a valid quiz after multiple attempts."):
         await create_quiz("sample_content_id", "easy")
 
-@pytest.fixture(autouse=True)
-def clear_quiz_cache():
-    """Fixture to clear the QUIZ_CACHE before each test."""
-    QUIZ_CACHE.clear()
-    yield
 
 @pytest.mark.asyncio
-async def test_assess_quiz_submission_all_correct():
-    # Populate the cache with sample quiz data
-    QUIZ_CACHE[str(SAMPLE_QUIZ_DATA.quiz_id)] = SAMPLE_QUIZ_DATA
+@patch('app.services.quiz_service.get_quiz_from_cache')
+async def test_assess_quiz_submission_all_correct(mock_get_quiz_from_cache):
+    # Mock cache retrieval
+    mock_get_quiz_from_cache.return_value = SAMPLE_QUIZ_DATA
 
     submission = QuizSubmission(answers={0: 1, 1: 1, 2: 1}) # All correct answers
     result = await assess_quiz_submission(SAMPLE_QUIZ_DATA.quiz_id, submission)
@@ -93,9 +91,10 @@ async def test_assess_quiz_submission_all_correct():
     assert result.results == {0: True, 1: True, 2: True}
 
 @pytest.mark.asyncio
-async def test_assess_quiz_submission_partial_correct():
-    # Populate the cache with sample quiz data
-    QUIZ_CACHE[str(SAMPLE_QUIZ_DATA.quiz_id)] = SAMPLE_QUIZ_DATA
+@patch('app.services.quiz_service.get_quiz_from_cache')
+async def test_assess_quiz_submission_partial_correct(mock_get_quiz_from_cache):
+    # Mock cache retrieval
+    mock_get_quiz_from_cache.return_value = SAMPLE_QUIZ_DATA
 
     submission = QuizSubmission(answers={0: 1, 1: 0, 2: 1}) # Q0, Q2 correct; Q1 incorrect
     result = await assess_quiz_submission(SAMPLE_QUIZ_DATA.quiz_id, submission)
@@ -106,9 +105,10 @@ async def test_assess_quiz_submission_partial_correct():
     assert result.results == {0: True, 1: False, 2: True}
 
 @pytest.mark.asyncio
-async def test_assess_quiz_submission_all_incorrect():
-    # Populate the cache with sample quiz data
-    QUIZ_CACHE[str(SAMPLE_QUIZ_DATA.quiz_id)] = SAMPLE_QUIZ_DATA
+@patch('app.services.quiz_service.get_quiz_from_cache')
+async def test_assess_quiz_submission_all_incorrect(mock_get_quiz_from_cache):
+    # Mock cache retrieval
+    mock_get_quiz_from_cache.return_value = SAMPLE_QUIZ_DATA
 
     submission = QuizSubmission(answers={0: 0, 1: 0, 2: 0}) # All incorrect answers
     result = await assess_quiz_submission(SAMPLE_QUIZ_DATA.quiz_id, submission)
@@ -119,8 +119,10 @@ async def test_assess_quiz_submission_all_incorrect():
     assert result.results == {0: False, 1: False, 2: False}
 
 @pytest.mark.asyncio
-async def test_assess_quiz_submission_quiz_not_found():
-    # Cache is empty due to fixture
+@patch('app.services.quiz_service.get_quiz_from_cache')
+async def test_assess_quiz_submission_quiz_not_found(mock_get_quiz_from_cache):
+    # Mock cache retrieval to return None
+    mock_get_quiz_from_cache.return_value = None
     non_existent_quiz_id = UUID("b1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6")
     submission = QuizSubmission(answers={0: 0})
 
@@ -128,9 +130,10 @@ async def test_assess_quiz_submission_quiz_not_found():
         await assess_quiz_submission(non_existent_quiz_id, submission)
 
 @pytest.mark.asyncio
-async def test_assess_quiz_submission_empty_answers():
-    # Populate the cache with sample quiz data
-    QUIZ_CACHE[str(SAMPLE_QUIZ_DATA.quiz_id)] = SAMPLE_QUIZ_DATA
+@patch('app.services.quiz_service.get_quiz_from_cache')
+async def test_assess_quiz_submission_empty_answers(mock_get_quiz_from_cache):
+    # Mock cache retrieval
+    mock_get_quiz_from_cache.return_value = SAMPLE_QUIZ_DATA
 
     submission = QuizSubmission(answers={}) # No answers provided
     result = await assess_quiz_submission(SAMPLE_QUIZ_DATA.quiz_id, submission)
@@ -143,9 +146,11 @@ async def test_assess_quiz_submission_empty_answers():
 @pytest.mark.asyncio
 @patch('app.services.quiz_service.generate_adaptive_quiz_from_llm')
 @patch('app.services.quiz_service.MOCK_CONTENT_STORE', {"sample_content_id": "Sample content"})
-async def test_create_adaptive_quiz_success(mock_adaptive_llm):
+@patch('app.services.quiz_service.get_quiz_from_cache')
+@patch('app.services.quiz_service.set_quiz_in_cache')
+async def test_create_adaptive_quiz_success(mock_set_quiz_in_cache, mock_get_quiz_from_cache, mock_adaptive_llm):
     # 1. Setup initial state
-    QUIZ_CACHE[str(SAMPLE_QUIZ_DATA.quiz_id)] = SAMPLE_QUIZ_DATA
+    mock_get_quiz_from_cache.return_value = SAMPLE_QUIZ_DATA
     mock_adaptive_llm.return_value = SAMPLE_ADAPTIVE_QUIZ_DATA
     
     # This result indicates Q1 and Q2 were incorrect
@@ -155,6 +160,9 @@ async def test_create_adaptive_quiz_success(mock_adaptive_llm):
     new_quiz = await create_adaptive_quiz("sample_content_id", previous_result, SAMPLE_QUIZ_DATA.quiz_id)
 
     # 3. Assertions
+    # Assert get_quiz_from_cache was called for original quiz
+    mock_get_quiz_from_cache.assert_called_once_with(SAMPLE_QUIZ_DATA.quiz_id)
+    
     # Assert weak spots were correctly identified and passed to the generator
     mock_adaptive_llm.assert_called_once_with(
         "Sample content",
@@ -163,19 +171,23 @@ async def test_create_adaptive_quiz_success(mock_adaptive_llm):
 
     # Assert the new quiz is returned and cached
     assert new_quiz.quiz_id == SAMPLE_ADAPTIVE_QUIZ_DATA.quiz_id
-    assert QUIZ_CACHE.get(str(SAMPLE_ADAPTIVE_QUIZ_DATA.quiz_id)) == SAMPLE_ADAPTIVE_QUIZ_DATA
+    mock_set_quiz_in_cache.assert_called_once_with(SAMPLE_ADAPTIVE_QUIZ_DATA)
+
 
 @pytest.mark.asyncio
-async def test_create_adaptive_quiz_no_weak_spots():
+@patch('app.services.quiz_service.get_quiz_from_cache')
+async def test_create_adaptive_quiz_no_weak_spots(mock_get_quiz_from_cache):
     # This result indicates all answers were correct
     previous_result = QuizResult(score=100.0, correct_answers=3, total_questions=3, results={0: True, 1: True, 2: True})
-    QUIZ_CACHE[str(SAMPLE_QUIZ_DATA.quiz_id)] = SAMPLE_QUIZ_DATA
+    mock_get_quiz_from_cache.return_value = SAMPLE_QUIZ_DATA
     
     with pytest.raises(ValueError, match="No weak spots identified or all answers were correct."):
         await create_adaptive_quiz("sample_content_id", previous_result, SAMPLE_QUIZ_DATA.quiz_id)
 
 @pytest.mark.asyncio
-async def test_create_adaptive_quiz_original_quiz_not_found():
+@patch('app.services.quiz_service.get_quiz_from_cache')
+async def test_create_adaptive_quiz_original_quiz_not_found(mock_get_quiz_from_cache):
+    mock_get_quiz_from_cache.return_value = None # Original quiz not found in cache
     previous_result = QuizResult(score=0, correct_answers=0, total_questions=3, results={0: False, 1: False, 2: False})
     
     with pytest.raises(ValueError, match=f"Original quiz with ID {SAMPLE_QUIZ_DATA.quiz_id} not found in cache."):

@@ -20,9 +20,11 @@ services:
       - "8000:8000"
     environment:
       DATABASE_URL: postgresql://user:password@db/quizum_db
+      REDIS_URL: redis://redis:6379/0
       # LLM_API_KEY: your_llm_api_key
     depends_on:
       - db
+      - redis
   frontend:
     build: ./nextjs-frontend
     ports:
@@ -31,5 +33,18 @@ services:
       NEXT_PUBLIC_BACKEND_URL: http://localhost:8000
     depends_on:
       - backend
+  redis:
+    image: redis/redis-stack-server:latest
+    ports:
+      - "6379:6379"
+      - "8001:8001" # For RedisInsight
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 volumes:
   db-data:
+  redis-data:
