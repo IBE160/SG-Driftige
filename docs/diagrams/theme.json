@@ -1,0 +1,9 @@
+{
+  "themeName": "Colorful",
+  "colors": {
+    "component": "#e1bee7",
+    "database": "#c5e1a5",
+    "service": "#ffccbc",
+    "border": "#7b1fa2"
+  }
+}
