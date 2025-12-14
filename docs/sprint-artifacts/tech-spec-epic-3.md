@@ -291,3 +291,6 @@ All endpoints will be exposed under the `/api` prefix.
 
 -   [ ] [Low] From Story 3.1: Replace `print` statements with structured logging in `fastapi-backend/app/llm_integrations/quiz_generator.py:72` and `fastapi-backend/app/services/quiz_validator.py:22`.
 -   Note: [Low] From Story 3.1: Confirm or implement explicit sanitization of user-provided content before it is passed to LLM prompts, as per `architecture.md`'s security approach. This ensures protection against potential prompt injection or unintended behavior from raw user input.
+- [ ] [LOW] From Story 3.1: Verify or implement explicit sanitization of user-provided content before it is passed to LLM prompts in `fastapi-backend/app/llm_integrations/quiz_generator.py`.
+- [ ] [LOW] From Story 3.1: Align the `/api/quiz` endpoint prefix in `fastapi-backend/app/main.py` to `/api/v1/quiz` for consistency.
+- Note: [Low] From Story 3.1: The Pydantic `dict()` method is deprecated and should be replaced with `model_dump()` in `fastapi-backend/app/services/quiz_service.py:39`.

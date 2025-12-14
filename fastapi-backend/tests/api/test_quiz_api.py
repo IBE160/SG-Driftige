@@ -23,7 +23,7 @@ def test_generate_quiz_success(mock_create_quiz):
     mock_create_quiz.return_value = mock_quiz_data
 
     # Make the API call
-    response = client.post("/api/quiz", json={"content_id": "sample", "difficulty": "easy"})
+    response = client.post("/api/v1/quiz", json={"content_id": "sample", "difficulty": "easy"})
 
     # Assertions
     assert response.status_code == 200
@@ -38,7 +38,7 @@ def test_generate_quiz_content_not_found(mock_create_quiz):
     mock_create_quiz.side_effect = ValueError("Content not found")
 
     # Make the API call
-    response = client.post("/api/quiz", json={"content_id": "invalid", "difficulty": "easy"})
+    response = client.post("/api/v1/quiz", json={"content_id": "invalid", "difficulty": "easy"})
 
     # Assertions
     assert response.status_code == 404
@@ -50,7 +50,7 @@ def test_generate_quiz_llm_failure(mock_create_quiz):
     mock_create_quiz.side_effect = ValueError("LLM is down")
 
     # Make the API call
-    response = client.post("/api/quiz", json={"content_id": "sample", "difficulty": "easy"})
+    response = client.post("/api/v1/quiz", json={"content_id": "sample", "difficulty": "easy"})
 
     # Assertions
     assert response.status_code == 502

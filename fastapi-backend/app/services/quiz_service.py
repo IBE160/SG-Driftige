@@ -1,6 +1,9 @@
+import logging
 from app.llm_integrations.quiz_generator import generate_quiz_from_llm
 from app.services.quiz_validator import validate_llm_quiz_response
 from app.schemas.quiz import QuizData
+
+logger = logging.getLogger(__name__)
 
 # In a real application, this would fetch content from a database
 # For now, we'll use a simple mock
@@ -38,7 +41,7 @@ async def create_quiz(content_id: str, difficulty: str) -> QuizData:
             return quiz_data
 
         except ValueError as e:
-            print(f"Attempt {attempt + 1} failed: {e}")
+            logger.error("Attempt %d failed: %s", attempt + 1, e)
             if attempt + 1 == max_retries:
                 raise ValueError("Failed to generate a valid quiz after multiple attempts.")
     

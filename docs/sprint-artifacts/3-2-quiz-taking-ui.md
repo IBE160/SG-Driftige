@@ -16,14 +16,14 @@ so that I can test my understanding.
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Create Quiz Page (AC: #1)**
-    - [ ] Create a new Next.js page at `nextjs-frontend/src/app/quiz/[quizId]/page.jsx`.
-    - [ ] This page will be responsible for fetching the quiz data from the backend using the `quizId`.
-- [ ] **Task 2: Create Quiz View Component (AC: #1, #2)**
-    - [ ] Develop the `nextjs-frontend/src/components/QuizView.jsx` component.
-    - [ ] The component should accept quiz data as props and display one question at a time with its multiple-choice options.
-    - [ ] Implement state management to track the current question number and the user's selected answers.
-    - [ ] Include "Next" and "Previous" buttons to navigate between questions.
+- [x] **Task 1: Create Quiz Page (AC: #1)**
+    - [x] Create a new Next.js page at `nextjs-frontend/src/app/quiz/[quizId]/page.jsx`.
+    - [x] This page will be responsible for fetching the quiz data from the backend using the `quizId`.
+- [x] **Task 2: Create Quiz View Component (AC: #1, #2)**
+    - [x] Develop the `nextjs-frontend/src/components/QuizView.jsx` component.
+    - [x] The component should accept quiz data as props and display one question at a time with its multiple-choice options.
+    - [x] Implement state management to track the current question number and the user's selected answers.
+    - [x] Include "Next" and "Previous" buttons to navigate between questions.
 - [ ] **Task 3: Update API Library (AC: #1)**
     - [ ] Update `nextjs-frontend/src/lib/api.js` to include a `getQuiz(quizId)` function that fetches the quiz data from the backend.
 - [ ] **Task 4: Write Tests (AC: #1, #2, #3)**

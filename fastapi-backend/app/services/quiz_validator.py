@@ -1,7 +1,10 @@
+import logging
 from typing import Dict, Any
 from pydantic import ValidationError
 
 from app.schemas.quiz import QuizData
+
+logger = logging.getLogger(__name__)
 
 
 def validate_llm_quiz_response(llm_response: Dict[str, Any]) -> QuizData:
@@ -23,6 +26,6 @@ def validate_llm_quiz_response(llm_response: Dict[str, Any]) -> QuizData:
     except ValidationError as e:
         # In a real application, you might want to log the error
         # and the invalid response for debugging purposes.
-        print(f"Pydantic validation error: {e}")
+        logger.error("Pydantic validation error: %s", e)
         raise ValueError("LLM response validation failed.") from e
 

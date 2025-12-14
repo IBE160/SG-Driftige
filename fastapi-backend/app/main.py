@@ -7,7 +7,7 @@ app = FastAPI()
 
 app.include_router(upload_router, prefix="/api/v1")
 app.include_router(summarize_router, prefix="/api/v1")
-app.include_router(quiz_router, prefix="/api")
+app.include_router(quiz_router, prefix="/api/v1")
 
 @app.get("/")
 async def read_root():
