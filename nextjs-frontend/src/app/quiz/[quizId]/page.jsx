@@ -3,39 +3,27 @@
 "use client"; // This is a client component
 
 import React, { useState, useEffect } from 'react';
-// import { getQuiz } from '../../../lib/api'; // Task 3 will implement this
-import QuizView from '../../../components/QuizView'; // Import the QuizView component
+import { useParams } from 'next/navigation';
+import { getQuiz } from '../../../lib/api';
+import QuizView from '../../../components/QuizView';
 
-export default function QuizPage({ params }) {
-  const { quizId } = params;
+export default function QuizPage() {
+  const { quizId } = useParams(); // Correctly get the dynamic parameter
   const [quizData, setQuizData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // This will be implemented in Task 3
     const fetchQuiz = async () => {
+      if (!quizId) return;
+
+      // Let's assume a default difficulty for now
+      const difficulty = 'medium';
       setLoading(true);
       setError(null);
       try {
-        // const data = await getQuiz(quizId);
-        // setQuizData(data);
-        // Mock data for now until Task 3 is complete
-        setQuizData({
-            quiz_id: quizId,
-            questions: [
-                {
-                    question_text: "What is the capital of France?",
-                    options: ["London", "Paris", "Berlin", "Madrid"],
-                    correct_answer_index: 1,
-                },
-                {
-                    question_text: "What is 2 + 2?",
-                    options: ["3", "4", "5", "6"],
-                    correct_answer_index: 1,
-                },
-            ],
-        });
+        const data = await getQuiz(quizId, difficulty);
+        setQuizData(data);
       } catch (err) {
         setError("Failed to load quiz: " + err.message);
       } finally {
@@ -43,9 +31,7 @@ export default function QuizPage({ params }) {
       }
     };
 
-    if (quizId) {
-      fetchQuiz();
-    }
+    fetchQuiz();
   }, [quizId]);
 
   if (loading) {

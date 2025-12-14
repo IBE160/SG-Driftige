@@ -66,6 +66,7 @@ export default function QuizView({ quizData }) {
           onClick={handlePreviousQuestion}
           disabled={isFirstQuestion}
           className="px-6 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 disabled:opacity-50"
+          data-testid="previous-button"
         >
           Previous
         </button>
@@ -73,6 +74,7 @@ export default function QuizView({ quizData }) {
           onClick={handleNextQuestion}
           disabled={isLastQuestion}
           className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+          data-testid="next-button"
         >
           {isLastQuestion ? 'Submit Quiz' : 'Next'}
         </button>

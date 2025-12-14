@@ -1,6 +1,6 @@
 # Story 3.2: Quiz Taking UI
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -24,11 +24,11 @@ so that I can test my understanding.
     - [x] The component should accept quiz data as props and display one question at a time with its multiple-choice options.
     - [x] Implement state management to track the current question number and the user's selected answers.
     - [x] Include "Next" and "Previous" buttons to navigate between questions.
-- [ ] **Task 3: Update API Library (AC: #1)**
-    - [ ] Update `nextjs-frontend/src/lib/api.js` to include a `getQuiz(quizId)` function that fetches the quiz data from the backend.
-- [ ] **Task 4: Write Tests (AC: #1, #2, #3)**
-    - [ ] Write unit tests for the `QuizView.jsx` component to verify question rendering, answer selection, and navigation.
-    - [ ] Write an E2E test using Playwright to simulate a user navigating to the quiz page and answering a few questions.
+- [x] **Task 3: Update API Library (AC: #1)**
+    - [x] Update `nextjs-frontend/src/lib/api.js` to include a `getQuiz(quizId)` function that fetches the quiz data from the backend.
+- [x] **Task 4: Write Tests (AC: #1, #2, #3)**
+    - [x] Write unit tests for the `QuizView.jsx` component to verify question rendering, answer selection, and navigation.
+    - [x] Write an E2E test using Playwright to simulate a user navigating to the quiz page and answering a few questions.
 
 ## Dev Notes
 
@@ -70,3 +70,8 @@ This story focuses on the frontend implementation for the quiz-taking experience
 ### Completion Notes List
 
 ### File List
+- M nextjs-frontend/src/lib/api.js
+- A nextjs-frontend/src/components/__tests__/QuizView.test.jsx
+- A nextjs-frontend/tests/quiz.spec.js
+- M nextjs-frontend/src/app/quiz/[quizId]/page.jsx
+- M nextjs-frontend/src/components/QuizView.jsx
