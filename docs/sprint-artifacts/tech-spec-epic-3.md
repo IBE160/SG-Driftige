@@ -286,3 +286,8 @@ All endpoints will be exposed under the `/api` prefix.
         3.  Submits the quiz and verifies the results page is displayed correctly.
         4.  Clicks "Practice weak spots" and verifies a new, targeted quiz is loaded.
     *   All backend API responses will be mocked at the network level to ensure the frontend E2E tests are independent of the backend.
+
+## Post-Review Follow-ups
+
+-   [ ] [Low] From Story 3.1: Replace `print` statements with structured logging in `fastapi-backend/app/llm_integrations/quiz_generator.py:72` and `fastapi-backend/app/services/quiz_validator.py:22`.
+-   Note: [Low] From Story 3.1: Confirm or implement explicit sanitization of user-provided content before it is passed to LLM prompts, as per `architecture.md`'s security approach. This ensures protection against potential prompt injection or unintended behavior from raw user input.

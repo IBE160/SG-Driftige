@@ -52,7 +52,7 @@ development_status:
   epic-2-retrospective: done
 
   epic-3: contexted
-  3-1-quiz-generation-backend: review
+  3-1-quiz-generation-backend: in-progress
   3-2-quiz-taking-ui: ready-for-dev
   3-3-quiz-assessment-feedback: ready-for-dev
   3-4-adaptive-follow-up-quiz: ready-for-dev
