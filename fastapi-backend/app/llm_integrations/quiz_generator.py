@@ -1,7 +1,7 @@
 import os
 import httpx
 import logging
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 from app.schemas.quiz import QuizData
 
@@ -21,6 +21,17 @@ MOCK_LLM_RESPONSE = {
             "question_text": "What is 2 + 2?",
             "options": ["3", "4", "5", "6"],
             "correct_answer_index": 1,
+        },
+    ],
+}
+
+MOCK_ADAPTIVE_LLM_RESPONSE = {
+    "quiz_id": "b2c3d4e5-f6a7-b8c9-d0e1-f2a3b4c5d6e7",
+    "questions": [
+        {
+            "question_text": "Which famous landmark is in Paris?",
+            "options": ["Eiffel Tower", "Big Ben", "Colosseum", "Statue of Liberty"],
+            "correct_answer_index": 0,
         },
     ],
 }
@@ -85,3 +96,44 @@ async def generate_quiz_from_llm(
         logger.error("LLM response validation failed: %s", e)
         raise
 
+
+def construct_adaptive_quiz_prompt(content: str, weak_spots: List[str], num_questions: int = 3) -> str:
+    """
+    Constructs a prompt for the LLM to generate a follow-up quiz targeting weak spots.
+    """
+    topics = "\n".join(f"- {spot}" for spot in weak_spots)
+    prompt = f"""
+    A user has shown weakness in the following topics:
+    {topics}
+
+    Based on the original content provided below, generate a new quiz with {num_questions} multiple-choice questions that specifically target and reinforce these weak spots.
+    The new questions should be different from the ones listed as weak spots but cover the same underlying concepts.
+
+    Return the quiz in the same structured JSON format as before.
+
+    <ORIGINAL_CONTENT>
+    {content}
+    </ORIGINAL_CONTENT>
+    """
+    return prompt.strip()
+
+
+async def generate_adaptive_quiz_from_llm(
+    content: str, weak_spots: List[str]
+) -> QuizData:
+    """
+    Makes an API call to the LLM to generate an adaptive follow-up quiz.
+    """
+    # In a real implementation, you would use the adaptive prompt
+    # prompt = construct_adaptive_quiz_prompt(content, weak_spots)
+    # ... make API call ...
+
+    # For now, we use a different mock response for the adaptive quiz
+    llm_response = MOCK_ADAPTIVE_LLM_RESPONSE
+    
+    try:
+        quiz_data = QuizData(**llm_response)
+        return quiz_data
+    except Exception as e:
+        logger.error("Adaptive LLM response validation failed: %s", e)
+        raise

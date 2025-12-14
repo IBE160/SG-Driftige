@@ -27,3 +27,8 @@ class QuizResult(BaseModel):
     total_questions: int
     # Dict mapping question_index to its correctness (True/False)
     results: Dict[int, bool]
+
+class AdaptiveQuizRequest(BaseModel):
+    """The request body for generating an adaptive quiz."""
+    content_id: str
+    previous_result: QuizResult

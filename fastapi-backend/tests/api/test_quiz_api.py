@@ -4,9 +4,9 @@ from unittest.mock import patch
 from uuid import UUID
 
 from app.main import app
-from app.schemas.quiz import QuizData, QuizResult, QuizSubmission
+from app.schemas.quiz import QuizData, QuizResult, QuizSubmission, AdaptiveQuizRequest
 from app.services.quiz_service import QUIZ_CACHE # Import QUIZ_CACHE
-from tests.services.test_quiz_service import SAMPLE_QUIZ_DATA # Import SAMPLE_QUIZ_DATA
+from tests.services.test_quiz_service import SAMPLE_QUIZ_DATA, SAMPLE_ADAPTIVE_QUIZ_DATA
 
 client = TestClient(app)
 
@@ -104,3 +104,43 @@ def test_submit_quiz_not_found(mock_assess_quiz_submission):
     assert response.status_code == 404
     assert response.json() == {"detail": f"Quiz with ID {non_existent_quiz_id} not found in cache."}
 
+
+@patch('app.api.quiz_router.create_adaptive_quiz')
+def test_generate_adaptive_quiz_success(mock_create_adaptive_quiz):
+    # Mock the service layer to return a new adaptive quiz
+    mock_create_adaptive_quiz.return_value = SAMPLE_ADAPTIVE_QUIZ_DATA
+
+    # Sample payload for the request
+    previous_result = QuizResult(score=50.0, correct_answers=1, total_questions=2, results={0: False, 1: True})
+    request_payload = AdaptiveQuizRequest(content_id="sample_content_id", previous_result=previous_result)
+
+    # Make the API call
+    response = client.post(
+        f"/api/v1/quiz/{SAMPLE_QUIZ_DATA.quiz_id}/follow-up",
+        json=request_payload.model_dump(mode='json')
+    )
+
+    # Assertions
+    assert response.status_code == 200
+    data = response.json()
+    assert data["quiz_id"] == str(SAMPLE_ADAPTIVE_QUIZ_DATA.quiz_id)
+    assert len(data["questions"]) == 1
+    assert data["questions"][0]["question_text"] == "Which famous landmark is in Paris?"
+
+@patch('app.api.quiz_router.create_adaptive_quiz')
+def test_generate_adaptive_quiz_original_not_found(mock_create_adaptive_quiz):
+    # Mock the service to raise a "not found" error
+    mock_create_adaptive_quiz.side_effect = ValueError("Original quiz with ID ... not found in cache.")
+
+    previous_result = QuizResult(score=50.0, correct_answers=1, total_questions=2, results={0: False, 1: True})
+    request_payload = AdaptiveQuizRequest(content_id="sample_content_id", previous_result=previous_result)
+
+    # Make the API call
+    response = client.post(
+        f"/api/v1/quiz/{SAMPLE_QUIZ_DATA.quiz_id}/follow-up",
+        json=request_payload.model_dump(mode='json')
+    )
+
+    # Assertions
+    assert response.status_code == 404
+    assert "not found" in response.json()["detail"]

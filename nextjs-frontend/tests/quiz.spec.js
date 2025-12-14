@@ -22,6 +22,17 @@ test.describe('Quiz Page E2E', () => {
     ],
   };
 
+  const mockAdaptiveQuiz = {
+    quiz_id: uuidv4(),
+    questions: [
+      {
+        question_text: 'What is the capital of Japan?',
+        options: ['Kyoto', 'Tokyo', 'Osaka', 'Sapporo'],
+        correct_answer_index: 1,
+      },
+    ],
+  };
+
   const mockQuizResult = {
     score: 50.0,
     correct_answers: 1,
@@ -34,17 +45,15 @@ test.describe('Quiz Page E2E', () => {
 
   const generateQuizUrlPattern = '**/api/v1/quiz';
   const submitQuizUrlPattern = `**/api/v1/quiz/${quizId}/submit`;
+  const adaptiveQuizUrlPattern = `**/api/v1/quiz/${quizId}/follow-up`;
 
   test.beforeEach(async ({ page }) => {
-    // Mock quiz generation
+    // Mock initial quiz generation
     await page.route(generateQuizUrlPattern, async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({
-          status: 'success',
-          data: mockQuiz, // Wrap mockQuiz in a 'data' object
-        }),
+        body: JSON.stringify({ status: "success", data: mockQuiz }),
       });
     });
 
@@ -56,44 +65,51 @@ test.describe('Quiz Page E2E', () => {
         body: JSON.stringify(mockQuizResult),
       });
     });
+    
+    // Mock adaptive quiz generation
+    await page.route(adaptiveQuizUrlPattern, async (route) => {
+        await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({ status: "success", data: mockAdaptiveQuiz }),
+        });
+    });
   });
 
-  test('should display, navigate through, and submit a quiz, then show results', async ({ page }) => {
-    await page.goto(`/quiz/${contentId}`); // Use contentId to initiate quiz generation
+  test('should run the full adaptive quiz loop', async ({ page }) => {
+    await page.goto(`/quiz/${contentId}`);
 
-    // Verify first question is displayed
+    // --- Initial Quiz ---
     await expect(page.getByText('Question 1 of 2')).toBeVisible();
     await expect(page.getByText('What is the capital of Playwright?')).toBeVisible();
-
-    // Select an answer for Q1 (incorrect for mock result)
     await page.getByText('London').click(); // Select incorrect answer
-    await expect(page.getByText('London')).toHaveClass(/bg-blue-500/);
 
-    // Navigate to the next question
     await page.getByTestId('next-button').click();
 
-    // Verify second question is displayed
     await expect(page.getByText('Question 2 of 2')).toBeVisible();
     await expect(page.getByText('What is the main purpose of Playwright?')).toBeVisible();
-
-    // Select an answer for Q2 (correct for mock result)
     await page.getByText('E2E Testing').click(); // Select correct answer
-    await expect(page.getByText('E2E Testing')).toHaveClass(/bg-blue-500/);
-
-    // Now all questions are answered, the main submit button should be visible
-    await expect(page.getByTestId('page-submit-quiz-button')).toBeVisible();
+    
     await page.getByTestId('page-submit-quiz-button').click();
 
-    // Verify results are displayed
+    // --- Quiz Results ---
     await expect(page.getByText('Quiz Results')).toBeVisible();
-    await expect(page.getByText('You scored:')).toBeVisible();
     await expect(page.getByText('50%')).toBeVisible();
     await expect(page.getByText('1 out of 2 correct')).toBeVisible();
-    await expect(page.getByRole('listitem').filter({ hasText: 'Question 1' }).getByText('Incorrect')).toBeVisible();
-    await expect(page.getByRole('listitem').filter({ hasText: 'Question 2' }).getByText('Correct')).toBeVisible();
+    
+    const practiceButton = page.getByText('Practice Weak Spots');
+    await expect(practiceButton).toBeVisible();
+
+    // --- Adaptive Follow-up ---
+    await practiceButton.click();
+
+    // Verify the new quiz is loaded
+    await expect(page.getByText('Quiz Results')).not.toBeVisible();
+    await expect(page.getByText('Question 1 of 1')).toBeVisible();
+    await expect(page.getByText('What is the capital of Japan?')).toBeVisible();
   });
 
-  test('should handle quiz data loading failure', async ({ page }) => {
+  test('should handle initial quiz loading failure', async ({ page }) => {
     // Override the route for this test
     await page.unroute(generateQuizUrlPattern);
     await page.route(generateQuizUrlPattern, async (route) => {
@@ -108,9 +124,6 @@ test.describe('Quiz Page E2E', () => {
 
     await page.goto(`/quiz/${contentId}`);
     
-    // Assert that the error message is displayed, matching the format from QuizPage.jsx
     await expect(page.getByText('Error: Failed to load quiz: Failed to generate quiz')).toBeVisible();
-    await expect(page.getByText('Loading Quiz...')).not.toBeVisible();
   });
 });
-

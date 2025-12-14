@@ -8,7 +8,7 @@ export default function InputPage() {
           QuizZum
         </h1>
         <p className="text-lg sm:text-xl text-gray-600 mt-2 mb-10">
-          Don't feel dumb, use QuizZum
+          Don&apos;t feel dumb, use QuizZum
         </p>
         <InputForm />
       </div>

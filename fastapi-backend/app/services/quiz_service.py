@@ -1,7 +1,7 @@
 import logging
-from typing import Dict
+from typing import Dict, List
 from uuid import UUID
-from app.llm_integrations.quiz_generator import generate_quiz_from_llm
+from app.llm_integrations.quiz_generator import generate_quiz_from_llm, generate_adaptive_quiz_from_llm
 from app.services.quiz_validator import validate_llm_quiz_response
 from app.schemas.quiz import QuizData, QuizSubmission, QuizResult
 
@@ -83,4 +83,48 @@ async def assess_quiz_submission(quiz_id: UUID, submission: QuizSubmission) -> Q
         total_questions=total_questions,
         results=results
     )
+
+
+async def create_adaptive_quiz(content_id: str, previous_result: QuizResult, original_quiz_id: UUID) -> QuizData:
+    """
+    Creates a follow-up quiz that targets the user's weak spots.
+    """
+    # 1. Retrieve the original quiz to identify the text of incorrect questions
+    original_quiz_data = QUIZ_CACHE.get(str(original_quiz_id))
+    if not original_quiz_data:
+        raise ValueError(f"Original quiz with ID {original_quiz_id} not found in cache.")
+
+    # 2. Identify weak spots (topics of incorrectly answered questions)
+    weak_spots: List[str] = []
+    for index, is_correct in previous_result.results.items():
+        if not is_correct:
+            if index < len(original_quiz_data.questions):
+                weak_spots.append(original_quiz_data.questions[index].question_text)
+    
+    if not weak_spots:
+        raise ValueError("No weak spots identified or all answers were correct.")
+
+    # 3. Retrieve original content
+    content = MOCK_CONTENT_STORE.get(content_id)
+    if not content:
+        raise ValueError("Content not found for adaptive quiz generation.")
+
+    # 4. Generate a new quiz targeting these weak spots
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            llm_response_dict = await generate_adaptive_quiz_from_llm(content, weak_spots)
+            new_quiz_data = validate_llm_quiz_response(llm_response_dict.model_dump())
+            
+            # Store the new quiz data in cache
+            QUIZ_CACHE[str(new_quiz_data.quiz_id)] = new_quiz_data
+            
+            return new_quiz_data
+        except ValueError as e:
+            logger.error("Attempt %d for adaptive quiz failed: %s", attempt + 1, e)
+            if attempt + 1 == max_retries:
+                raise ValueError("Failed to generate a valid adaptive quiz after multiple attempts.")
+
+    # This line should not be reachable
+    raise ValueError("An unexpected error occurred in adaptive quiz creation.")
 

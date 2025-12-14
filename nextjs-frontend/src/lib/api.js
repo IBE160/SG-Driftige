@@ -93,3 +93,30 @@ export async function submitQuiz(quizId, submission) {
         throw error;
     }
 }
+
+export async function getAdaptiveQuiz(originalQuizId, contentId, previousResult) {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+    try {
+        const response = await fetch(`${backendUrl}/api/v1/quiz/${originalQuizId}/follow-up`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                content_id: contentId,
+                previous_result: previousResult,
+            }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Failed to fetch adaptive quiz');
+        }
+
+        const data = await response.json();
+        return data.data;
+    } catch (error) {
+        console.error('Error fetching adaptive quiz:', error);
+        throw error;
+    }
+}

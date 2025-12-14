@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const QuizResults = ({ quizResult }) => {
+const QuizResults = ({ quizResult, onPracticeWeakSpots }) => {
   if (!quizResult) {
     return <div className="text-center p-4">No quiz results to display.</div>;
   }
@@ -41,6 +41,17 @@ const QuizResults = ({ quizResult }) => {
           ))}
         </ul>
       </div>
+
+      {score < 100 && (
+        <div className="mt-8 text-center">
+            <button
+                onClick={onPracticeWeakSpots}
+                className="px-6 py-3 bg-purple-600 text-white font-semibold rounded-md hover:bg-purple-700 transition-colors duration-200"
+            >
+                Practice Weak Spots
+            </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -52,6 +63,7 @@ QuizResults.propTypes = {
     total_questions: PropTypes.number.isRequired,
     results: PropTypes.objectOf(PropTypes.bool).isRequired,
   }),
+  onPracticeWeakSpots: PropTypes.func.isRequired,
 };
 
 export default QuizResults;

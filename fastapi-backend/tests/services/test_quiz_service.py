@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from uuid import UUID
-from app.services.quiz_service import create_quiz, assess_quiz_submission, QUIZ_CACHE
+from app.services.quiz_service import create_quiz, assess_quiz_submission, create_adaptive_quiz, QUIZ_CACHE
 from app.schemas.quiz import QuizData, QuizQuestion, QuizSubmission, QuizResult
 
 # Define a sample quiz data for testing
@@ -22,6 +22,18 @@ SAMPLE_QUIZ_DATA = QuizData(
             question_text="What is 2 + 2?",
             options=["3", "4", "5", "6"],
             correct_answer_index=1,
+        ),
+    ],
+)
+
+# Define a sample adaptive quiz for testing
+SAMPLE_ADAPTIVE_QUIZ_DATA = QuizData(
+    quiz_id=UUID("b2c3d4e5-f6a7-b8c9-d0e1-f2a3b4c5d6e7"),
+    questions=[
+        QuizQuestion(
+            question_text="Which famous landmark is in Paris?",
+            options=["Eiffel Tower", "Big Ben", "Colosseum", "Statue of Liberty"],
+            correct_answer_index=0,
         ),
     ],
 )
@@ -127,3 +139,44 @@ async def test_assess_quiz_submission_empty_answers():
     assert result.correct_answers == 0
     assert result.total_questions == 3
     assert result.results == {0: False, 1: False, 2: False} # All considered incorrect since no answers given
+
+@pytest.mark.asyncio
+@patch('app.services.quiz_service.generate_adaptive_quiz_from_llm')
+@patch('app.services.quiz_service.MOCK_CONTENT_STORE', {"sample_content_id": "Sample content"})
+async def test_create_adaptive_quiz_success(mock_adaptive_llm):
+    # 1. Setup initial state
+    QUIZ_CACHE[str(SAMPLE_QUIZ_DATA.quiz_id)] = SAMPLE_QUIZ_DATA
+    mock_adaptive_llm.return_value = SAMPLE_ADAPTIVE_QUIZ_DATA
+    
+    # This result indicates Q1 and Q2 were incorrect
+    previous_result = QuizResult(score=33.3, correct_answers=1, total_questions=3, results={0: True, 1: False, 2: False})
+
+    # 2. Call the service
+    new_quiz = await create_adaptive_quiz("sample_content_id", previous_result, SAMPLE_QUIZ_DATA.quiz_id)
+
+    # 3. Assertions
+    # Assert weak spots were correctly identified and passed to the generator
+    mock_adaptive_llm.assert_called_once_with(
+        "Sample content",
+        ["Which planet is known as the Red Planet?", "What is 2 + 2?"]
+    )
+
+    # Assert the new quiz is returned and cached
+    assert new_quiz.quiz_id == SAMPLE_ADAPTIVE_QUIZ_DATA.quiz_id
+    assert QUIZ_CACHE.get(str(SAMPLE_ADAPTIVE_QUIZ_DATA.quiz_id)) == SAMPLE_ADAPTIVE_QUIZ_DATA
+
+@pytest.mark.asyncio
+async def test_create_adaptive_quiz_no_weak_spots():
+    # This result indicates all answers were correct
+    previous_result = QuizResult(score=100.0, correct_answers=3, total_questions=3, results={0: True, 1: True, 2: True})
+    QUIZ_CACHE[str(SAMPLE_QUIZ_DATA.quiz_id)] = SAMPLE_QUIZ_DATA
+    
+    with pytest.raises(ValueError, match="No weak spots identified or all answers were correct."):
+        await create_adaptive_quiz("sample_content_id", previous_result, SAMPLE_QUIZ_DATA.quiz_id)
+
+@pytest.mark.asyncio
+async def test_create_adaptive_quiz_original_quiz_not_found():
+    previous_result = QuizResult(score=0, correct_answers=0, total_questions=3, results={0: False, 1: False, 2: False})
+    
+    with pytest.raises(ValueError, match=f"Original quiz with ID {SAMPLE_QUIZ_DATA.quiz_id} not found in cache."):
+        await create_adaptive_quiz("sample_content_id", previous_result, SAMPLE_QUIZ_DATA.quiz_id)

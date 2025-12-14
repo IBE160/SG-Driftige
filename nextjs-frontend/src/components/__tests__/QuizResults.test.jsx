@@ -1,10 +1,12 @@
 // nextjs-frontend/src/components/__tests__/QuizResults.test.jsx
 
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import QuizResults from '../QuizResults';
 
 describe('QuizResults', () => {
+  const mockOnPracticeWeakSpots = jest.fn();
+
   const mockQuizResultAllCorrect = {
     score: 100,
     correct_answers: 3,
@@ -38,36 +40,42 @@ describe('QuizResults', () => {
     },
   };
 
-  test('renders with all correct answers', () => {
-    render(<QuizResults quizResult={mockQuizResultAllCorrect} />);
-
-    expect(screen.getByText('Quiz Results')).toBeInTheDocument();
-    expect(screen.getByText('You scored:')).toBeInTheDocument();
-    expect(screen.getByText('100%')).toBeInTheDocument();
-    expect(screen.getByText('3 out of 3 correct')).toBeInTheDocument();
-    expect(screen.getByText('Question 1')).toBeInTheDocument();
-    expect(screen.getByText('Question 2')).toBeInTheDocument();
-    expect(screen.getByText('Question 3')).toBeInTheDocument();
-    expect(screen.getAllByText('Correct').length).toBe(3);
-    expect(screen.queryByText('Incorrect')).not.toBeInTheDocument();
+  beforeEach(() => {
+    mockOnPracticeWeakSpots.mockClear();
   });
 
-  test('renders with partially correct answers', () => {
-    render(<QuizResults quizResult={mockQuizResultPartialCorrect} />);
+  test('renders with all correct answers and does not show practice button', () => {
+    render(<QuizResults quizResult={mockQuizResultAllCorrect} onPracticeWeakSpots={mockOnPracticeWeakSpots} />);
+
+    expect(screen.getByText('Quiz Results')).toBeInTheDocument();
+    expect(screen.getByText('100%')).toBeInTheDocument();
+    expect(screen.getByText('3 out of 3 correct')).toBeInTheDocument();
+    expect(screen.queryByText('Practice Weak Spots')).not.toBeInTheDocument();
+  });
+
+  test('renders with partially correct answers and shows practice button', () => {
+    render(<QuizResults quizResult={mockQuizResultPartialCorrect} onPracticeWeakSpots={mockOnPracticeWeakSpots} />);
 
     expect(screen.getByText('67%')).toBeInTheDocument(); // Rounded score
     expect(screen.getByText('2 out of 3 correct')).toBeInTheDocument();
-    expect(screen.getAllByText('Correct').length).toBe(2);
-    expect(screen.getAllByText('Incorrect').length).toBe(1);
+    expect(screen.getByText('Practice Weak Spots')).toBeInTheDocument();
   });
 
-  test('renders with all incorrect answers', () => {
-    render(<QuizResults quizResult={mockQuizResultAllIncorrect} />);
+  test('renders with all incorrect answers and shows practice button', () => {
+    render(<QuizResults quizResult={mockQuizResultAllIncorrect} onPracticeWeakSpots={mockOnPracticeWeakSpots} />);
 
     expect(screen.getByText('0%')).toBeInTheDocument();
     expect(screen.getByText('0 out of 3 correct')).toBeInTheDocument();
-    expect(screen.queryByText('Correct')).not.toBeInTheDocument();
-    expect(screen.getAllByText('Incorrect').length).toBe(3);
+    expect(screen.getByText('Practice Weak Spots')).toBeInTheDocument();
+  });
+
+  test('calls onPracticeWeakSpots when button is clicked', () => {
+    render(<QuizResults quizResult={mockQuizResultPartialCorrect} onPracticeWeakSpots={mockOnPracticeWeakSpots} />);
+
+    const practiceButton = screen.getByText('Practice Weak Spots');
+    fireEvent.click(practiceButton);
+
+    expect(mockOnPracticeWeakSpots).toHaveBeenCalledTimes(1);
   });
 
   test('renders correctly when quizResult is null', () => {

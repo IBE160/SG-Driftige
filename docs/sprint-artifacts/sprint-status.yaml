@@ -55,5 +55,5 @@ development_status:
   3-1-quiz-generation-backend: done
   3-2-quiz-taking-ui: done
   3-3-quiz-assessment-feedback: done
-  3-4-adaptive-follow-up-quiz: ready-for-dev
+  3-4-adaptive-follow-up-quiz: review
   epic-3-retrospective: optional
