@@ -18,10 +18,13 @@ services:
       - ./fastapi-backend:/app
     ports:
       - "8000:8000"
+    env_file: # Load environment variables from ./.env
+      - ./fastapi-backend/.env
     environment:
       DATABASE_URL: postgresql://user:password@db/quizum_db
       REDIS_URL: redis://redis:6379/0
-      # LLM_API_KEY: your_llm_api_key
+      # LLM_API_KEY and LLM_API_ENDPOINT are now loaded from ./.env
+      # LLM_MODEL can be set in ./.env or default to "gemini-pro"
     depends_on:
       - db
       - redis

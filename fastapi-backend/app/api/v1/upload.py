@@ -1,20 +1,31 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
+from prisma import Prisma
 from app.llm_integrations.pdf_parser import extract_text_from_pdf
 from app.services.content_service import ContentService
 from app.db.schemas import ContentCreate # Import ContentCreate
+from app.dependencies import get_db # Import get_db from new dependencies file
 
 router = APIRouter()
-content_service = ContentService()
+
+# Dependency for ContentService
+def get_content_service(db: Prisma = Depends(get_db)):
+    return ContentService(db)
 
 MAX_PDF_SIZE = 10 * 1024 * 1024 # 10 MB
 
 @router.post("/upload/text", status_code=201) # Set status_code to 201
-async def upload_text(content: ContentCreate): # Use ContentCreate
+async def upload_text(
+    content: ContentCreate,
+    content_service: ContentService = Depends(get_content_service)
+): # Use ContentCreate
     content_id = await content_service.save_text_content(content.text_content)
     return {"status": "success", "data": {"content_id": content_id, "message": "Content processed"}}
 
 @router.post("/upload/pdf", status_code=201) # Set status_code to 201
-async def upload_pdf(file: UploadFile = File(...)):
+async def upload_pdf(
+    file: UploadFile = File(...),
+    content_service: ContentService = Depends(get_content_service)
+):
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
     

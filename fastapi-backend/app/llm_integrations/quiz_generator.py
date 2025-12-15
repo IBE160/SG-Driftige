@@ -78,7 +78,7 @@ async def generate_quiz_from_llm(
 
     prompt = construct_quiz_prompt(content, difficulty, num_questions)
     
-    headers = {"Authorization": f"Bearer {LLM_API_KEY}", "Content-Type": "application/json"}
+    headers = {"Content-Type": "application/json"} # Remove Authorization header
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
         "model": LLM_MODEL
@@ -86,7 +86,8 @@ async def generate_quiz_from_llm(
 
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.post(LLM_API_ENDPOINT, json=payload, headers=headers, timeout=60.0)
+            # Append API key as query parameter
+            response = await client.post(f"{LLM_API_ENDPOINT}?key={LLM_API_KEY}", json=payload, headers=headers, timeout=60.0)
             response.raise_for_status()
             llm_response_content = response.json()
             llm_response_text = llm_response_content["candidates"][0]["content"]["parts"][0]["text"]
@@ -121,7 +122,7 @@ async def generate_adaptive_quiz_from_llm(
 
     prompt = construct_adaptive_quiz_prompt(content, weak_spots)
 
-    headers = {"Authorization": f"Bearer {LLM_API_KEY}", "Content-Type": "application/json"}
+    headers = {"Content-Type": "application/json"} # Remove Authorization header
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
         "model": LLM_MODEL
@@ -129,7 +130,8 @@ async def generate_adaptive_quiz_from_llm(
 
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.post(LLM_API_ENDPOINT, json=payload, headers=headers, timeout=60.0)
+            # Append API key as query parameter
+            response = await client.post(f"{LLM_API_ENDPOINT}?key={LLM_API_KEY}", json=payload, headers=headers, timeout=60.0)
             response.raise_for_status()
             llm_response_content = response.json()
             llm_response_text = llm_response_content["candidates"][0]["content"]["parts"][0]["text"]

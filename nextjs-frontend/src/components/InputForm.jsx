@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import DifficultyToggle from './DifficultyToggle';
-import { submitText } from '../lib/api';
+import { submitText, submitFile } from '../lib/api';
 
 export default function InputForm() {
   const [text, setText] = useState('');
@@ -31,10 +31,9 @@ export default function InputForm() {
 
     try {
       if (file) {
-        // TODO: Implement API call for file upload
         console.log('Submitted file:', file.name, 'with difficulty:', difficulty);
-        // const contentId = await submitFile(file, difficulty);
-        // router.push(`/summaries/${contentId}`);
+        const contentId = await submitFile(file, difficulty); // Implemented API call
+        router.push(`/summaries/${contentId}`);
       } else if (text.trim()) {
         const contentId = await submitText(text, difficulty);
         router.push(`/summaries/${contentId}`);

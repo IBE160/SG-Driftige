@@ -1,11 +1,11 @@
 from fastapi import HTTPException
 from prisma import Prisma
 from app.db.schemas import Summary
-from app.llm_integrations.summarizer import LLMSummarizer
+from app.llm_integrations.summarizer import Summarizer
 from typing import Literal
 
 class SummarizationService:
-    def __init__(self, db: Prisma, summarizer: LLMSummarizer):
+    def __init__(self, db: Prisma, summarizer: Summarizer):
         self.db = db
         self.summarizer = summarizer
 

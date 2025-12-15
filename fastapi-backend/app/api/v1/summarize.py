@@ -2,27 +2,19 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from prisma import Prisma
 from app.db.schemas import SummarizeRequest, Summary, SummarizeResponse
 from app.services.summarization_service import SummarizationService
-from app.llm_integrations.summarizer import LLMSummarizer
+from app.llm_integrations.summarizer import Summarizer
+from app.dependencies import get_db # Import get_db from new dependencies file
 
 summarize_router = APIRouter()
 
-# Dependency for Prisma client
-async def get_db():
-    db = Prisma()
-    await db.connect()
-    try:
-        yield db
-    finally:
-        await db.disconnect()
-
 # Dependency for LLM Summarizer
 def get_summarizer():
-    return LLMSummarizer()
+    return Summarizer()
 
 # Dependency for Summarization Service
 def get_summarization_service(
     db: Prisma = Depends(get_db),
-    summarizer: LLMSummarizer = Depends(get_summarizer)
+    summarizer: Summarizer = Depends(get_summarizer)
 ):
     return SummarizationService(db, summarizer)
 

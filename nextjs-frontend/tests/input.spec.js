@@ -59,4 +59,114 @@ test.describe('Input Page', () => {
     expect(mainContentBox.width).toBeGreaterThan(fileUploadBox.width * 0.8); // Should take up most of the width
     expect(textAreaBox.x).toBeCloseTo(fileUploadBox.x, -1); // Should be roughly horizontally aligned
   });
+
+  test('should successfully submit text and navigate to summary page', async ({ page }) => {
+    await page.goto('/');
+
+    // Mock the API call for text submission
+    await page.route('**/api/v1/upload/text', async (route) => {
+      await route.fulfill({
+        status: 201,
+        contentType: 'application/json',
+        body: JSON.stringify({ status: 'success', data: { content_id: 'test-text-content-id' } }),
+      });
+    });
+
+    const textArea = page.locator('textarea[placeholder="Paste your notes or text here..."]');
+    await textArea.fill('This is a test text that will be summarized.');
+
+    const generateButton = page.locator('button:has-text("Generate")');
+    await expect(generateButton).toBeEnabled();
+    await generateButton.click();
+
+    // Wait for navigation and assert the URL
+    await page.waitForURL('/summaries/test-text-content-id');
+    await expect(page).toHaveURL('/summaries/test-text-content-id');
+  });
+
+  test('should successfully upload a PDF file and navigate to summary page', async ({ page }) => {
+    await page.goto('/');
+
+    // Mock the API call for PDF file upload
+    await page.route('**/api/v1/upload/pdf', async (route) => {
+      await route.fulfill({
+        status: 201,
+        contentType: 'application/json',
+        body: JSON.stringify({ status: 'success', data: { content_id: 'test-pdf-content-id' } }),
+      });
+    });
+
+    // Provide a dummy file for upload
+    const fileInput = page.locator('input[type="file"]');
+    await fileInput.setInputFiles('./tests/dummy.pdf'); // Assuming a dummy.pdf exists for testing
+
+    const generateButton = page.locator('button:has-text("Generate")');
+    await expect(generateButton).toBeEnabled();
+    await generateButton.click();
+
+    // Wait for navigation and assert the URL
+    await page.waitForURL('/summaries/test-pdf-content-id');
+    await expect(page).toHaveURL('/summaries/test-pdf-content-id');
+  });
+
+  test('should display error message on text submission failure', async ({ page }) => {
+    await page.goto('/');
+
+    // Mock the API call for text submission to fail
+    await page.route('**/api/v1/upload/text', async (route) => {
+      await route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+        body: JSON.stringify({ detail: 'Internal Server Error during text processing' }),
+      });
+    });
+
+    // Mock the alert function
+    page.on('dialog', async dialog => {
+      expect(dialog.message()).toContain('Error: Internal Server Error during text processing');
+      await dialog.dismiss();
+    });
+
+    const textArea = page.locator('textarea[placeholder="Paste your notes or text here..."]');
+    await textArea.fill('This text will cause an error.');
+
+    const generateButton = page.locator('button:has-text("Generate")');
+    await expect(generateButton).toBeEnabled();
+    await generateButton.click();
+
+    // Ensure the loading state is reset and the button is enabled again
+    await expect(generateButton).toBeEnabled();
+    await expect(page).toHaveURL('/'); // Should stay on the same page
+  });
+
+  test('should display error message on PDF upload failure', async ({ page }) => {
+    await page.goto('/');
+
+    // Mock the API call for PDF upload to fail
+    await page.route('**/api/v1/upload/pdf', async (route) => {
+      await route.fulfill({
+        status: 400,
+        contentType: 'application/json',
+        body: JSON.stringify({ detail: 'Only PDF files are allowed.' }),
+      });
+    });
+
+    // Mock the alert function
+    page.on('dialog', async dialog => {
+      expect(dialog.message()).toContain('Error: Only PDF files are allowed.');
+      await dialog.dismiss();
+    });
+
+    // Provide a dummy file for upload
+    const fileInput = page.locator('input[type="file"]');
+    await fileInput.setInputFiles('./tests/dummy.pdf');
+
+    const generateButton = page.locator('button:has-text("Generate")');
+    await expect(generateButton).toBeEnabled();
+    await generateButton.click();
+
+    // Ensure the loading state is reset and the button is enabled again
+    await expect(generateButton).toBeEnabled();
+    await expect(page).toHaveURL('/'); // Should stay on the same page
+  });
 });

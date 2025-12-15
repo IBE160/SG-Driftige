@@ -30,7 +30,7 @@ export async function submitText(text, difficulty) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ text, difficulty }),
+            body: JSON.stringify({ text_content: text }), // Changed payload to match backend schema
         });
 
         if (!response.ok) {
@@ -117,6 +117,30 @@ export async function getAdaptiveQuiz(originalQuizId, contentId, previousResult)
         return data.data;
     } catch (error) {
         console.error('Error fetching adaptive quiz:', error);
+        throw error;
+    }
+}
+
+export async function submitFile(file) { // Difficulty is not used by the backend /upload/pdf endpoint
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch(`${backendUrl}/api/v1/upload/pdf`, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Failed to submit file');
+        }
+
+        const data = await response.json();
+        return data.data.content_id; // Assumes the backend returns a content_id
+    } catch (error) {
+        console.error('Error submitting file:', error);
         throw error;
     }
 }

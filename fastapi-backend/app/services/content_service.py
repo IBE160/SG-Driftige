@@ -1,14 +1,14 @@
 import uuid
 from datetime import datetime
-from app.db.prisma_client import db
+from prisma import Prisma # Import Prisma for type hinting
 
 class ContentService:
-    def __init__(self):
-        pass
+    def __init__(self, db: Prisma):
+        self.db = db
 
     async def save_text_content(self, text_content: str):
         # Using Prisma to save content
-        new_content = await db.content.create(
+        new_content = await self.db.content.create(
             data={
                 "rawText": text_content,
                 "uploadedAt": datetime.now(),
@@ -19,7 +19,7 @@ class ContentService:
 
     async def save_pdf_content(self, extracted_text: str, filename: str):
         # Using Prisma to save content
-        new_content = await db.content.create(
+        new_content = await self.db.content.create(
             data={
                 "rawText": extracted_text,
                 "uploadedAt": datetime.now(),
