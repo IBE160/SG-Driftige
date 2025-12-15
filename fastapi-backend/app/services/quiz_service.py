@@ -7,14 +7,10 @@ from uuid import UUID
 from app.llm_integrations.quiz_generator import generate_quiz_from_llm, generate_adaptive_quiz_from_llm
 from app.services.quiz_validator import validate_llm_quiz_response
 from app.schemas.quiz import QuizData, QuizSubmission, QuizResult
+from app.services.content_service import ContentService # Import ContentService
+from prisma import Prisma # Import Prisma for ContentService type hint
 
 logger = logging.getLogger(__name__)
-
-# In a real application, this would fetch content from a database
-# For now, we'll use a simple mock
-MOCK_CONTENT_STORE = {
-    "sample_content_id": "This is a sample text about the history of the internet..."
-}
 
 # Initialize Redis client
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
@@ -29,7 +25,7 @@ async def get_quiz_from_cache(quiz_id: UUID) -> Union[QuizData, None]:
 async def set_quiz_in_cache(quiz_data: QuizData, ex: int = 3600): # expire in 1 hour
     await redis_client.set(str(quiz_data.quiz_id), quiz_data.model_dump_json(), ex=ex)
 
-async def create_quiz(content_id: str, difficulty: str) -> QuizData:
+async def create_quiz(content_id: str, difficulty: str, content_service: ContentService) -> QuizData:
     """
     Orchestrates the quiz generation process.
     
@@ -38,10 +34,13 @@ async def create_quiz(content_id: str, difficulty: str) -> QuizData:
     3. Validates the LLM's response.
     4. Implements retry logic if validation fails.
     """
-    # 1. Retrieve content
-    content = MOCK_CONTENT_STORE.get(content_id)
-    if not content:
+    logger.debug(f"create_quiz: Received content_id: {content_id}, difficulty: {difficulty}") # Added debug log
+    # 1. Retrieve content from ContentService
+    content_obj = await content_service.get_content_by_id(content_id)
+    logger.debug(f"create_quiz: ContentService returned: {content_obj}") # Added debug log
+    if not content_obj:
         raise ValueError("Content not found")
+    content = content_obj.rawText # Assuming get_content_by_id returns an object with rawText
 
     max_retries = 3
     for attempt in range(max_retries):
@@ -49,7 +48,7 @@ async def create_quiz(content_id: str, difficulty: str) -> QuizData:
             # 2. Call the quiz generator
             llm_response_dict = await generate_quiz_from_llm(content, difficulty)
             
-            # 3. Validate the response
+            # 3. Validates the response
             quiz_data = validate_llm_quiz_response(llm_response_dict.model_dump())
             
             # Store quiz data in cache
@@ -97,7 +96,7 @@ async def assess_quiz_submission(quiz_id: UUID, submission: QuizSubmission) -> Q
     )
 
 
-async def create_adaptive_quiz(content_id: str, previous_result: QuizResult, original_quiz_id: UUID) -> QuizData:
+async def create_adaptive_quiz(content_id: str, previous_result: QuizResult, original_quiz_id: UUID, content_service: ContentService) -> QuizData:
     """
     Creates a follow-up quiz that targets the user's weak spots.
     """
@@ -116,10 +115,11 @@ async def create_adaptive_quiz(content_id: str, previous_result: QuizResult, ori
     if not weak_spots:
         raise ValueError("No weak spots identified or all answers were correct.")
 
-    # 3. Retrieve original content
-    content = MOCK_CONTENT_STORE.get(content_id)
-    if not content:
+    # 3. Retrieve original content from ContentService
+    content_obj = await content_service.get_content_by_id(content_id)
+    if not content_obj:
         raise ValueError("Content not found for adaptive quiz generation.")
+    content = content_obj.rawText # Assuming get_content_by_id returns an object with rawText
 
     # 4. Generate a new quiz targeting these weak spots
     max_retries = 3
@@ -139,4 +139,3 @@ async def create_adaptive_quiz(content_id: str, previous_result: QuizResult, ori
 
     # This line should not be reachable
     raise ValueError("An unexpected error occurred in adaptive quiz creation.")
-

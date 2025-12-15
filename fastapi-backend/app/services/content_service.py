@@ -28,3 +28,6 @@ class ContentService:
         )
         print(f"ContentService: Saved PDF content to DB with ID: {new_content.id}")
         return new_content.id
+
+    async def get_content_by_id(self, content_id: str):
+        return await self.db.content.find_unique(where={"id": content_id})

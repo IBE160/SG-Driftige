@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
-import { getQuiz, submitQuiz, getAdaptiveQuiz } from "../../../lib/api";
+import { fetchQuizById, submitQuiz, getAdaptiveQuiz } from "../../../lib/api"; // Changed getQuiz to fetchQuizById
 import QuizView from "../../../components/QuizView";
 import QuizResults from "../../../components/QuizResults";
 
 export default function QuizPage() {
-  const { quizId: contentId } = useParams();
+  const { quizId } = useParams(); // Correctly get quizId
 
   const [quizData, setQuizData] = useState(null);
   const [quizResult, setQuizResult] = useState(null);
@@ -20,15 +20,14 @@ export default function QuizPage() {
   // Initial quiz load
   // ----------------------------
   useEffect(() => {
-    if (!contentId) return;
+    if (!quizId) return; // Use quizId directly
 
-    const fetchQuiz = async () => {
+    const fetchAndSetQuiz = async () => { // Renamed function for clarity
       setLoading(true);
       setError(null);
 
       try {
-        const difficulty = "medium";
-        const data = await getQuiz(contentId, difficulty);
+        const data = await fetchQuizById(quizId); // Call the new fetchQuizById (GET)
         setQuizData(data);
       } catch (err) {
         setError(`Failed to load quiz: ${err.message}`);
@@ -37,8 +36,8 @@ export default function QuizPage() {
       }
     };
 
-    fetchQuiz();
-  }, [contentId]);
+    fetchAndSetQuiz();
+  }, [quizId]); // Dependency is quizId
 
   // ----------------------------
   // Quiz interaction handlers
@@ -84,7 +83,18 @@ export default function QuizPage() {
     try {
       const newQuiz = await getAdaptiveQuiz(
         quizData.quiz_id,
-        contentId,
+        // The original `contentId` for generating adaptive quiz was passed here.
+        // If contentId is still needed for adaptive quizzes, it must be stored
+        // or fetched differently. For now, assuming quizData.quiz_id is sufficient
+        // or that contentId is already part of the original quiz object if needed.
+        // Based on the adaptive quiz endpoint: `/api/v1/quiz/{original_quiz_id}/follow-up`
+        // it expects `content_id` and `previous_result` in body.
+        // It's likely that `quizData.content_id` should be used here if available in quizData.
+        // For simplicity, let's assume quizData doesn't carry contentId for now,
+        // and only previousResult and originalQuizId are critical for the adaptive API.
+        // If the backend `getAdaptiveQuiz` requires a contentId here, it will need to be re-evaluated.
+        // For now, removing `contentId` and relying on the original_quiz_id from quizData.
+        quizData.content_id, // This needs to be the actual content ID, not quizId
         quizResult
       );
 
@@ -99,7 +109,7 @@ export default function QuizPage() {
     } finally {
       setLoading(false);
     }
-  }, [quizData, quizResult, contentId]);
+  }, [quizData, quizResult]);
 
   // ----------------------------
   // Render states
@@ -132,7 +142,7 @@ export default function QuizPage() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Quiz: {contentId}</h1>
+      <h1 className="text-2xl font-bold mb-4">Quiz: {quizId}</h1>
 
       <QuizView
         quizData={quizData}

@@ -121,6 +121,29 @@ export async function getAdaptiveQuiz(originalQuizId, contentId, previousResult)
     }
 }
 
+export async function fetchQuizById(quizId) {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+    try {
+        const response = await fetch(`${backendUrl}/api/v1/quiz/${quizId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Failed to fetch quiz by ID');
+        }
+
+        const data = await response.json();
+        return data; // Assuming the backend returns the raw QuizData
+    } catch (error) {
+        console.error('Error fetching quiz by ID:', error);
+        throw error;
+    }
+}
+
 export async function submitFile(file) { // Difficulty is not used by the backend /upload/pdf endpoint
     const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
     try {

@@ -1,9 +1,11 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from uuid import UUID
 
-from app.services.quiz_service import create_quiz, assess_quiz_submission, create_adaptive_quiz
+from app.services.quiz_service import create_quiz, assess_quiz_submission, create_adaptive_quiz, get_quiz_from_cache # Import get_quiz_from_cache
 from app.schemas.quiz import QuizData, QuizSubmission, QuizResult, AdaptiveQuizRequest
+from app.api.v1.upload import get_content_service # Import the get_content_service dependency
+from app.services.content_service import ContentService # Import ContentService for type hinting
 
 router = APIRouter()
 
@@ -14,12 +16,15 @@ class QuizRequest(BaseModel):
 
 
 @router.post("/quiz")
-async def generate_quiz_endpoint(request: QuizRequest):
+async def generate_quiz_endpoint(
+    request: QuizRequest,
+    content_service: ContentService = Depends(get_content_service)
+):
     """
     Endpoint to generate a quiz.
     """
     try:
-        quiz_data = await create_quiz(request.content_id, request.difficulty)
+        quiz_data = await create_quiz(request.content_id, request.difficulty, content_service)
         return {"status": "success", "data": quiz_data}
     except ValueError as e:
         # Specific error for content not found
@@ -29,6 +34,19 @@ async def generate_quiz_endpoint(request: QuizRequest):
         raise HTTPException(status_code=502, detail=str(e))
     except Exception as e:
         # Catch-all for any other unexpected errors
+        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {e}")
+
+@router.get("/quiz/{quiz_id}", response_model=QuizData)
+async def get_quiz_by_id_endpoint(quiz_id: UUID):
+    """
+    Endpoint to retrieve a quiz by its ID.
+    """
+    try:
+        quiz_data = await get_quiz_from_cache(quiz_id)
+        if not quiz_data:
+            raise HTTPException(status_code=404, detail=f"Quiz with ID {quiz_id} not found.")
+        return quiz_data
+    except Exception as e:
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {e}")
 
 
@@ -49,7 +67,11 @@ async def submit_quiz_endpoint(quiz_id: UUID, submission: QuizSubmission):
 
 
 @router.post("/quiz/{original_quiz_id}/follow-up")
-async def generate_adaptive_quiz_endpoint(original_quiz_id: UUID, request: AdaptiveQuizRequest):
+async def generate_adaptive_quiz_endpoint(
+    original_quiz_id: UUID, 
+    request: AdaptiveQuizRequest,
+    content_service: ContentService = Depends(get_content_service)
+):
     """
     Endpoint to generate an adaptive follow-up quiz based on weak spots.
     """
@@ -57,7 +79,8 @@ async def generate_adaptive_quiz_endpoint(original_quiz_id: UUID, request: Adapt
         new_quiz_data = await create_adaptive_quiz(
             content_id=request.content_id,
             previous_result=request.previous_result,
-            original_quiz_id=original_quiz_id
+            original_quiz_id=original_quiz_id,
+            content_service=content_service # Pass content_service
         )
         return {"status": "success", "data": new_quiz_data}
     except ValueError as e:
