@@ -40,8 +40,7 @@ To set up QuizZum locally, follow these steps:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-repo/QuizZum.git # Replace with actual repo URL
-cd QuizZum
+git clone https://github.com/IBE160/SG-Driftige 
 ```
 
 ### 2. Configure Environment Variables
@@ -93,8 +92,8 @@ Please adhere to the project's coding standards and conventions.
 
 ## License
 
-[Specify your project's license here]
+No licence
 
 ## Contact
 
-For any inquiries, please contact [Your Name/Email/GitHub Profile].
+For any inquiries, please contact students Eline Westerberg or Sindre Vikshåland on their student-emails.

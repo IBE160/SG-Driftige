@@ -7,6 +7,7 @@ from app.schemas.quiz import QuizData, QuizQuestion, QuizSubmission, QuizResult
 # Define a sample quiz data for testing
 SAMPLE_QUIZ_DATA = QuizData(
     quiz_id=UUID("a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6"),
+    content_id="sample_content_id_123", # Added content_id
     questions=[
         QuizQuestion(
             question_text="What is the capital of France?",
@@ -29,6 +30,7 @@ SAMPLE_QUIZ_DATA = QuizData(
 # Define a sample adaptive quiz for testing
 SAMPLE_ADAPTIVE_QUIZ_DATA = QuizData(
     quiz_id=UUID("b2c3d4e5-f6a7-b8c9-d0e1-f2a3b4c5d6e7"),
+    content_id="sample_content_id_123", # Added content_id
     questions=[
         QuizQuestion(
             question_text="Which famous landmark is in Paris?",
@@ -41,22 +43,34 @@ SAMPLE_ADAPTIVE_QUIZ_DATA = QuizData(
 
 @pytest.mark.asyncio
 @patch('app.services.quiz_service.generate_quiz_from_llm')
-@patch('app.services.quiz_service.MOCK_CONTENT_STORE', {"sample_content_id": "Sample content"})
+@patch('app.services.quiz_service.ContentService') # Mock ContentService
 @patch('app.services.quiz_service.set_quiz_in_cache')
-async def test_create_quiz_success(mock_set_quiz_in_cache, mock_generate_quiz):
-    # Mock the LLM response
-    mock_generate_quiz.return_value = SAMPLE_QUIZ_DATA
+async def test_create_quiz_success(mock_set_quiz_in_cache, MockContentService, mock_generate_quiz):
+    # Mock ContentService instance and its method
+    mock_content_service_instance = MockContentService.return_value
+    mock_content_service_instance.get_content_by_id.return_value = MagicMock(rawText="Sample content")
+    
+    # Mock the LLM response to return a QuizData with content_id
+    llm_generated_quiz = QuizData(
+        quiz_id=SAMPLE_QUIZ_DATA.quiz_id,
+        content_id="sample_content_id_123", # Ensure mock return value matches schema
+        questions=SAMPLE_QUIZ_DATA.questions
+    )
+    mock_generate_quiz.return_value = llm_generated_quiz
 
     # Call the service
-    quiz = await create_quiz("sample_content_id", "easy")
+    quiz = await create_quiz("sample_content_id_123", "easy", mock_content_service_instance)
 
     # Assertions
     assert quiz is not None
     assert quiz.quiz_id == SAMPLE_QUIZ_DATA.quiz_id
+    assert quiz.content_id == "sample_content_id_123" # Assert content_id
     assert len(quiz.questions) == 3
     assert quiz.questions[0].question_text == "What is the capital of France?"
-    # Verify set_quiz_in_cache was called
-    mock_set_quiz_in_cache.assert_called_once_with(SAMPLE_QUIZ_DATA)
+    
+    # Verify set_quiz_in_cache was called with the quiz object that now includes content_id
+    mock_set_quiz_in_cache.assert_called_once_with(quiz)
+
 
 
 @pytest.mark.asyncio

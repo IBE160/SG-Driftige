@@ -28,7 +28,9 @@ class QuizResult(BaseModel):
     # Dict mapping question_index to its correctness (True/False)
     results: Dict[int, bool]
 
+from typing import Optional
+
 class AdaptiveQuizRequest(BaseModel):
     """The request body for generating an adaptive quiz."""
-    content_id: str
+    content_id: Optional[str] = None # Make content_id optional
     previous_result: QuizResult

@@ -51,8 +51,10 @@ async def create_quiz(content_id: str, difficulty: str, content_service: Content
             # 3. Validates the response
             quiz_data = validate_llm_quiz_response(llm_response_dict.model_dump())
             
-            # Store quiz data in cache
+            # Store quiz data and associated content_id in cache
             await set_quiz_in_cache(quiz_data)
+            await redis_client.set(f"{quiz_data.quiz_id}_content_id", content_id, ex=3600)
+
             
             return quiz_data
 
@@ -128,8 +130,9 @@ async def create_adaptive_quiz(content_id: str, previous_result: QuizResult, ori
             llm_response_dict = await generate_adaptive_quiz_from_llm(content, weak_spots)
             new_quiz_data = validate_llm_quiz_response(llm_response_dict.model_dump())
             
-            # Store the new quiz data in cache
+            # Store the new quiz data and its associated content_id in cache
             await set_quiz_in_cache(new_quiz_data)
+            await redis_client.set(f"{new_quiz_data.quiz_id}_content_id", content_id, ex=3600)
             
             return new_quiz_data
         except ValueError as e:

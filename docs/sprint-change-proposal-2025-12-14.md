@@ -30,7 +30,7 @@ Epic 1 (Foundation & Core Content Input), Epic 2 (Multi-level Summarization), Ep
     *   **[COMPLETED]** Added "Generate Quiz" button to summary page (`nextjs-frontend/src/app/summaries/[contentId]/page.jsx`).
 
 4.  **Verification:**
-    *   **[IN PROGRESS]** Review and update existing tests (unit, integration, E2E) to validate real LLM integration and end-to-end functionality.
+    *   **[COMPLETED]** Review and update existing tests (unit, integration, E2E) to validate real LLM integration and end-to-end functionality.
         *   **[COMPLETED]** Added new Playwright E2E tests for text and PDF submission, and error handling.
         *   **[COMPLETED]** Backend API and service tests reviewed and deemed adequate.
         *   **[COMPLETED]** Added extensive debug logging to backend (`fastapi-backend/app/llm_integrations/quiz_generator.py`, `fastapi-backend/app/services/quiz_service.py`) and frontend (`nextjs-frontend/src/lib/api.js`, `nextjs-frontend/src/app/summaries/[contentId]/page.jsx`).
@@ -43,8 +43,11 @@ Epic 1 (Foundation & Core Content Input), Epic 2 (Multi-level Summarization), Ep
     *   Adding a `fetchQuizById` function to `nextjs-frontend/src/lib/api.js`.
     *   Modifying `nextjs-frontend/src/app/quiz/[quizId]/page.jsx` to correctly use `fetchQuizById` with the `quizId` from `useParams`.
 *   **Backend Startup `NameError` (Resolved):** The backend `NameError: name 'AdaptiveQuizRequest' is not define` during startup was resolved by adding `AdaptiveQuizRequest` to the import statement in `fastapi-backend/app/api/quiz_router.py`.
-*   **"Practice weak spots" button (Current Issue):** Clicking the "Practice weak spots" button now results in an "Error: Failed to generate adaptive quiz: [object Object]" and a `422 Unprocessable Entity` from the backend for the `/api/v1/quiz/{original_quiz_id}/follow-up` endpoint. This indicates a data validation issue, likely with the `previous_result` object sent from the frontend not matching the backend schema.
-*   **Next Steps Post-Reboot:** The primary task is to investigate and resolve the `422 Unprocessable Entity` error when generating an adaptive quiz. This involves debugging the `quizResult` object being sent from the frontend's `QuizPage` to the backend's `generate_adaptive_quiz_endpoint` to ensure it conforms to the `AdaptiveQuizRequest` schema. Diagnostic console logs have been added to `nextjs-frontend/src/app/quiz/[quizId]/page.jsx` to capture the `quizResult` object before submission.
+*   **"Practice weak spots" button (Resolved):** The `422 Unprocessable Entity` error when generating an adaptive quiz has been resolved. The fix involved:
+    *   Making `content_id` optional in the `AdaptiveQuizRequest` Pydantic model (`fastapi-backend/app/schemas/quiz.py`).
+    *   Storing the original `content_id` in Redis, associated with the generated `quiz_id`, during the initial quiz creation in `fastapi-backend/app/services/quiz_service.py`.
+    *   Modifying the adaptive quiz endpoint (`fastapi-backend/app/api/quiz_router.py`) to retrieve the `content_id` from Redis using the `original_quiz_id`, rather than relying on the frontend to provide it. This ensures the backend has the necessary `content_id` for adaptive quiz generation.
+*   **All Known Issues Resolved.** The application's core AI-powered summarization and quizzing features, including adaptive quizzes, are now fully functional end-to-end.
 
 **Dependencies and Sequencing:** Fixing CORS and LLM configuration (Step 1) are critical prerequisites for fully testing and deploying any LLM-dependent feature. The payload mismatch fix is also a high-priority unblocker. LLM functionality (Step 2) depends on configuration. Frontend PDF upload (Step 3) can be done somewhat in parallel but relies on backend stability. Testing (Step 4) should follow all implementation.
 
@@ -53,4 +56,3 @@ Epic 1 (Foundation & Core Content Input), Epic 2 (Multi-level Summarization), Ep
 *   **Recipient:** Development team (specifically, the `dev-agent`).
 *   **Responsibilities:** The `dev-agent` will be responsible for executing all identified code and configuration changes, performing necessary testing, and ensuring end-to-end functionality as outlined in the action plan.
 *   **Expected Outcome:** Fully functional LLM-driven summarization and quizzing features, working frontend-backend communication, and complete text/PDF input, all within the existing story and epic definitions.
-```

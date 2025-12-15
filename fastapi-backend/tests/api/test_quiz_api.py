@@ -15,13 +15,14 @@ def test_generate_quiz_success(mock_create_quiz):
     mock_create_quiz.return_value = SAMPLE_QUIZ_DATA
 
     # Make the API call
-    response = client.post("/api/v1/quiz", json={"content_id": "sample", "difficulty": "easy"})
+    response = client.post("/api/v1/quiz", json={"content_id": "sample_content_id_123", "difficulty": "easy"})
 
     # Assertions
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "success"
     assert data["data"]["quiz_id"] == str(SAMPLE_QUIZ_DATA.quiz_id)
+    assert data["data"]["content_id"] == "sample_content_id_123" # Explicitly assert content_id
     assert len(data["data"]["questions"]) == 3
     assert data["data"]["questions"][0]["question_text"] == "What is the capital of France?"
 
@@ -101,7 +102,7 @@ def test_generate_adaptive_quiz_success(mock_create_adaptive_quiz):
 
     # Sample payload for the request
     previous_result = QuizResult(score=50.0, correct_answers=1, total_questions=2, results={0: False, 1: True})
-    request_payload = AdaptiveQuizRequest(content_id="sample_content_id", previous_result=previous_result)
+    request_payload = AdaptiveQuizRequest(content_id="sample_content_id_123", previous_result=previous_result)
 
     # Make the API call
     response = client.post(
@@ -114,6 +115,7 @@ def test_generate_adaptive_quiz_success(mock_create_adaptive_quiz):
     data = response.json()
     assert data["status"] == "success"
     assert data["data"]["quiz_id"] == str(SAMPLE_ADAPTIVE_QUIZ_DATA.quiz_id)
+    assert data["data"]["content_id"] == "sample_content_id_123" # Explicitly assert content_id
     assert len(data["data"]["questions"]) == 1
     assert data["data"]["questions"][0]["question_text"] == "Which famous landmark is in Paris?"
 

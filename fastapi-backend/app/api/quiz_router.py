@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from uuid import UUID
 
-from app.services.quiz_service import create_quiz, assess_quiz_submission, create_adaptive_quiz, get_quiz_from_cache # Import get_quiz_from_cache
+from app.services.quiz_service import create_quiz, assess_quiz_submission, create_adaptive_quiz, get_quiz_from_cache, redis_client # Import redis_client
 from app.schemas.quiz import QuizData, QuizSubmission, QuizResult, AdaptiveQuizRequest
 from app.api.v1.upload import get_content_service # Import the get_content_service dependency
 from app.services.content_service import ContentService # Import ContentService for type hinting
@@ -76,15 +76,20 @@ async def generate_adaptive_quiz_endpoint(
     Endpoint to generate an adaptive follow-up quiz based on weak spots.
     """
     try:
+        # Fetch content_id from Redis using the original_quiz_id
+        content_id = await redis_client.get(f"{original_quiz_id}_content_id")
+        if not content_id:
+            raise ValueError(f"Could not find original content for quiz ID {original_quiz_id}")
+
         new_quiz_data = await create_adaptive_quiz(
-            content_id=request.content_id,
+            content_id=content_id, # Use the retrieved content_id
             previous_result=request.previous_result,
             original_quiz_id=original_quiz_id,
-            content_service=content_service # Pass content_service
+            content_service=content_service
         )
         return {"status": "success", "data": new_quiz_data}
     except ValueError as e:
-        if "not found" in str(e):
+        if "not found" in str(e) or "Could not find" in str(e):
             raise HTTPException(status_code=404, detail=str(e))
         raise HTTPException(status_code=400, detail=str(e)) # For other value errors like "no weak spots"
     except Exception as e:
