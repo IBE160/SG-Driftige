@@ -81,20 +81,13 @@ export default function QuizPage() {
     setError(null);
 
     try {
+      console.log("handlePracticeWeakSpots: quizData.quiz_id:", quizData.quiz_id);
+      console.log("handlePracticeWeakSpots: quizData.content_id:", quizData.content_id);
+      console.log("handlePracticeWeakSpots: quizResult being sent:", quizResult); // Add this log
+
       const newQuiz = await getAdaptiveQuiz(
         quizData.quiz_id,
-        // The original `contentId` for generating adaptive quiz was passed here.
-        // If contentId is still needed for adaptive quizzes, it must be stored
-        // or fetched differently. For now, assuming quizData.quiz_id is sufficient
-        // or that contentId is already part of the original quiz object if needed.
-        // Based on the adaptive quiz endpoint: `/api/v1/quiz/{original_quiz_id}/follow-up`
-        // it expects `content_id` and `previous_result` in body.
-        // It's likely that `quizData.content_id` should be used here if available in quizData.
-        // For simplicity, let's assume quizData doesn't carry contentId for now,
-        // and only previousResult and originalQuizId are critical for the adaptive API.
-        // If the backend `getAdaptiveQuiz` requires a contentId here, it will need to be re-evaluated.
-        // For now, removing `contentId` and relying on the original_quiz_id from quizData.
-        quizData.content_id, // This needs to be the actual content ID, not quizId
+        quizData.content_id, // This is the content ID
         quizResult
       );
 
